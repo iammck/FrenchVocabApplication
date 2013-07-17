@@ -1,0 +1,5 @@
+This is an exercise in the listFragment, SQLiteDatabe, and CursorLoader programming for the android.
+The application should display a list view and allow the user to interact with it. The back end should
+be a cursorAdapter to a SQLiteDatabase
+
+The initial commit came with some code.
