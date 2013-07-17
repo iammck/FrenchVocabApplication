@@ -1,0 +1,146 @@
+l’addition (f)	
+bill (at a restaurant)
+l’ail (m)	
+garlic
+l’ananas (m)	
+pineapple
+l’entrée(f)	
+appetizer
+l’épinard (m)	
+spinach
+l’escargot (m)	
+snail
+l’huile (f)	
+oil
+l’huître (f)	
+oyster
+l’œuf (m)	
+egg
+l’oignon (m)	
+onion
+l’orange (f)	
+orange
+la boîte	
+can, box
+la bouteille	
+bottle
+la carotte	
+carrot
+la crème chantilly	
+whipped cream
+la crème fraîche	
+sour cream
+la cuillère	
+spoon
+la farine	
+flour
+la fraise	
+strawberry
+la glace	
+ice cream
+la moule	
+mussel
+la moutarde	
+mustard
+la noix de coco	
+coconut
+la pomme	
+apple
+la pomme de terre	
+potato
+la recette	
+recipe
+la salade	
+lettuce
+la saucisse	
+sausage
+la tasse	
+cup
+la tomate	
+tomato
+la tranche	
+slice
+la viande	
+meat
+le beignet	
+doughnut
+le beurre	
+butter
+le biscuit	
+cookie
+le bœuf	
+beef
+le canard	
+duck
+le chou	
+cabbage
+le citron	
+lemon
+le concombre	
+cucumber
+le déjeuner	
+lunch
+le demi	
+half
+le dessert	
+dessert
+le dîner	
+dinner
+le féculent	
+starch
+le fromage de chèvre	
+goat cheese
+le haricot	
+bean
+le hors d’œuvre	
+appetizer
+le jambon	
+ham
+le laitage	
+dairy product
+le melon	
+cantaloupe
+le pain grillé	
+toast
+le paquet	
+package, box
+le petit-déjeuner	
+breakfast
+le plat	
+dish
+le plat principal	
+main dish, entrée
+le poisson	
+fish
+le poivre	
+pepper
+le pot	
+jar
+le poulet	
+chicken
+le quart	
+fourth
+le raisin	
+grape
+le riz	
+rice
+le saucisson	
+dried sausage (similar to salami)
+le saumon	
+salmon
+le sel	
+salt
+le thon	
+tuna
+le tiers	
+third
+le vinaigre	
+vinegar
+les céréales (f)	
+cereals
+les crudités (f)	
+raw vegetables (special salads for appetizers)
+les frites (f)	
+French fries
+les pâtes (f)	
+pasta

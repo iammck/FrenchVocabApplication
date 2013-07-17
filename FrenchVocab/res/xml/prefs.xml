@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ListPreference android:title="@string/the_starting_language" android:summary="@string/preferences_language_summary" android:key="language" android:entryValues="@array/current_language_values" android:entries="@array/current_language" /><ListPreference android:title="@string/active_chapter" android:key="current_chapter" android:summary="@string/active_chapter_summary" android:entries="@array/chapter_names" android:entryValues="@array/chapter_names_values"/>
+    
+    
+
+</PreferenceScreen>
