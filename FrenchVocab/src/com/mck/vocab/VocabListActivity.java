@@ -3,16 +3,21 @@ package com.mck.vocab;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class VocabListActivity extends FragmentActivity implements OnSharedPreferenceChangeListener {
+public class VocabListActivity extends FragmentActivity implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
 	private static final String TAG = "VocabListActivity";
+	public static final int vocabCursorLoaderId = 0;
 	public static final String[] AVAILABLE_CHAPTERS = {"chapter7mainVocab.txt","chapter7expressions.txt"};
 	public ChapterVocab chapterVocab;
 	SharedPreferences prefs;
@@ -22,11 +27,8 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
         super.onCreate(savedInstanceState);
         Log.v(TAG,"onCreate() has begun");
 
-        /*
-         * if no table, create the table perhaps put this in the chapVocab db helper stuff
-         * 
-         * // get cursor loader from the cursor loader manager with 
-         */
+        this.getSupportLoaderManager().initLoader(vocabCursorLoaderId, null, this);
+        // TODO create the cursor loader
         
         
         
@@ -127,13 +129,8 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 			String s = prefs.getString("current_chapter", "1");
 			int currentChapter = Integer.valueOf(s).intValue();
 			//chapterVocab.setCurrentChapter(currentChapter);
-			chapterVocab.activateChapter(currentChapter);
-			// TODO
-			/*
-			 * 
-			 * call chapterVocab to load chapter from db.
-			 * 
-			 */
+			// load the current chapter into the listview cursor via
+			chapterVocab.activateChapter(currentChapter);			
 		}		
 	}
 
@@ -162,5 +159,27 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		
 		Log.v(TAG, "onChapterActivated() completed chapter onPreferenceChange()" 
 				+ " call to chapterVocab.activateChapter()");
+	}
+
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		
+		// return new CursorLoader(this, R.				);
+		return null;
+	}
+
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

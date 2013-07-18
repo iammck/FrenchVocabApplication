@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,8 +103,14 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		}
 
 		// set it to the fragment with setListAdapter
-		this.setListAdapter(new VocabListAdapter(vocabListActivity, 
-				R.layout.vocab_word_cell, R.id.vocab_word_text, vocabIds));
+		//this.setListAdapter(new VocabListAdapter(vocabListActivity, 
+		//		R.layout.vocab_word_cell, R.id.vocab_word_text, vocabIds));
+		
+		
+		// set the adapter to a simple list adapter TODO
+		this.setListAdapter(new SimpleCursorAdapter(vocabListActivity, R.layout.vocab_word_cell, null, null, null, 0));
+		
+		
 		
 		// add item long press call back
 		this.getListView().setLongClickable(true);
