@@ -1,15 +1,14 @@
 package com.mck.vocab;
 
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +18,7 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
 	public static final String[] AVAILABLE_CHAPTERS = {"chapter7mainVocab.txt","chapter7expressions.txt"};
-	public ChapterVocab chapterVocab;
+	//public ChapterVocab chapterVocab; TODO remove line?
 	SharedPreferences prefs;
 	
     @Override
@@ -49,9 +48,9 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
         // Create the chapterVocab with the right starting language
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         String language = prefs.getString( "language", "english");
-        String s = prefs.getString("current_chapter", "1");
-        int currentChapter = Integer.valueOf(s).intValue();
-		chapterVocab = new ChapterVocab(this, language, currentChapter);
+        //String s = prefs.getString("current_chapter", "1");TODO remove line?
+        //int currentChapter = Integer.valueOf(s).intValue();TODO remove line?
+		//chapterVocab = new ChapterVocab(this, language, currentChapter); TODO remove line?
          
 		// register to get changes to the prefs.
 		prefs.registerOnSharedPreferenceChangeListener(this);
@@ -91,17 +90,19 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	
 	public void restartVocabList(){
 		Log.v(TAG, "restartVocabList has begun");
-		// get the chapterVocab to relo ad itself
-		chapterVocab.repopulate();
-		// what kind of fragment is there?
-		Fragment fragment = getSupportFragmentManager()
-				.findFragmentById(R.id.vocab_list_frag_container);
-		if(VocabListFragment.class.isInstance(fragment)){
-			// get the vocabListFragment to restart/refresh it's adapter.
-			(( VocabListFragment )getSupportFragmentManager()
-					.findFragmentById(R.id.vocab_list_frag_container))
-					.resetAdapter();		
-		}
+		// TODO rewrite this
+		
+//		// get the chapterVocab to relo ad itself
+//		chapterVocab.repopulate();
+//		// what kind of fragment is there?
+//		Fragment fragment = getSupportFragmentManager()
+//				.findFragmentById(R.id.vocab_list_frag_container);
+//		if(VocabListFragment.class.isInstance(fragment)){
+//			// get the vocabListFragment to restart/refresh it's adapter.
+//			(( VocabListFragment )getSupportFragmentManager()
+//					.findFragmentById(R.id.vocab_list_frag_container))
+//					.resetAdapter();		
+//		}
 	}
 
 
@@ -109,38 +110,42 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		Log.v(TAG, "onSharedPreferenceChanged method has begun with key " + key);
+		
+		// TODO rewrite this to work with both cursorLoader and cursor adapter
+		
 		// if the key value is for the langue then change the chapterVocab laguage
 		if (key.equals("language")){
-			chapterVocab.currentLanguage = prefs.getString("language", "english");
-			chapterVocab.repopulate();
-			// if it is a VocabListFragment
-			Fragment fragment = getSupportFragmentManager()
-					.findFragmentById(R.id.vocab_list_frag_container);
-			
-		   if(VocabListFragment.class.isInstance(fragment)){	
-			   // get the vocabListFragment to restart/refresh it's adapter.
-			   (( VocabListFragment )getSupportFragmentManager()
-					.findFragmentById(R.id.vocab_list_frag_container))
-					.resetAdapter();
-			}
+//			chapterVocab.currentLanguage = prefs.getString("language", "english");
+//			chapterVocab.repopulate();
+//			// if it is a VocabListFragment
+//			Fragment fragment = getSupportFragmentManager()
+//					.findFragmentById(R.id.vocab_list_frag_container);
+//			
+//		   if(VocabListFragment.class.isInstance(fragment)){	
+//			   // get the vocabListFragment to restart/refresh it's adapter.
+//			   (( VocabListFragment )getSupportFragmentManager()
+//					.findFragmentById(R.id.vocab_list_frag_container))
+//					.resetAdapter();
+//			}
 		}
 		if (key.equals("current_chapter")){
-			// Begin activating the new chapter.
-			String s = prefs.getString("current_chapter", "1");
-			int currentChapter = Integer.valueOf(s).intValue();
-			//chapterVocab.setCurrentChapter(currentChapter);
-			// load the current chapter into the listview cursor via
-			chapterVocab.activateChapter(currentChapter);			
+//			// Begin activating the new chapter.
+//			String s = prefs.getString("current_chapter", "1");
+//			int currentChapter = Integer.valueOf(s).intValue();
+//			//chapterVocab.setCurrentChapter(currentChapter);
+//			// load the current chapter into the listview cursor via
+//			chapterVocab.activateChapter(currentChapter);			
 		}		
 	}
 
 
 	public void removeVocabWord(int position) {
-		// get the vocabListFragment to restart/refresh it's adapter.
-		chapterVocab.removeVocabWord(position);
-		(( VocabListFragment )getSupportFragmentManager()
-				.findFragmentById(R.id.vocab_list_frag_container))
-				.resetAdapter();
+		// TODO rewrite this to use cursor adapter
+//		// get the vocabListFragment to restart/refresh it's adapter.
+//		chapterVocab.removeVocabWord(position);
+//		(( VocabListFragment )getSupportFragmentManager()
+//				.findFragmentById(R.id.vocab_list_frag_container))
+//				.resetAdapter();
 	}
 
 

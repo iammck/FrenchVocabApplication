@@ -15,7 +15,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -86,8 +85,8 @@ public class VocabProvider extends ContentProvider {
 		db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(ACTIVE_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
 		
-//		return context.getContentResolver().query(vocabProvider.CONTENT_URI,
-//				null,null,null, vocabProvider.C_ID + " DESC");
+		//		return context.getContentResolver().query(vocabProvider.CONTENT_URI,
+		//				null,null,null, vocabProvider.C_ID + " DESC");
 		
 		return cursor;
 	}
@@ -268,14 +267,5 @@ public class VocabProvider extends ContentProvider {
 		}
 		
 	}
-	
-	// a Vocabulary word is several things
-		public class VocabWord {
-			String eWord;
-			String fWord;
-			Integer id;
-			String wordType;
-			String currentLanguage;
-		}
 
 }
