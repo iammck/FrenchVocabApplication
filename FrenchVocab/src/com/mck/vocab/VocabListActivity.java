@@ -1,6 +1,7 @@
 package com.mck.vocab;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -129,6 +130,25 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 //			}
 		}
 		if (key.equals("current_chapter")){
+			// get the right values for content values
+			ContentValues values = new ContentValues();
+			
+			// file vocabName as name of file and current chapter
+			String currentChapter = prefs.getString("current_chapter", "1");
+			String vocabName = AVAILABLE_CHAPTERS[Integer.valueOf(currentChapter).intValue()];
+			
+			values.put(VocabProvider.UPDATE_TYPE, VocabProvider.UPDATE_TYPE_OPEN_VOCAB);
+			values.put(VocabProvider.UPDATE_OPEN_VOCAB_NAME, vocabName);
+			values.put(VocabProvider.VOCAB_NUMBER, currentChapter);
+			// get the content provider and insert
+			getContentResolver().insert(VocabProvider.CONTENT_URI, values);
+			
+			// send off as an update
+			
+			
+			
+			
+			
 //			// Begin activating the new chapter.
 //			String s = prefs.getString("current_chapter", "1");
 //			int currentChapter = Integer.valueOf(s).intValue();

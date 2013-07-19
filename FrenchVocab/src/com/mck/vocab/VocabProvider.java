@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -39,8 +40,21 @@ public class VocabProvider extends ContentProvider {
 	public static final String ACTIVE_TABLE = "activetable";
 	public static final String C_AWORD = "aword";
 
+	public static final String UPDATE_TYPE_OPEN_VOCAB = "update_type_open_vocab";
+
+	public static final String UPDATE_TYPE = "update_type";
+
+	public static final String UPDATE_OPEN_VOCAB_NAME = "update_open_vocab_name";
+	public static final String VOCAB_NAME = "vocab_name";
+
+	private static final int SAMPLE_SIZE = 10;
+
+	public static final String VOCAB_NUMBER = "vocab_number";
+
 	SQLiteDatabase db;
 	DBHelper dbHelper;
+	Integer vocabNumber;
+	String vocabLanguage;
 	
 	/**
 	 * Happens the first time that a VocabResolver is created.
@@ -93,13 +107,19 @@ public class VocabProvider extends ContentProvider {
 
 	/**
 	 * Entry points for VocabListActivity
-	 * need to handle getting methods for 
+	 * This provder needs to handle getting methods for several requests by the activity, 
 	 * 	changing active table vocab, (loading new chapter) 
 	 * 	change a active table row language, (change a single rows language)
 	 * 	change active table language (change all item's language)
 	 * 	removing a row from the active table,
 	 * 	something i am forgetting atm.
+	 * but this app has a min api of 8 so can not override call(). Thus, going to use 
+	 * the update() method to perform the requests.
 	 */
+	
+	
+	
+	
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 //		db = dbHelper.getWritableDatabase();
@@ -121,10 +141,58 @@ public class VocabProvider extends ContentProvider {
 // 		context.getContentResolver().insert(CONTENT_URI, values);		
 		
 	}
+	// TODO working here!
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
+		String reqType = (String) values.get(UPDATE_TYPE);
+		Log.v(TAG,"begining an" + reqType + " update in update()");		
+		if(reqType.equals(UPDATE_TYPE_OPEN_VOCAB)){
+			// get the sample size items from the file into the vocab table
+			String vocabName = values.getAsString(VOCAB_NAME);
+			int chapterNumber = values.getAsInteger(VOCAB_NUMBER);
+			getSampleFromFileToVocabTable(vocabName, chapterNumber);
+			// now getthem from the vocabTable to the avtive table
+			// TODO RESTART HERE.
+			// get the remaining items in the file into the db
+			
+			// give listeners a heads up
+		}
+		
 		return 0;
+	
+	}
+	
+	
+	private void getSampleFromFileToVocabTable(String vocabName, int chapterNumber) {
+		String result = "";
+		// first get from file
+		try{
+			// First, get an input stream
+			InputStream inputStream = this.getContext().getResources().getAssets().open(vocabName);
+			// get the input stream reader
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "Cp1252");
+			// get a buffered reader
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			// Second, go line by line and save into the chapterText
+			String inputLine;	// the input line.
+			int x = 0;
+			while(( (inputLine = bufferedReader.readLine()) != null) && (x++ < SAMPLE_SIZE)){
+				// get this line
+				result += inputLine +"\n";
+			}
+			bufferedReader.close();
+			Log.v(TAG, "getChapterFromFile() has completed with fileName " + vocabName);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		// now that the file is in memory, put it in the right table
+		dbHelper.putVocabInVocabTable(result, chapterNumber);
+		// notify?
+		getContext().getContentResolver().notifyChange(CONTENT_URI, null);
+		
+		
+		
 	}
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
@@ -180,7 +248,7 @@ public class VocabProvider extends ContentProvider {
 		 * @param chapNumber
 		 * @return
 		 */
-		public Cursor queryDatabaseForChapter(int chapNumber){
+		public Cursor queryVocabTable(int chapNumber){
 			String whereClaus = C_CHAPTER + "=" +chapNumber;
 			db = getReadableDatabase();
 			Cursor cursor = db.query(VOCAB_TABLE, null, whereClaus, null, null, null, C_ID + " DESC");
@@ -224,7 +292,7 @@ public class VocabProvider extends ContentProvider {
 		 * @param chapText
 		 * @param chapNumber
 		 */
-		private void putChapterInDatabase(String chapText, int chapNumber ){
+		private void putVocabInVocabTable(String chapText, int chapNumber){
 			String eWord;
 			String fWord;
 			// split chapter text up by the new line character
@@ -238,14 +306,14 @@ public class VocabProvider extends ContentProvider {
 				VocabWord vocabWord = new VocabWord();
 				vocabWord.eWord = eWord;
 				vocabWord.fWord = fWord;
-				// sent off vocabWord with the chapNumber to be put in the db
-				insertVocabWordIntoDb(vocabWord, chapNumber);
+				insertVocabWordIntoVocabTable(vocabWord, chapNumber);
+				
 			}
 			Log.v(TAG, "putChapterInDataBase() has put chapter in database as chapter number " + chapNumber );
 		}
 		
 		
-		private void insertVocabWordIntoDb(VocabWord vocabWord, int chapNumber){
+		private void insertVocabWordIntoVocabTable(VocabWord vocabWord, int chapNumber){
 			db = getWritableDatabase();
 			
 			SharedPreferences prefs = context.getSharedPreferences(TAG , Context.MODE_PRIVATE);
