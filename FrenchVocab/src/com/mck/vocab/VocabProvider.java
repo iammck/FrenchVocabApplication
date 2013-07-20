@@ -6,6 +6,7 @@ package com.mck.vocab;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -15,7 +16,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -42,14 +42,16 @@ public class VocabProvider extends ContentProvider {
 
 	public static final String UPDATE_TYPE_OPEN_VOCAB = "update_type_open_vocab";
 
-	public static final String UPDATE_TYPE = "update_type";
+	public static final String VALUES_UPDATE_TYPE = "update_type";
 
 	public static final String UPDATE_OPEN_VOCAB_NAME = "update_open_vocab_name";
-	public static final String VOCAB_NAME = "vocab_name";
+	public static final String VALUES_VOCAB_NAME = "vocab_name";
 
 	private static final int SAMPLE_SIZE = 10;
 
-	public static final String VOCAB_NUMBER = "vocab_number";
+	public static final String VALUES_VOCAB_NUMBER = "vocab_number";
+
+	public static final String VOCAB_LANGUAGE = "vocab_language";
 
 	SQLiteDatabase db;
 	DBHelper dbHelper;
@@ -71,6 +73,9 @@ public class VocabProvider extends ContentProvider {
 			Log.v(TAG, "putting vocabWordCount in prefs and commiting.");
 			prefs.edit().putInt("vocabWordCount", 0).commit();
 		}
+		// set initial language
+		vocabLanguage = prefs.getString(VOCAB_LANGUAGE, "english");
+		
 		// now set up the datebase via a new db helper. It needs the context.
 		dbHelper = new DBHelper(getContext());
 		Log.v(TAG, "onCreate has finished ");
@@ -141,30 +146,32 @@ public class VocabProvider extends ContentProvider {
 // 		context.getContentResolver().insert(CONTENT_URI, values);		
 		
 	}
-	// TODO working here!
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		String reqType = (String) values.get(UPDATE_TYPE);
+		String reqType = (String) values.get(VALUES_UPDATE_TYPE);
 		Log.v(TAG,"begining an" + reqType + " update in update()");		
 		if(reqType.equals(UPDATE_TYPE_OPEN_VOCAB)){
-			// get the sample size items from the file into the vocab table
-			String vocabName = values.getAsString(VOCAB_NAME);
-			int chapterNumber = values.getAsInteger(VOCAB_NUMBER);
-			getSampleFromFileToVocabTable(vocabName, chapterNumber);
-			// now getthem from the vocabTable to the avtive table
-			// TODO RESTART HERE.
-			// get the remaining items in the file into the db
 			
-			// give listeners a heads up
-		}
-		
-		return 0;
-	
+			// get the sample items from the file into the vocab table
+			String vocabName = values.getAsString(VALUES_VOCAB_NAME);
+			int vocabNumber = values.getAsInteger(VALUES_VOCAB_NUMBER);
+			getSampleVocabTableFromFile(vocabName, vocabNumber);
+			
+			// get the new sample vocab into the active table and notify
+			setActiveTableToVocabTable(vocabNumber);
+			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
+			
+			// get the full vocab into the active table and notify
+			getVocabTableFromFile(vocabName, vocabNumber);
+			setActiveTableToVocabTable(vocabNumber);
+			getContext().getContentResolver().notifyChange(CONTENT_URI, null);			
+		}		
+		Log.v(TAG, "update() complete");
+		return 0;	
 	}
 	
-	
-	private void getSampleFromFileToVocabTable(String vocabName, int chapterNumber) {
+	private void getSampleVocabTableFromFile(String vocabName, int chapterNumber) {
 		String result = "";
 		// first get from file
 		try{
@@ -189,11 +196,78 @@ public class VocabProvider extends ContentProvider {
 		// now that the file is in memory, put it in the right table
 		dbHelper.putVocabInVocabTable(result, chapterNumber);
 		// notify?
-		getContext().getContentResolver().notifyChange(CONTENT_URI, null);
-		
-		
+		getContext().getContentResolver().notifyChange(CONTENT_URI, null);	
+	}
+	
+	
+	private void getVocabTableFromFile(String name, int chapterNumber){
+		String result = "";
+		try{
+			// First, get an input stream
+			InputStream inputStream = getContext().getResources().getAssets().open(name);
+			// get the input stream reader
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "Cp1252");
+			// get a buffered reader
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			// Second, go line by line and save into the chapterText
+			String inputLine;	// the input line.
+			while((inputLine = bufferedReader.readLine()) != null){
+				// get this line
+				result += inputLine +"\n";
+			}
+			bufferedReader.close();
+			Log.v(TAG, "getChapterFromFile() has completed with fileName " + name);
+			
+			
+			// finished reading the file with out getting the chapterText so close bufferedReader
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		
 	}
+	
+	// TODO working here!
+	private void setActiveTableToVocabTable(int vocabId){
+		Log.v(TAG, "setActiveTableToVocabTable " + vocabId + " is beggining.");
+		// Get cursor for vocab table
+		Cursor vCursor = dbHelper.queryVocabTable(vocabId);
+		
+		// get the initial language from the prefs.
+		SharedPreferences prefs = this.getContext()
+				.getSharedPreferences(TAG , Context.MODE_PRIVATE);
+		String lang = prefs.getString(VOCAB_LANGUAGE, "english");
+		// Store the vocab from the cursor in an arrayList.
+		ArrayList<String> vocab = new ArrayList<String>();
+		// Need the right language.
+		if (lang.equals(C_EWORD)){
+			// Need the column index.
+			int index = vCursor.getColumnIndex(C_EWORD);
+			vCursor.moveToFirst();
+			// add the first item then the rest
+			vocab.add(vCursor.getString(index));
+			while(vCursor.moveToNext()){
+				vocab.add(vCursor.getString(index));
+			}
+		} else {
+			// Need the column index.
+			int index = vCursor.getColumnIndex(C_FWORD);
+			vCursor.moveToFirst();
+			// add the first item then the rest
+			vocab.add(vCursor.getString(index));
+			while(vCursor.moveToNext()){
+				vocab.add(vCursor.getString(index));
+			}			
+		}
+		// use dbHelper to clear the active table
+		dbHelper.deleteActiveTable();
+		// insert into Active Table the vocab using the right language column.
+		for(String vocabWord: vocab){
+			dbHelper.insertWordIntoActiveTable(vocabWord);
+		}
+		
+		Log.v(TAG, "setActiveTableToVocabTable has completed.");
+	}
+	
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
 		return 0;
@@ -211,6 +285,7 @@ public class VocabProvider extends ContentProvider {
 			super(context, DB_NAME, null, DB_VERSION);
 			this.context = context;
 		}
+
 
 		/**
 		 * Creates vocab and active tables.
@@ -238,7 +313,18 @@ public class VocabProvider extends ContentProvider {
 			onCreate(db);
 		}
 
-		
+		public void insertWordIntoActiveTable(String vocabWord) {
+			ContentValues values = new ContentValues();
+			values.put(C_AWORD, vocabWord);
+			
+			Long result = db.insertWithOnConflict(ACTIVE_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+			if (result == -1){
+				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
+			}
+
+			db.close();
+
+		}
 		
 		// The following methods are for working with geting vocab from files and into data base.
 		
@@ -255,6 +341,22 @@ public class VocabProvider extends ContentProvider {
 			return cursor;
 		}
 		
+		/**
+		 * Qeuries the database for the chapter with chapNumber as an Id.
+		 * @param chapNumber
+		 * @return
+		 */
+		public Cursor queryActiveTable(int chapNumber){
+			String whereClaus = C_CHAPTER + "=" +chapNumber;
+			db = getReadableDatabase();
+			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, null);
+			return cursor;
+		}
+		
+		public void deleteActiveTable(){
+			db.execSQL("DELETE FROM " + ACTIVE_TABLE + ";");
+			Log.d(TAG, "deleteActiveTable() finishing.");
+		}
 		
 		/**
 		 * Gets the chapter from the file and returns it as a string.
