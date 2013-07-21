@@ -22,7 +22,6 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
 	public static final String[] AVAILABLE_CHAPTERS = {"chapter7mainVocab.txt","chapter7expressions.txt"};
-	//public ChapterVocab chapterVocab; TODO remove line?
 	SharedPreferences prefs;
 	
     @Override
@@ -30,16 +29,10 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
         super.onCreate(savedInstanceState);
         Log.v(TAG,"onCreate() has begun");
         
-        
         // create a content provider atleast once?
 		getContentResolver().update(VocabProvider.CONTENT_URI, new ContentValues(), null, null);
 
         this.getSupportLoaderManager().initLoader(vocabCursorLoaderId, null, this);
-        // TODO create the cursor loader for the vocabListFragment
-        
-        
-        
-        
         // try to get the vocabListFragment 
         VocabListFragment vocabListFragment =
         		(VocabListFragment) getSupportFragmentManager().findFragmentById(R.id.vocab_list_frag_container);
@@ -52,19 +45,9 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
         		.commit();
         	Log.v(TAG, "created and added a new VocabListFragment to FragmentManager");
         }
-        
-        // Create the chapterVocab with the right starting language
+        // register to get changes to the prefs.
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        String language = prefs.getString( "language", "english");
-        //String s = prefs.getString("current_chapter", "1");TODO remove line?
-        //int currentChapter = Integer.valueOf(s).intValue();TODO remove line?
-		//chapterVocab = new ChapterVocab(this, language, currentChapter); TODO remove line?
-         
-		// register to get changes to the prefs.
 		prefs.registerOnSharedPreferenceChangeListener(this);
-		
-		
-        Log.v(TAG, "onCreate created chapter with language:" + language);
         setContentView(R.layout.activity_vocab_list);
     }
 
@@ -98,6 +81,16 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	
 	public void restartVocabList(){
 		Log.v(TAG, "restartVocabList has begun");
+		// get the right values for content values
+		ContentValues values = new ContentValues();
+		// file vocabName as name of file and current chapter
+		String currentChapter = prefs.getString("current_chapter", "1");
+		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_RESET_VOCAB);
+		values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
+		// get the content provider and update
+		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
+		//getContentResolver().insert(VocabProvider.CONTENT_URI, values);
+		
 		// TODO rewrite this
 		
 //		// get the chapterVocab to relo ad itself
@@ -118,23 +111,16 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		Log.v(TAG, "onSharedPreferenceChanged method has begun with key " + key);
-		
-		// TODO rewrite this to work with both cursorLoader and cursor adapter
-		
 		// if the key value is for the langue then change the chapterVocab laguage
 		if (key.equals("language")){
-//			chapterVocab.currentLanguage = prefs.getString("language", "english");
-//			chapterVocab.repopulate();
-//			// if it is a VocabListFragment
-//			Fragment fragment = getSupportFragmentManager()
-//					.findFragmentById(R.id.vocab_list_frag_container);
-//			
-//		   if(VocabListFragment.class.isInstance(fragment)){	
-//			   // get the vocabListFragment to restart/refresh it's adapter.
-//			   (( VocabListFragment )getSupportFragmentManager()
-//					.findFragmentById(R.id.vocab_list_frag_container))
-//					.resetAdapter();
-//			}
+			String currentLanguage = prefs.getString("language", "english");
+			
+			ContentValues values = new ContentValues();
+			// file vocabName as name of file and current chapter
+			values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
+			values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, currentLanguage);
+			// get the content provider and update
+			getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);			
 		}
 		if (key.equals("current_chapter")){
 			// get the right values for content values
@@ -147,18 +133,19 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 			values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
 			// get the content provider and update
 			getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
-			//getContentResolver().insert(VocabProvider.CONTENT_URI, values);
 		}		
 	}
 
-
+	// TODO get the actual id from the cursor in listAdapter, then send that in
+	// to the content resolver.
 	public void removeVocabWord(int position) {
-		// TODO rewrite this to use cursor adapter
-//		// get the vocabListFragment to restart/refresh it's adapter.
-//		chapterVocab.removeVocabWord(position);
-//		(( VocabListFragment )getSupportFragmentManager()
-//				.findFragmentById(R.id.vocab_list_frag_container))
-//				.resetAdapter();
+		// get the right values for content values
+		ContentValues values = new ContentValues();
+		
+		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_REMOVE_VOCAB_WORD);
+		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, String.valueOf(position));
+		// get the content provider and update
+		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
 
 
@@ -207,6 +194,9 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
 				.findFragmentById(R.id.vocab_list_frag_container));
-		((SimpleCursorAdapter) frag.getListAdapter()).changeCursor(null);
+		SimpleCursorAdapter adapter = ((SimpleCursorAdapter) frag.getListAdapter());
+		if(adapter != null){
+			adapter.changeCursor(null);
+		}
 	}
 }
