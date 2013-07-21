@@ -329,7 +329,7 @@ public class VocabProvider extends ContentProvider {
 
 		public void insertVocabWordStringIntoActiveTableWithId(String vocabWord, String vocabWordId) {
 		
-			db = getReadableDatabase();
+			db = getWritableDatabase();
 			ContentValues values = new ContentValues();
 			values.put(C_AWORD, vocabWord);
 			values.put(C_ID, Integer.valueOf(vocabWordId).intValue());
@@ -339,7 +339,7 @@ public class VocabProvider extends ContentProvider {
 				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
 			}
 
-			db.close();
+			//db.close();
 
 		}
 		
@@ -353,7 +353,7 @@ public class VocabProvider extends ContentProvider {
 		 */
 		public Cursor queryVocabTable(int chapNumber){
 			String whereClaus = C_CHAPTER + "=" +chapNumber;
-			db = getReadableDatabase();
+			db = getWritableDatabase();
 			Cursor cursor = db.query(VOCAB_TABLE, null, whereClaus, null, null, null, C_ID + " DESC");
 			return cursor;
 		}
@@ -364,17 +364,33 @@ public class VocabProvider extends ContentProvider {
 		 * @return
 		 */
 		public Cursor queryActiveTable(){
-			db = getReadableDatabase();
+			db = getWritableDatabase();
 			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, null);
-			db.close();
+			//db.close();
 			return cursor;
 		}
 		// TODO
 		public void resetActiveTable(){
 			
-			db = getWritableDatabase();
-			String[] args = new String[]{"1"};
-			db.delete(ACTIVE_TABLE, C_ID + " = ?" , args);
+//			db = getReadableDatabase();
+//			String[] columns = {C_ID};
+//			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, null);
+//			
+//			ArrayList<String> vocabWordIds = new ArrayList<String>();
+//			Integer columnIndex = Integer.valueOf(cursor.getColumnIndex(C_ID));
+//			cursor.moveToFirst();
+//			// handle first
+//			vocabWordIds.add(cursor.getString(columnIndex));
+//			while (cursor.moveToNext()){
+//				vocabWordIds.add(cursor.getString(columnIndex));
+//			}
+//			
+//			db = getWritableDatabase();
+			
+			db = getWritableDatabase();// it might be the number of databases.
+			db.delete(ACTIVE_TABLE, "1" , null);
+//			
+			//db.execSQL("DROP TABLE IF EXISTS " + ACTIVE_TABLE);
 			
 			//db.delete(ACTIVE_TABLE, null, null);
 			//db.execSQL("DELETE FROM " + ACTIVE_TABLE + ";");
@@ -383,7 +399,7 @@ public class VocabProvider extends ContentProvider {
 			//db.insert(ACTIVE_TABLE, null, null);
 			//db.execSQL(CREATE_ACTIVE_TABLE_SQL_STATEMENT);
 			//Log.d(TAG, "resetActiveTable() inserted active table");
-			db.close();
+			//db.close();
 			
 		}
 		
@@ -465,7 +481,7 @@ public class VocabProvider extends ContentProvider {
 			}
 
 			prefs.edit().putInt("vocabWordCount", vocabWordCount).commit();
-			db.close();
+			//db.close();
 		}
 		
 	}
