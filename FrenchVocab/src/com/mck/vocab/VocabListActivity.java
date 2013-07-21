@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,9 +29,13 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG,"onCreate() has begun");
+        
+        
+        // create a content provider atleast once?
+		getContentResolver().update(VocabProvider.CONTENT_URI, new ContentValues(), null, null);
 
         this.getSupportLoaderManager().initLoader(vocabCursorLoaderId, null, this);
-        // TODO create the cursor loader
+        // TODO create the cursor loader for the vocabListFragment
         
         
         
@@ -175,22 +182,31 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		
-		// return new CursorLoader(this, R.				);
-		return null;
+		String[] projection = {VocabProvider.C_ID, VocabProvider.C_AWORD};
+		 
+		return new CursorLoader(
+				 				this, 
+				 				Uri.parse(VocabProvider.AUTHORITY), // VocabProvider.ACTIVE_TABLE,
+				 				projection,
+				 				null,
+				 				null,
+				 				null );
+		//return null;
 	}
 
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
-		// TODO Auto-generated method stub
-		
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		Log.v(TAG, "onLoadFinished has started");
+		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
+									.findFragmentById(R.id.vocab_list_frag_container));
+		((SimpleCursorAdapter) frag.getListAdapter()).changeCursor(cursor);
 	}
-
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
-		// TODO Auto-generated method stub
-		
+		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
+				.findFragmentById(R.id.vocab_list_frag_container));
+		((SimpleCursorAdapter) frag.getListAdapter()).changeCursor(null);
 	}
 }

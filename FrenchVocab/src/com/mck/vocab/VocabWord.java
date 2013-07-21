@@ -13,4 +13,15 @@ public class VocabWord {
 	Integer id;
 	String wordType;
 	String currentLanguage;
+	@Override
+	public String toString() {
+		return "eWord " + eWord
+		 + " fWord " + fWord
+		 +" id " + id
+		 +" wordType " + wordType
+		 +" currentLanguage " + currentLanguage
+		 +"\n";
+	}
+	
+	
 }
