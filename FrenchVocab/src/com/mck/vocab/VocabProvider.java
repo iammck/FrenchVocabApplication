@@ -320,11 +320,11 @@ public class VocabProvider extends ContentProvider {
 			vCursor.moveToFirst();
 			String vocabWord = vCursor.getString(vIndex);
 			String vocabWordId = vCursor.getString(idIndex);
-			dbHelper.putVocabWordStringIntoActiveTableWithId(vocabWord, vocabWordId);
+			dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
 			while(vCursor.moveToNext()){
 				vocabWord = vCursor.getString(vIndex);
 				vocabWordId = vCursor.getString(idIndex);
-				dbHelper.putVocabWordStringIntoActiveTableWithId(vocabWord, vocabWordId);
+				dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
 			}
 		} else {
 			// use dbHelper to clear the active table
@@ -340,11 +340,11 @@ public class VocabProvider extends ContentProvider {
 			vCursor.moveToFirst();
 			String vocabWord = vCursor.getString(vIndex);
 			String vocabWordId = vCursor.getString(idIndex);
-			dbHelper.putVocabWordStringIntoActiveTableWithId(vocabWord, vocabWordId);
+			dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
 			while(vCursor.moveToNext()){
 				vocabWord = vCursor.getString(vIndex);
 				vocabWordId = vCursor.getString(idIndex);
-				dbHelper.putVocabWordStringIntoActiveTableWithId(vocabWord, vocabWordId);
+				dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
 			}
 		}			
 		Log.v(TAG, "setActiveTableToVocabTable has completed.");
@@ -429,11 +429,13 @@ public class VocabProvider extends ContentProvider {
 			db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
 			
 		}
-
-
 		
-		
-		public void putVocabWordStringIntoActiveTableWithId(String vocabWord, String vocabWordId) {
+		/**
+		 * Puts a sing vocablulary word into the active table.
+		 * @param vocabWord the word as a string
+		 * @param vocabWordId the word id
+		 */
+		public void putVocabWordIntoActiveTableWithId(String vocabWord, String vocabWordId) {
 			db = getWritableDatabase();
 			ContentValues values = new ContentValues();
 			values.put(C_AWORD, vocabWord);
@@ -463,14 +465,7 @@ public class VocabProvider extends ContentProvider {
 				// collect the parts of a vocabWord, french word first
 				fWord = vocabData[x];
 				eWord = vocabData[x+1];
-				// create, setup a vocabWord
-				VocabWord vocabWord = new VocabWord();
-				vocabWord.eWord = eWord;
-				vocabWord.fWord = fWord;
-				//Log.d(TAG,"putVocabInVocabTable " + eWord + "/" + fWord);
-				//putVocabWordIntoVocabTable(vocabWord, vocabNumber);
-				
-				db = getWritableDatabase();
+				//db = getWritableDatabase();
 				SharedPreferences prefs = context.getSharedPreferences(TAG , Context.MODE_PRIVATE);
 				int vocabWordCount = prefs.getInt("vocabWordCount", 0);
 				ContentValues values = new ContentValues();
@@ -478,17 +473,18 @@ public class VocabProvider extends ContentProvider {
 				values.put(C_CHAPTER, vocabNumber);
 				values.put(C_EWORD, eWord);
 				values.put(C_FWORD, fWord);
-				Long result = db.insertWithOnConflict(VOCAB_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+				Long result = putVocabWordIntoVocabTable(values);
 				if (result == -1){
 					Log.e(TAG, "putVocabStringInVocabTable() db.insert returned an error code -1");
 				}
 				prefs.edit().putInt("vocabWordCount", vocabWordCount).commit();
-			
-				
-				
 			}
 			Log.v(TAG, "putVocabInVocabTable() has put vocab in vocab table as vocab number " + vocabNumber );
 		}
-	
+		
+		private Long putVocabWordIntoVocabTable(ContentValues values){
+			db = getWritableDatabase();
+			return db.insertWithOnConflict(VOCAB_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+		}
 	}
 }
