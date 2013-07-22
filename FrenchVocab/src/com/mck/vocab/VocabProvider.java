@@ -168,7 +168,7 @@ public class VocabProvider extends ContentProvider {
 					.getSharedPreferences(TAG , Context.MODE_PRIVATE);
 			prefs.edit().putString(VOCAB_LANGUAGE, vocabLanguage).commit();
 			// get the active vocab number from prefs
-			int vocabNumber = prefs.getInt(this.VALUES_VOCAB_NUMBER, 1);
+			int vocabNumber = prefs.getInt(VALUES_VOCAB_NUMBER, 1);
 			// get the vocab into the active table and notify
 			setActiveTableToVocabTable(vocabNumber);
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
@@ -419,8 +419,8 @@ public class VocabProvider extends ContentProvider {
 		public void deleteVocabTableContent(Integer vocabNumber){
 			String[] removeIds = {vocabNumber.toString()};
 			db = getWritableDatabase();// it might be the number of databases.
-			db.delete(VOCAB_TABLE, VocabProvider.C_CHAPTER + "=?",  removeIds);
-			
+			int d = db.delete(VOCAB_TABLE, VocabProvider.C_CHAPTER + "=?",  removeIds);
+			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
 		}
 
 		private void deleteVocabWordFromActiveTable(int vocabWordNumber) {
