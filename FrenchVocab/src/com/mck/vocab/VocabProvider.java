@@ -215,7 +215,7 @@ public class VocabProvider extends ContentProvider {
 				// get the full vocab into the active table and notify
 				String vocabName = arg0[0];
 				Integer vocabNumber = Integer.valueOf(arg0[1]);
-				dbHelper.resetVocabTable(vocabNumber);
+				dbHelper.deleteVocabTableContent(vocabNumber);
 				getVocabTableFromFile(vocabName, vocabNumber);
 				return vocabNumber;
 			}
@@ -257,7 +257,7 @@ public class VocabProvider extends ContentProvider {
 			e.printStackTrace();
 		}
 		// now that the file is in memory, put it in the right table
-		dbHelper.putVocabStringInVocabTable(result, vocabNumber);	
+		dbHelper.putVocabIntoVocabTable(result, vocabNumber);	
 	}
 	
 
@@ -288,7 +288,7 @@ public class VocabProvider extends ContentProvider {
 			e.printStackTrace();
 		}
 		// now that the file is in memory, put it in the right table
-		dbHelper.putVocabStringInVocabTable(result, vocabNumber);	
+		dbHelper.putVocabIntoVocabTable(result, vocabNumber);	
 
 	}
 	
@@ -308,8 +308,11 @@ public class VocabProvider extends ContentProvider {
 		// Need the right language.
 		if (lang.equals(C_EWORD)){
 			// use dbHelper to clear the active table 
-			dbHelper.resetActiveTable();
+			dbHelper.deleteActiveTableContent();
 			vCursor = dbHelper.queryVocabTable(vocabId);
+			if(vCursor.getCount()<1){
+				return;
+			}
 			// Need the column indexes.
 			int vIndex = vCursor.getColumnIndex(C_EWORD);
 			int idIndex = vCursor.getColumnIndex(C_ID);			
@@ -325,8 +328,11 @@ public class VocabProvider extends ContentProvider {
 			}
 		} else {
 			// use dbHelper to clear the active table
-			dbHelper.resetActiveTable();			
+			dbHelper.deleteActiveTableContent();			
 			vCursor = dbHelper.queryVocabTable(vocabId);
+			if(vCursor.getCount()<1){ // if empty do nothing
+				return;
+			}
 			// Need the column indexes.
 			int vIndex = vCursor.getColumnIndex(C_FWORD);
 			int idIndex = vCursor.getColumnIndex(C_ID);			
@@ -405,14 +411,12 @@ public class VocabProvider extends ContentProvider {
 			return cursor;
 		}
 		
-		public void resetActiveTable(){
-			
-			db = getWritableDatabase();// it might be the number of databases.
+		public void deleteActiveTableContent(){
+			db = getWritableDatabase();
 			db.delete(ACTIVE_TABLE, "1" , null);
-			
 		}
 		
-		public void resetVocabTable(Integer vocabNumber){
+		public void deleteVocabTableContent(Integer vocabNumber){
 			String[] removeIds = {vocabNumber.toString()};
 			db = getWritableDatabase();// it might be the number of databases.
 			db.delete(VOCAB_TABLE, VocabProvider.C_CHAPTER + "=?",  removeIds);
@@ -426,13 +430,29 @@ public class VocabProvider extends ContentProvider {
 			
 		}
 
+
+		
+		
+		public void putVocabWordStringIntoActiveTableWithId(String vocabWord, String vocabWordId) {
+			db = getWritableDatabase();
+			ContentValues values = new ContentValues();
+			values.put(C_AWORD, vocabWord);
+			values.put(C_ID, Integer.valueOf(vocabWordId).intValue());
+			// if there is not one then make one?
+			Long result = db.insertWithOnConflict(ACTIVE_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+			if (result == -1){
+				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
+			}
+		}
+
+		
 		/**
-		 * Given some chapter text and a number to store the chapter as, puts the 
+		 * Puts a list of vocab into a vocab table giving them all the vocab number. 
 		 * data in the database.
-		 * @param vocab
-		 * @param vocabNumber
+		 * @param vocab newline separated list of fWords and eWords, fWord first
+		 * @param vocabNumber vocabNumber to give to each item in vocab 
 		 */
-		private void putVocabStringInVocabTable(String vocab, int vocabNumber){
+		private void putVocabIntoVocabTable(String vocab, int vocabNumber){
 			String eWord;
 			String fWord;
 			// split chapter text up by the new line character
@@ -448,43 +468,27 @@ public class VocabProvider extends ContentProvider {
 				vocabWord.eWord = eWord;
 				vocabWord.fWord = fWord;
 				//Log.d(TAG,"putVocabInVocabTable " + eWord + "/" + fWord);
-				putVocabWordIntoVocabTable(vocabWord, vocabNumber);
+				//putVocabWordIntoVocabTable(vocabWord, vocabNumber);
+				
+				db = getWritableDatabase();
+				SharedPreferences prefs = context.getSharedPreferences(TAG , Context.MODE_PRIVATE);
+				int vocabWordCount = prefs.getInt("vocabWordCount", 0);
+				ContentValues values = new ContentValues();
+				values.put(C_ID, vocabWordCount++);
+				values.put(C_CHAPTER, vocabNumber);
+				values.put(C_EWORD, eWord);
+				values.put(C_FWORD, fWord);
+				Long result = db.insertWithOnConflict(VOCAB_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+				if (result == -1){
+					Log.e(TAG, "putVocabStringInVocabTable() db.insert returned an error code -1");
+				}
+				prefs.edit().putInt("vocabWordCount", vocabWordCount).commit();
+			
+				
+				
 			}
 			Log.v(TAG, "putVocabInVocabTable() has put vocab in vocab table as vocab number " + vocabNumber );
 		}
-
-		public void putVocabWordStringIntoActiveTableWithId(String vocabWord, String vocabWordId) {
-		
-			db = getWritableDatabase();
-			ContentValues values = new ContentValues();
-			values.put(C_AWORD, vocabWord);
-			values.put(C_ID, Integer.valueOf(vocabWordId).intValue());
-			// if there is not one then make one?
-			Long result = db.insertWithOnConflict(ACTIVE_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-			if (result == -1){
-				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
-			}
-
-			
-
-		}
-
-		private void putVocabWordIntoVocabTable(VocabWord vocabWord, int vocabNumber){
-			db = getWritableDatabase();
-			SharedPreferences prefs = context.getSharedPreferences(TAG , Context.MODE_PRIVATE);
-			int vocabWordCount = prefs.getInt("vocabWordCount", 0);
-			ContentValues values = new ContentValues();
-			values.put(C_ID, vocabWordCount++);
-			values.put(C_CHAPTER, vocabNumber);
-			values.put(C_EWORD, vocabWord.eWord);
-			values.put(C_FWORD, vocabWord.fWord);
-			Long result = db.insertWithOnConflict(VOCAB_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-			if (result == -1){
-				Log.e(TAG, "insertVocabWord() db.insert returned an error code -1");
-			}
-			prefs.edit().putInt("vocabWordCount", vocabWordCount).commit();
-		}
-		
+	
 	}
-
 }
