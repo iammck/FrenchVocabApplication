@@ -184,7 +184,7 @@ public class VocabProvider extends ContentProvider {
 		if(reqType != null && reqType.equals(UPDATE_TYPE_REMOVE_VOCAB_WORD)){
 			int vocabWordNumber = values.getAsInteger(VALUES_VOCAB_WORD_NUMBER);
 			// get the new sample vocab into the active table and notify
-			dbHelper.removeVocabWordFromActiveTable(vocabWordNumber);
+			dbHelper.deleteVocabWordFromActiveTable(vocabWordNumber);
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 			return 0;	
 		}
@@ -320,11 +320,11 @@ public class VocabProvider extends ContentProvider {
 			vCursor.moveToFirst();
 			String vocabWord = vCursor.getString(vIndex);
 			String vocabWordId = vCursor.getString(idIndex);
-			dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
+			dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
 			while(vCursor.moveToNext()){
 				vocabWord = vCursor.getString(vIndex);
 				vocabWordId = vCursor.getString(idIndex);
-				dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
+				dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
 			}
 		} else {
 			// use dbHelper to clear the active table
@@ -340,11 +340,11 @@ public class VocabProvider extends ContentProvider {
 			vCursor.moveToFirst();
 			String vocabWord = vCursor.getString(vIndex);
 			String vocabWordId = vCursor.getString(idIndex);
-			dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
+			dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
 			while(vCursor.moveToNext()){
 				vocabWord = vCursor.getString(vIndex);
 				vocabWordId = vCursor.getString(idIndex);
-				dbHelper.putVocabWordIntoActiveTableWithId(vocabWord, vocabWordId);
+				dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
 			}
 		}			
 		Log.v(TAG, "setActiveTableToVocabTable has completed.");
@@ -423,11 +423,11 @@ public class VocabProvider extends ContentProvider {
 			
 		}
 
-		private void removeVocabWordFromActiveTable(int vocabWordNumber) {
+		private void deleteVocabWordFromActiveTable(int vocabWordNumber) {
 			String[] removeIds = {String.valueOf(vocabWordNumber)};
 			db = getWritableDatabase();// it might be the number of databases.
-			db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
-			
+			int d = db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
+			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
 		}
 		
 		/**
@@ -435,7 +435,7 @@ public class VocabProvider extends ContentProvider {
 		 * @param vocabWord the word as a string
 		 * @param vocabWordId the word id
 		 */
-		public void putVocabWordIntoActiveTableWithId(String vocabWord, String vocabWordId) {
+		private void putVocabWordIntoActiveTable(String vocabWord, String vocabWordId) {
 			db = getWritableDatabase();
 			ContentValues values = new ContentValues();
 			values.put(C_AWORD, vocabWord);
