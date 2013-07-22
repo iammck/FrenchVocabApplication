@@ -47,7 +47,7 @@ public class VocabProvider extends ContentProvider {
 	public static final String UPDATE_TYPE_RESET_VOCAB = "update_type_reset_vocab";
 	public static final String UPDATE_TYPE_FLIP_ACTIVE_VOCAB_WORD = "update_type_flip_active_vocab_word";
 	public static final String UPDATE_TYPE_VOCAB_LANGUAGE = "update_type_vocab_language";
-	public static final String UPDATE_TYPE_REMOVE_VOCAB_WORD = "update_type_remove_vocab_word";
+	public static final String UPDATE_TYPE_REMOVE_ACTIVE_VOCAB_WORD = "update_type_remove_vocab_word";
 
 	public static final String UPDATE_OPEN_VOCAB_NAME = "update_open_vocab_name";
 
@@ -181,8 +181,8 @@ public class VocabProvider extends ContentProvider {
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 			return 0;	
 		}		
-		if(reqType != null && reqType.equals(UPDATE_TYPE_REMOVE_VOCAB_WORD)){
-			int vocabWordNumber = values.getAsInteger(VALUES_VOCAB_WORD_NUMBER);
+		if(reqType != null && reqType.equals(UPDATE_TYPE_REMOVE_ACTIVE_VOCAB_WORD)){
+			Integer vocabWordNumber = values.getAsInteger(VALUES_VOCAB_WORD_NUMBER);
 			// get the new sample vocab into the active table and notify
 			dbHelper.deleteVocabWordFromActiveTable(vocabWordNumber);
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
@@ -423,7 +423,8 @@ public class VocabProvider extends ContentProvider {
 			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
 		}
 
-		private void deleteVocabWordFromActiveTable(int vocabWordNumber) {
+		private void deleteVocabWordFromActiveTable(Integer vocabWordNumber) {
+			Log.v(TAG, "attempting to remove word id number "+ vocabWordNumber +"from active table");
 			String[] removeIds = {String.valueOf(vocabWordNumber)};
 			db = getWritableDatabase();// it might be the number of databases.
 			int d = db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
@@ -436,6 +437,8 @@ public class VocabProvider extends ContentProvider {
 		 * @param vocabWordId the word id
 		 */
 		private void putVocabWordIntoActiveTable(String vocabWord, String vocabWordId) {
+			// we seem to  be getting the position in the table and not the c_id that we've want
+			// TODO PICK UP HERE -> the activity needs to get the id from the adapter and send that to provider.
 			db = getWritableDatabase();
 			ContentValues values = new ContentValues();
 			values.put(C_AWORD, vocabWord);
@@ -445,6 +448,7 @@ public class VocabProvider extends ContentProvider {
 			if (result == -1){
 				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
 			}
+			Log.v(TAG, "put " + vocabWord + " with id " + vocabWordId +" into active tabe");
 		}
 
 		

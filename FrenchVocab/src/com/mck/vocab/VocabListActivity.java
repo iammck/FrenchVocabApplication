@@ -142,8 +142,9 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		// get the right values for content values
 		ContentValues values = new ContentValues();
 		
-		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_REMOVE_VOCAB_WORD);
-		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, String.valueOf(position));
+		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_REMOVE_ACTIVE_VOCAB_WORD);
+		Integer vocabWordNumber = getVocabWordNumberFromPosition(Integer.valueOf(position));
+		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, vocabWordNumber);
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
@@ -198,5 +199,19 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		if(adapter != null){
 			adapter.changeCursor(null);
 		}
+	}
+	public Integer getVocabWordNumberFromPosition(Integer position){
+		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
+				.findFragmentById(R.id.vocab_list_frag_container));
+		if (frag == null){
+			return null;
+		}
+		SimpleCursorAdapter adapter = ((SimpleCursorAdapter) frag.getListAdapter());
+		if(adapter == null){
+			return null;
+		}
+		// the _id column is made by the VocabProvider with an Integer (<long) value.
+		return Integer.valueOf((int) adapter.getItemId(position.intValue()));
+		
 	}
 }
