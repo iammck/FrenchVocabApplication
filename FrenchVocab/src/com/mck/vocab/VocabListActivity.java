@@ -17,6 +17,8 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
 public class VocabListActivity extends FragmentActivity implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
 	private static final String TAG = "VocabListActivity";
@@ -89,21 +91,6 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
-		//getContentResolver().insert(VocabProvider.CONTENT_URI, values);
-		
-		// TODO rewrite this
-		
-//		// get the chapterVocab to relo ad itself
-//		chapterVocab.repopulate();
-//		// what kind of fragment is there?
-//		Fragment fragment = getSupportFragmentManager()
-//				.findFragmentById(R.id.vocab_list_frag_container);
-//		if(VocabListFragment.class.isInstance(fragment)){
-//			// get the vocabListFragment to restart/refresh it's adapter.
-//			(( VocabListFragment )getSupportFragmentManager()
-//					.findFragmentById(R.id.vocab_list_frag_container))
-//					.resetAdapter();		
-//		}
 	}
 
 
@@ -136,7 +123,6 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		}		
 	}
 
-	// TODO get the actual id from the cursor in listAdapter, then send that in
 	// to the content resolver.
 	public void removeVocabWord(int position) {
 		// get the right values for content values
@@ -148,25 +134,6 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
-
-
-	/**
-	 * Called by chapterVocab.ActivateChapter once chapter is in db and populates
-	 * the vocabList.
-	 * All that needs to be done is to have the vocabListFragment refresh its adapter
-	 * 
-	 */
-	public void onChapterActivated() {
-		
-		VocabListFragment frag =
-			(( VocabListFragment )getSupportFragmentManager()
-				.findFragmentById(R.id.vocab_list_frag_container));
-				frag.resetAdapter();
-		
-		Log.v(TAG, "onChapterActivated() completed chapter onPreferenceChange()" 
-				+ " call to chapterVocab.activateChapter()");
-	}
-
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
@@ -212,6 +179,12 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		}
 		// the _id column is made by the VocabProvider with an Integer (<long) value.
 		return Integer.valueOf((int) adapter.getItemId(position.intValue()));
-		
+	}
+	
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		// Provider stores _id as an integer, so no data loss.
+		Integer vocabWordNumber = Integer.valueOf( (int) id);
+		// TODO create content values
+		// TODO ship to provider
 	}
 }

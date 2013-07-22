@@ -84,43 +84,10 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		// TODO rewrite this method to work with the VocabProvider
-//		Log.v(TAG, "onListItemClick for position " + position);
-//		// get the vocabWord
-//		VocabWord vocabWord = vocabListActivity.chapterVocab.getVocabList().get(Integer.valueOf(position));
-//		// change the current language and update the textView the other language
-//		if (vocabWord.currentLanguage.equals("english")){
-//			// change to french stuff
-//			vocabWord.currentLanguage = "french";
-//			TextView textView = (TextView) v.findViewById(R.id.vocab_word_text);
-//			textView.setText(vocabWord.fWord);
-//		} else {
-//			// change to french stuff
-//			vocabWord.currentLanguage = "english";
-//			TextView textView = (TextView) v.findViewById(R.id.vocab_word_text);
-//			textView.setText(vocabWord.eWord);
-//		}
+		((VocabListActivity) vocabListActivity).onListItemClick(l, v, position, id);
 	}
 
 	
-	
-	public void resetAdapter() {
-		// TODO Rewrite resetAdapter to work with SimpleCursorAdapter
-//		Log.v(TAG,"resetAdapter() has begun");
-//
-//		// get the current ChapterVocabList
-//		HashMap<Integer,ChapterVocab.VocabWord> vocab;
-//		vocab = vocabListActivity.chapterVocab.getVocabList();
-//		// for each get the id into an array list
-//		ArrayList<Integer> vocabIds = new ArrayList<Integer>();
-//		for(Integer vocabId: vocab.keySet()){
-//		8	vocabIds.add(vocabId);
-//		}
-//
-//		// set it to the fragment with setListAdapter
-//		this.setListAdapter(new VocabListAdapter(vocabListActivity, 
-//				R.layout.vocab_word_cell, R.id.vocab_word_text, vocabIds));
-	}
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> av, View v, int position,	long id) {
