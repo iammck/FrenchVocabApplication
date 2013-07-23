@@ -177,15 +177,33 @@ public class VocabProvider extends ContentProvider {
 		if(reqType != null && reqType.equals(UPDATE_TYPE_FLIP_ACTIVE_VOCAB_WORD)){
 			int vocabWordNumber = values.getAsInteger(VALUES_VOCAB_WORD_NUMBER);
 			// get the row from the ActiveTable
+			Cursor atCursor = dbHelper.queryActiveTableForVocabWord(vocabWordNumber);
+			atCursor.moveToFirst();
 			// get the row from the VocabTable
+			Cursor vtCursor = dbHelper.queryVocabTableForVocabWord(vocabWordNumber);
+			if(vtCursor.getCount() < 1){
+				return 0; // TODO This is not the right soln for this problem.
+							// what is happening is that the reloading of the data
+							// from file is giving items new id's different from
+							// the ones that may be contained in the active table. bama
+			}
+			vtCursor.moveToFirst();
+			// get the active word and the english word
+			int  index = atCursor.getColumnIndex(C_AWORD);
+			String activeLanguage = atCursor.getString(index);
+			index = vtCursor.getColumnIndex(C_EWORD);
+			String englishLanguage = vtCursor.getString(index);
 			// is the active row word in english
+			if (activeLanguage.equals(englishLanguage)){
 				// get the french word from vocab
-				// get the contentValues for the update
+				index = vtCursor.getColumnIndex(C_FWORD);
+				String frenchLanguage = vtCursor.getString(index);
 				// update the active table with dbHelper method
-			// else
-				// get the english word from vocab
-				// get the contentValues for the update
-				// update the active table with dbHelper method
+				dbHelper.updateVocabWordInActiveTable(frenchLanguage, vocabWordNumber);
+			} else {// else
+				// use the english word from vocab
+				dbHelper.updateVocabWordInActiveTable(englishLanguage, vocabWordNumber);
+			}
 			// notify
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 			return 0;	
@@ -397,82 +415,6 @@ public class VocabProvider extends ContentProvider {
 		}
 		
 		/**
-		 * Qeuries the database for the chapter with chapNumber as an Id.
-		 * @param chapNumber
-		 * @return
-		 */
-		public Cursor queryVocabTable(int chapNumber){
-			String whereClaus = C_CHAPTER + "=" +chapNumber;
-			db = getWritableDatabase();
-			Cursor cursor = db.query(VOCAB_TABLE, null, whereClaus, null, null, null, C_ID + " DESC");
-			return cursor;
-		}
-		
-		/**
-		 * Returns a cursor for the row with the vocabNumber and vocabWordNumber.
-		 * @param vocabNumber the number of the vocab item to pull the vocab word from.
-		 * @param vocabWordNumber the number of the vocab word to retrieve.
-		 * @return the cursor for the vocabWord
-		 */
-		public Cursor queryVocabTableForRow(int vocabNumber, int vocabWordNumber){
-			return null;
-		}
-		
-		/**
-		 * Returns a cursor for the row with the vocabWordNumber as atm all vocab is
-		 * in one table with the id of the word.
-		 * @param vocabWordNumber the number of the vocab word to retrieve.
-		 * @return the cursor for the vocabWord
-		 */
-		public Cursor queryVocabTableForRow(int vocabWordNumber){
-			return null;
-		}
-		
-		/**
-		 * Qeuries the database for the chapter with chapNumber as an Id.
-		 * @param chapNumber
-		 * @return the cursor for the Active table
-		 */
-		public Cursor queryActiveTable(){
-			db = getWritableDatabase();
-			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, null);
-			
-			return cursor;
-		}
-		
-		/**
-		 * deletes the elements in the table.
-		 */
-		public void deleteActiveTableContent(){
-			db = getWritableDatabase();
-			db.delete(ACTIVE_TABLE, "1" , null);
-		}
-		
-		/**
-		 * deletes the contents of a vocab item from the vocabTable. the contents
-		 * of a vocab item are those that share the same vocabNumber.
-		 * @param vocabNumber the set of vocabWord to delete from table
-		 */
-		public void deleteVocabTableContent(Integer vocabNumber){
-			String[] removeIds = {vocabNumber.toString()};
-			db = getWritableDatabase();// it might be the number of databases.
-			int d = db.delete(VOCAB_TABLE, VocabProvider.C_CHAPTER + "=?",  removeIds);
-			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
-		}
-
-		/**
-		 * deletes a vocabWord from the active table, given the vocabWordNumber
-		 * @param vocabWordNumber the number associated with the vocabWord to delete from table
-		 */
-		private void deleteVocabWordFromActiveTable(Integer vocabWordNumber) {
-			Log.v(TAG, "attempting to remove word id number "+ vocabWordNumber +"from active table");
-			String[] removeIds = {String.valueOf(vocabWordNumber)};
-			db = getWritableDatabase();// it might be the number of databases.
-			int d = db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
-			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
-		}
-		
-		/**
 		 * Puts a sing vocablulary word into the active table.
 		 * @param vocabWord the word as a string
 		 * @param vocabWordNumber the word id
@@ -491,7 +433,6 @@ public class VocabProvider extends ContentProvider {
 			Log.v(TAG, "put " + vocabWord + " with id " + vocabWordNumber +" into active tabe");
 		}
 
-		
 		/**
 		 * Puts a list of vocab into a vocab table giving them all the vocab number. 
 		 * data in the database.
@@ -525,15 +466,149 @@ public class VocabProvider extends ContentProvider {
 			}
 			Log.v(TAG, "putVocabInVocabTable() has put vocab in vocab table as vocab number " + vocabNumber );
 		}
-		
+
 		/**
 		 * puts a vocab word into the vocab table. The vocabWord is expressed in a ContentValues.
-		 * @param values the values to add to the db. Uses CONFLICT_REPLACE
+		 * @param values the values to add to the db. Uses CONFLICT_IGNORE
 		 * @return the result of the db. 
 		 */
 		private Long putVocabWordIntoVocabTable(ContentValues values){
 			db = getWritableDatabase();
-			return db.insertWithOnConflict(VOCAB_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+			return db.insertWithOnConflict(VOCAB_TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+		}
+
+		/**
+		 * updates the word associated with the number in the active table.
+		 * @param vocabWord the word to use
+		 * @param vocabWordNumber the number of the row to set.
+		 */
+		public int updateVocabWordInActiveTable(String vocabWord,int vocabWordNumber) {
+			db = getWritableDatabase();
+			
+			String table =VocabProvider.ACTIVE_TABLE;
+			ContentValues values = new ContentValues();
+			values.put(C_AWORD, vocabWord);
+			values.put(C_ID, Integer.valueOf(vocabWordNumber));
+			String whereClause = C_ID + "=?";
+			String[] whereArgs = {String.valueOf(vocabWordNumber)};
+			int conflictAlgorithm = SQLiteDatabase.CONFLICT_IGNORE;
+			return db.updateWithOnConflict(table, values, whereClause, whereArgs, conflictAlgorithm);
+		}
+
+		/**
+		 * Qeuries the database for the chapter with chapNumber as an Id.
+		 * @param chapNumber
+		 * @return
+		 */
+		public Cursor queryVocabTable(int chapNumber){
+			String whereClaus = C_CHAPTER + "=" +chapNumber;
+			db = getWritableDatabase();
+			Cursor cursor = db.query(VOCAB_TABLE, null, whereClaus, null, null, null, C_ID + " DESC");
+			return cursor;
+		}
+		
+		/**
+		 * Returns a cursor for the row with the vocabNumber and vocabWordNumber.
+		 * @param vocabNumber the number of the vocab item to pull the vocab word from.
+		 * @param vocabWordNumber the number of the vocab word to retrieve.
+		 * @return the cursor for the vocabWord
+		 */
+		public Cursor queryVocabTableForVocabWord(int vocabNumber, int vocabWordNumber){
+			return queryVocabTableForVocabWord(vocabWordNumber);
+		}
+		
+		/**
+		 * Returns a cursor for the row with the vocabWordNumber
+		 * @param vocabWordNumber the number of the vocab word to retrieve.
+		 * @return the cursor for the vocabWord
+		 */
+		public Cursor queryVocabTableForVocabWord(int vocabWordNumber){
+			Log.v(TAG, "query db for vocabWordNumber "+ vocabWordNumber +"from vocab table");
+			db = getWritableDatabase();
+			
+			String[] columns = null; // want all columns for the row
+			String selection = VocabProvider.C_ID + " = " + String.valueOf(vocabWordNumber);
+			String[] selectionArgs = null; // {String.valueOf(vocabWordNumber)};
+			String groupBy = null;
+			String having = null;
+			String sortBy = C_ID + " ASC";
+			
+			Cursor cursor = db.query(VocabProvider.VOCAB_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			return cursor;
+		}
+		
+		
+		
+		
+		/**
+		 * Returns a cursor for the row with the vocabWordNumber
+		 * @param vocabWordNumber the number of the vocab word to retrieve.
+		 * @return the cursor for the vocabWord
+		 */
+		public Cursor queryActiveTableForVocabWord(int vocabWordNumber){
+			Log.v(TAG, "query db for vocabWordNumber "+ vocabWordNumber +"from vocab table");
+			db = getWritableDatabase();
+			
+			String[] columns = null; // want all columns for the row
+			String selection = " " + VocabProvider.C_ID + " = " + String.valueOf(vocabWordNumber);
+			String[] selectionArgs = null;//{String.valueOf(vocabWordNumber)};
+			String groupBy = null;
+			String having = null;
+			String sortBy =  C_ID + " ASC";
+			
+			Cursor cursor = db.query(VocabProvider.ACTIVE_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			int count = cursor.getCount();
+			
+			return cursor;
+		}
+		
+		
+		
+		
+		
+		
+		/**
+		 * Qeuries the database for the chapter with chapNumber as an Id.
+		 * @param chapNumber
+		 * @return the cursor for the Active table
+		 */
+		public Cursor queryActiveTable(){
+			db = getWritableDatabase();
+			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, C_ID + " ASC");
+			
+			return cursor;
+		}
+		
+		/**
+		 * deletes the elements in the table.
+		 */
+		private void deleteActiveTableContent(){
+			db = getWritableDatabase();
+			db.delete(ACTIVE_TABLE, "1" , null);
+		}
+		
+		/**
+		 * deletes the contents of a vocab item from the vocabTable. the contents
+		 * of a vocab item are those that share the same vocabNumber.
+		 * @param vocabNumber the set of vocabWord to delete from table
+		 */
+		private void deleteVocabTableContent(Integer vocabNumber){
+			String[] removeIds = {vocabNumber.toString()};
+			db = getWritableDatabase();// it might be the number of databases.
+			int d = db.delete(VOCAB_TABLE, VocabProvider.C_CHAPTER + "=?",  removeIds);
+			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
+		}
+
+		/**
+		 * deletes a vocabWord from the active table, given the vocabWordNumber
+		 * @param vocabWordNumber the number associated with the vocabWord to delete from table
+		 */
+		private void deleteVocabWordFromActiveTable(Integer vocabWordNumber) {
+			Log.v(TAG, "attempting to remove word id number "+ vocabWordNumber +"from active table");
+			String[] removeIds = {String.valueOf(vocabWordNumber)};
+			db = getWritableDatabase();// it might be the number of databases.
+			int d = db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
+			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
 		}
 	}
 }

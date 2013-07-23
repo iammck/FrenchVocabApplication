@@ -185,6 +185,10 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		// Provider stores _id as an integer, so no data loss.
 		Integer vocabWordNumber = Integer.valueOf( (int) id);
 		// TODO create content values
+		ContentValues values = new ContentValues();
+		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_FLIP_ACTIVE_VOCAB_WORD);
+		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, vocabWordNumber);
 		// TODO ship to provider
+		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
 }
