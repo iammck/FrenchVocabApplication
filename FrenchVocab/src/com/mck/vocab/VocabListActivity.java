@@ -23,7 +23,14 @@ import android.widget.ListView;
 public class VocabListActivity extends FragmentActivity implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
-	public static final String[] AVAILABLE_CHAPTERS = {"chapter7mainVocab.txt","chapter7expressions.txt"};
+	public static final String[] AVAILABLE_CHAPTERS = 
+		{	"chap9nounsPart1.txt",
+			"chap9nounsPart2.txt",
+			"chap9nounsPart3.txt",
+			"chap9adjectives.txt",
+			"chap9verbs.txt",
+			"chap9wordsAndExpressions.txt"			
+		};
 	SharedPreferences prefs;
 	
     @Override
