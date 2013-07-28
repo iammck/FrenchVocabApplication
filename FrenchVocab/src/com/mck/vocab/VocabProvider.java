@@ -482,7 +482,6 @@ public class VocabProvider extends ContentProvider {
 		// get the initial language from the prefs.
 		SharedPreferences prefs = this.getContext()
 				.getSharedPreferences(TAG , Context.MODE_PRIVATE);
-		String lang = prefs.getString(VOCAB_LANGUAGE, VocabProvider.C_EWORD);
 		boolean isEnglishActive = prefs.getBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, true);
 		// use dbHelper to clear the active table 
 		dbHelper.deleteActiveTableContent();
@@ -499,17 +498,43 @@ public class VocabProvider extends ContentProvider {
 		}
 		int idColumn = vCursor.getColumnIndex(C_ID);			
 		
-		// TODO use a insertHelper here, then upgrade to sqliteStatement
+		// TODO set up insertHelper here, then upgrade to sqliteStatement
+		// using the depreciated InsertHelper
+		InsertHelper iHelper;
+					
 		// add the first item then the rest
 		vCursor.moveToFirst();
-		String vocabWord = vCursor.getString(vocabWordColumn);
-		String vocabWordId = vCursor.getString(idColumn);
-		dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
+		String activeVocabWord = vCursor.getString(vocabWordColumn);
+		String activeVocabWordNumber = vCursor.getString(idColumn);
+		
+		// TODO use a insertHelper here for the first item
+		// create and set up insert helper to make this a bulk insert
+		iHelper = new InsertHelper(db, VocabProvider.ACTIVE_TABLE);
+		int activeWordColumn = iHelper.getColumnIndex(C_AWORD);
+		int activeNumberColumn = iHelper.getColumnIndex(C_ID);
+		// Begin the transaction
+		db.beginTransaction();
+		iHelper.prepareForInsert(); // Prepare for insert!
+		iHelper.bind(activeWordColumn, activeVocabWord);
+		iHelper.bind(activeNumberColumn, activeVocabWordNumber);
+		iHelper.execute();
+		//dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
+		
 		while(vCursor.moveToNext()){
-			vocabWord = vCursor.getString(vocabWordColumn);
-			vocabWordId = vCursor.getString(idColumn);
-			dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
+			activeVocabWord = vCursor.getString(vocabWordColumn);
+			activeVocabWordNumber = vCursor.getString(idColumn);
+			iHelper.prepareForInsert();
+			iHelper.bind(activeWordColumn, activeVocabWord);
+			iHelper.bind(activeNumberColumn, activeVocabWordNumber);
+			iHelper.execute();
+			
+			// TODO use a insertHelper here
+			// dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
 		}
+		
+		// apply the batch transaction
+		db.setTransactionSuccessful();
+		db.endTransaction();
 		
 		/*
 		if (isEnglishActive){
@@ -707,7 +732,7 @@ public class VocabProvider extends ContentProvider {
 					
 					
 				}
-				// apply the patch transaction
+				// apply the batch transaction
 				db.setTransactionSuccessful();
 				db.endTransaction();
 				
