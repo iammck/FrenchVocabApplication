@@ -169,9 +169,11 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
 				.findFragmentById(R.id.vocab_list_frag_container));
-		SimpleCursorAdapter adapter = ((SimpleCursorAdapter) frag.getListAdapter());
-		if(adapter != null){
-			adapter.changeCursor(null);
+		if (frag != null){
+			SimpleCursorAdapter adapter = ((SimpleCursorAdapter) frag.getListAdapter());
+			if(adapter != null){
+				adapter.changeCursor(null);
+			}
 		}
 	}
 	public Integer getVocabWordNumberFromPosition(Integer position){
