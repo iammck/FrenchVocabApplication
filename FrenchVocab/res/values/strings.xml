@@ -100,4 +100,8 @@
         <item >french</item>
     </string-array>
         <string name="loading_screen_message">Fetching List...</string>
+        <string name="select_language_text">"Set the language of current list "</string>
+        <string name="english">English</string>
+        <string name="french">French</string>
+        <string name="cancel">Cancel</string>
 </resources>

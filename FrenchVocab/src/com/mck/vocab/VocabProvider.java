@@ -434,8 +434,6 @@ public class VocabProvider extends ContentProvider {
 //			Log.v(TAG, "getSampleVocabTableFromFile() has completed with vocab name " + vocabName
 //					+ " and number " + vocabNumber);
 //			Log.v(TAG, "getSampleVocabTableFromFile() has result: " + result.toString());
-//		} catch (Exception e){
-//			e.printStackTrace();
 //		}
 //		// now that the file is in memory, put it in the right table
 //		dbHelper.putVocabIntoVocabTable(result, vocabNumber);	
@@ -623,24 +621,24 @@ public class VocabProvider extends ContentProvider {
 			onCreate(db);
 		}
 		
-		/**
-		 * Puts a sing vocablulary word into the active table.
-		 * @param vocabWord the word as a string
-		 * @param vocabWordNumber the word id
-		 */
-		private void putVocabWordIntoActiveTable(String vocabWord, String vocabWordNumber) {
-			// we seem to  be getting the position in the table and not the c_id that we've want
-			db = getWritableDatabase();
-			ContentValues values = new ContentValues();
-			values.put(C_AWORD, vocabWord);
-			values.put(C_ID, Integer.valueOf(vocabWordNumber).intValue());
-			// if there is not one then make one?
-			Long result = db.insertWithOnConflict(ACTIVE_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-			if (result == -1){
-				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
-			}
-			Log.v(TAG, "put " + vocabWord + " with id " + vocabWordNumber +" into active tabe");
-		}
+//		/**
+//		 * Puts a sing vocablulary word into the active table.
+//		 * @param vocabWord the word as a string
+//		 * @param vocabWordNumber the word id
+//		 */
+//		private void putVocabWordIntoActiveTable(String vocabWord, String vocabWordNumber) {
+//			// we seem to  be getting the position in the table and not the c_id that we've want
+//			db = getWritableDatabase();
+//			ContentValues values = new ContentValues();
+//			values.put(C_AWORD, vocabWord);
+//			values.put(C_ID, Integer.valueOf(vocabWordNumber).intValue());
+//			// if there is not one then make one?
+//			Long result = db.insertWithOnConflict(ACTIVE_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+//			if (result == -1){
+//				Log.e(TAG, "insertWordIntoActiveTable() db.insert returned an error code -1");
+//			}
+//			Log.v(TAG, "put " + vocabWord + " with id " + vocabWordNumber +" into active tabe");
+//		}
 
 //		/**
 //		 * Puts a list of vocab into a vocab table giving them all the vocab number. 

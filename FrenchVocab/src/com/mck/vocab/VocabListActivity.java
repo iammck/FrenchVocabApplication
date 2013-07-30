@@ -2,7 +2,6 @@ package com.mck.vocab;
 
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -11,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -21,7 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class VocabListActivity extends FragmentActivity implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
+import com.mck.vocab.ChangeLanguageDialogFragment.ChangeLanguageCallback;
+
+public class VocabListActivity extends FragmentActivity implements 
+	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
 	public String[] AVAILABLE_CHAPTERS; 
@@ -90,25 +93,11 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 			
 		case R.id.options_item_language:
 			Log.v(TAG, "options item language selected");
-			String language;
-			// get the current language from the vocabProvider's shared prefs
-			SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG, Context.MODE_PRIVATE);
-			String currentLanguage = 
-					prefs.getString(VocabProvider.VOCAB_LANGUAGE, VocabProvider.C_EWORD);
-			// then use the other language
-			if (currentLanguage.equals(VocabProvider.C_EWORD)){
-				language = VocabProvider.C_FWORD;
-			} else {
-				language = VocabProvider.C_EWORD;
-			}
-			// now set up the active table in the other language using vocabProvider
-			ContentValues values = new ContentValues();
-			// file vocabName as name of file and current chapter
-			values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
-			values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
-			// get the content provider and update
-			getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);			
+			FragmentManager fragMan= getSupportFragmentManager();
+			ChangeLanguageDialogFragment frag = new ChangeLanguageDialogFragment();
+			frag.show(fragMan, ChangeLanguageDialogFragment.TAG);
 			
+				
 			return true;
 			
 		
@@ -228,5 +217,30 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, vocabWordNumber);
 		// TODO ship to provider
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
+	}
+
+
+	@Override
+	public void onChangeLanguageCallback(String language) {
+		Log.v(TAG, "onChangeLanguageCallback called with language " + language);
+		
+//		String language;
+//		// get the current language from the vocabProvider's shared prefs
+//		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG, Context.MODE_PRIVATE);
+//		String currentLanguage = 
+//				prefs.getString(VocabProvider.VOCAB_LANGUAGE, VocabProvider.C_EWORD);
+//		// then use the other language
+//		if (currentLanguage.equals(VocabProvider.C_EWORD)){
+//			language = VocabProvider.C_FWORD;
+//		} else {
+//			language = VocabProvider.C_EWORD;
+//		}
+		// now set up the active table in the other language using vocabProvider
+		ContentValues values = new ContentValues();
+		// file vocabName as name of file and current chapter
+		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
+		values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
+		// get the content provider and update
+		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);			
 	}
 }
