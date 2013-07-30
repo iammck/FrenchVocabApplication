@@ -13,7 +13,13 @@
         android:entries="@array/vocab_unit_10_names" 
         android:entryValues="@array/vocab_unit_10_names_values"/>
         />
-    
+    <ListPreference 
+          android:title="@string/vocab_11" 
+        android:key="current_chapter" 
+        android:summary="@string/vocab_11_summary" 
+        android:entries="@array/vocab_unit_11_names" 
+        android:entryValues="@array/vocab_unit_11_names_values"/>
+        />
     
 
 </PreferenceScreen>

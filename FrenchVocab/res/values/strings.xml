@@ -3,7 +3,7 @@
 
     <string name="app_name">French Vocab</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Bonjour le Monde!</string>
+    <string name="hello_world">Salut les gars!</string>
     <string name="display_english_language">english</string>
     <string name="the_starting_language">Starting Language</string>
     <string name="preferences">More Vocab</string>
@@ -18,7 +18,8 @@
     <string name="vocab_9_summary">Vocab from unit 9</string>
 	<string name="vocab_10">Vocab 10</string>
     <string name="vocab_10_summary">Vocab from unit 10</string>
-    
+    <string name="vocab_11">Vocab 11</string>
+    <string name="vocab_11_summary">Vocab from unit 11</string>
     
     <string-array name="vocab_unit_9_names">
         <item >Chapter 9 nouns 1</item>
@@ -36,6 +37,7 @@
         <item >5</item>
         <item >6</item>
     </string-array>
+    
     <string-array name="vocab_unit_10_names">
         <item >Chapter 10 nouns 1</item>
     	<item >Chapter 10 nouns 2</item>
@@ -52,6 +54,23 @@
         <item >12</item>
     </string-array>
     
+    
+    <string-array name="vocab_unit_11_names">
+        <item >Chapter 11 nouns 1</item>
+    	<item >Chapter 11 nouns 2</item>
+    	<item >Chapter 11 adjectives</item>
+    	<item >Chapter 11 verbs</item>
+    	<item >Chapter 11 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_11_names_values">
+        <item >13</item>
+        <item >14</item>
+        <item >15</item>
+        <item >16</item>
+        <item >17</item>
+        <item >18</item>
+    </string-array>
+    
     <string-array name="available_vocab_names">
         <item >chap9nounsPart1.txt</item>
         <item >chap9nounsPart2.txt</item>
@@ -64,42 +83,16 @@
 		<item>chapter10Adjectives.txt</item>        
 		<item>chapter10Verbs.txt</item>
 		<item>chapter10Additional.txt</item>
+		<item>chapter11NounsPart1.txt</item>
+		<item>chapter11NounsPart2.txt</item>
+		<item>chapter11Adjectives.txt</item>        
+		<item>chapter11Verbs.txt</item>
+		<item>chapter11Additional.txt</item>
     </string-array>
     
-    
-    
-    
-    
-    <string-array name="chapter_names">
-        <item >Chapter 9 nouns 1</item>
-    	<item >Chapter 9 nouns 2</item>
-    	<item >Chapter 9 nouns 3</item>
-    	<item >Chapter 9 adjectives</item>
-    	<item >Chapter 9 verbs</item>
-    	<item >Chapter 9 etc.</item>
-    </string-array>
-    
-    <string-array name="chapter_names_values">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-    </string-array>
 
     
-    
-     <string-array name="current_language">
-        <item >english</item>
-        <item >french</item>
-    </string-array>
-    
-    <string-array name="current_language_values">
-        <item >english</item>
-        <item >french</item>
-    </string-array>
-        <string name="loading_screen_message">Fetching List...</string>
+        <string name="loading_screen_message">Fetching List. . .</string>
         <string name="select_language_text">"Set the language of current list "</string>
         <string name="english">English</string>
         <string name="french">French</string>
