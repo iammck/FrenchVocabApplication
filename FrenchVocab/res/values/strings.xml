@@ -11,9 +11,62 @@
     <string name="default_language">english</string>
     <string name="preferences_language_summary">Select the starting language.</string>
     <string name="loading_database">Loading the Database</string>
-    <string name="active_chapter">Chapter</string>
-    <string name="active_chapter_summary">The active chapter vocab.</string>
-
+    
+    
+    <string name="vocab_9">Vocab 9</string>
+    <string name="vocab_9_summary">Vocab from unit 9</string>
+	<string name="vocab_10">Vocab 10</string>
+    <string name="vocab_10_summary">Vocab from unit 10</string>
+    
+    
+    <string-array name="vocab_unit_9_names">
+        <item >Chapter 9 nouns 1</item>
+    	<item >Chapter 9 nouns 2</item>
+    	<item >Chapter 9 nouns 3</item>
+    	<item >Chapter 9 adjectives</item>
+    	<item >Chapter 9 verbs</item>
+    	<item >Chapter 9 etc.</item>
+    </string-array>
+    <string-array name="vocab_unit_9_names_values">
+        <item >1</item>
+        <item >2</item>
+        <item >3</item>
+        <item >4</item>
+        <item >5</item>
+        <item >6</item>
+    </string-array>
+    <string-array name="vocab_unit_10_names">
+        <item >Chapter 10 nouns 1</item>
+    	<item >Chapter 10 nouns 2</item>
+    	<item >Chapter 10 adjectives</item>
+    	<item >Chapter 10 verbs</item>
+    	<item >Chapter 10 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_10_names_values">
+        <item >7</item>
+        <item >8</item>
+        <item >9</item>
+        <item >10</item>
+        <item >11</item>
+        <item >12</item>
+    </string-array>
+    
+    <string-array name="available_vocab_names">
+        <item >chap9nounsPart1.txt</item>
+        <item >chap9nounsPart2.txt</item>
+        <item >chap9nounsPart3.txt</item>
+        <item >chap9adjectives.txt</item>
+        <item >chap9verbs.txt</item>
+        <item >chap9wordsAndExpressions.txt</item>
+		<item>chapter10NounsPart1.txt</item>
+		<item>chapter10NounsPart2.txt</item>
+		<item>chapter10Adjectives.txt</item>        
+		<item>chapter10Verbs.txt</item>
+		<item>chapter10Additional.txt</item>
+    </string-array>
+    
+    
+    
     
     
     <string-array name="chapter_names">

@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
+        android:paddingBottom="@dimen/vocab_word_text_padding"
+        android:paddingTop="@dimen/vocab_word_text_padding"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/vocab_word_text_size" />
 
 </LinearLayout>
