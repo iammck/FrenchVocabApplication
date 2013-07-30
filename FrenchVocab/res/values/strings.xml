@@ -6,8 +6,9 @@
     <string name="hello_world">Bonjour le Monde!</string>
     <string name="display_english_language">english</string>
     <string name="the_starting_language">Starting Language</string>
-    <string name="preferences">preferences</string>
-    <string name="restart">restart</string>
+    <string name="preferences">More Vocab</string>
+    <string name="restart">Reset Vocab</string>
+    <string name="language">Language</string>
     <string name="default_language">english</string>
     <string name="preferences_language_summary">Select the starting language.</string>
     <string name="loading_database">Loading the Database</string>

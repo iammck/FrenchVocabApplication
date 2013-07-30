@@ -2,6 +2,7 @@ package com.mck.vocab;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -86,6 +87,30 @@ public class VocabListActivity extends FragmentActivity implements OnSharedPrefe
 			Log.v(TAG, "options item restart selected");
 			restartVocabList();
 			return true;
+			
+		case R.id.options_item_language:
+			Log.v(TAG, "options item language selected");
+			String language;
+			// get the current language from the vocabProvider's shared prefs
+			SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG, Context.MODE_PRIVATE);
+			String currentLanguage = 
+					prefs.getString(VocabProvider.VOCAB_LANGUAGE, VocabProvider.C_EWORD);
+			// then use the other language
+			if (currentLanguage.equals(VocabProvider.C_EWORD)){
+				language = VocabProvider.C_FWORD;
+			} else {
+				language = VocabProvider.C_EWORD;
+			}
+			// now set up the active table in the other language using vocabProvider
+			ContentValues values = new ContentValues();
+			// file vocabName as name of file and current chapter
+			values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
+			values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
+			// get the content provider and update
+			getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);			
+			
+			return true;
+			
 		
 		default:
 			return false;

@@ -182,7 +182,7 @@ public class VocabProvider extends ContentProvider {
 			} else {
 				prefs.edit().putBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, true).commit();	
 			}
-			// get the active vocab number from prefs
+			// get the active vocab number from prefs TODO should this be in an if/lse for there being an active to work on
 			int vocabNumber = prefs.getInt(VALUES_VOCAB_NUMBER, 1);
 			// get the vocab into the active table and notify
 			setActiveTableToVocabTable(vocabNumber);
