@@ -241,6 +241,5 @@ public class VocabListActivity extends FragmentActivity implements
 		values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
-		Log.v(TAG, "TEST STRING");
 	}
 }

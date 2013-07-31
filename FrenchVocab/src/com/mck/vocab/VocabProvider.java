@@ -183,7 +183,8 @@ public class VocabProvider extends ContentProvider {
 			} else {
 				prefs.edit().putBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, true).commit();	
 			}
-			// get the active vocab number from prefs TODO should this be in an if/lse for there being an active to work on
+			// get the active vocab number from prefs 
+			// TODO should this be in an if/lse for there being an active to work on
 			int vocabNumber = prefs.getInt(VALUES_VOCAB_NUMBER, 1);
 			// get the vocab into the active table and notify
 			setActiveTableToVocabTable(vocabNumber);
@@ -261,7 +262,7 @@ public class VocabProvider extends ContentProvider {
 		}
 		setActiveTableToVocabTable(vocabNumber);
 		
-		// save the new active chapter in the shared prefs. TODO
+		// save the new active chapter in the shared prefs.
 		prefs.edit().putInt(VALUES_VOCAB_NUMBER, vocabNumber).commit();
 
 		
@@ -504,7 +505,7 @@ public class VocabProvider extends ContentProvider {
 		}
 		int idColumn = vCursor.getColumnIndex(C_ID);			
 		
-		// TODO set up insertHelper here, then upgrade to sqliteStatement
+		// TODO Rewrite with sqliteStatement helper class.
 		// using the depreciated InsertHelper
 		InsertHelper iHelper;
 					
@@ -513,7 +514,6 @@ public class VocabProvider extends ContentProvider {
 		String activeVocabWord = vCursor.getString(vocabWordColumn);
 		String activeVocabWordNumber = vCursor.getString(idColumn);
 		
-		// TODO use a insertHelper here for the first item
 		// create and set up insert helper to make this a bulk insert
 		iHelper = new InsertHelper(db, VocabProvider.ACTIVE_TABLE);
 		int activeWordColumn = iHelper.getColumnIndex(C_AWORD);
@@ -533,11 +533,7 @@ public class VocabProvider extends ContentProvider {
 			iHelper.bind(activeWordColumn, activeVocabWord);
 			iHelper.bind(activeNumberColumn, activeVocabWordNumber);
 			iHelper.execute();
-			
-			// TODO use a insertHelper here
-			// dbHelper.putVocabWordIntoActiveTable(vocabWord, vocabWordId);
 		}
-		
 		// apply the batch transaction
 		db.setTransactionSuccessful();
 		db.endTransaction();
@@ -554,7 +550,6 @@ public class VocabProvider extends ContentProvider {
 			vocabWordcolumn = vCursor.getColumnIndex(C_EWORD);
 			int idIndex = vCursor.getColumnIndex(C_ID);			
 			
-			// TODO use a insertHelper here, then upgrade to sqliteStatement
 			// add the first item then the rest
 			vCursor.moveToFirst();
 			String vocabWord = vCursor.getString(vIndex);
