@@ -34,14 +34,8 @@ public class ChangeLanguageDialogFragment extends DialogFragment implements OnCl
 			e.printStackTrace();
 			Log.e(TAG, "The ChangeLanguageDialogFragment on attach Activity needs to implement"
 					+ " the ChangelanguageCallback interface.");
-		
 		}
-			
-		
-		//}
-	}
-
-	
+	}	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,27 +52,23 @@ public class ChangeLanguageDialogFragment extends DialogFragment implements OnCl
 		return view;
 	}
 
-
-
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		return super.onCreateDialog(savedInstanceState);
 	}
 
-
-
 	@Override
 	public void onClick(View button) {
 		int id = button.getId();
 		switch (id){
 			case R.id.buttonEnglish:
-				clcb.onChangeLanguageCallback(VocabProvider.C_EWORD);
 				this.dismiss();
+				clcb.onChangeLanguageCallback(VocabProvider.C_EWORD);
 				break;
 			case R.id.buttonFrench:
-				clcb.onChangeLanguageCallback(VocabProvider.C_FWORD);
 				this.dismiss();
+				clcb.onChangeLanguageCallback(VocabProvider.C_FWORD);
 				break;
 			case R.id.buttonCancel:
 				this.dismiss();

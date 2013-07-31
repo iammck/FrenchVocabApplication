@@ -51,7 +51,6 @@
         <item >9</item>
         <item >10</item>
         <item >11</item>
-        <item >12</item>
     </string-array>
     
     
@@ -63,12 +62,11 @@
     	<item >Chapter 11 additional </item>
     </string-array>
     <string-array name="vocab_unit_11_names_values">
+        <item >12</item>
         <item >13</item>
         <item >14</item>
         <item >15</item>
         <item >16</item>
-        <item >17</item>
-        <item >18</item>
     </string-array>
     
     <string-array name="available_vocab_names">
@@ -78,11 +76,13 @@
         <item >chap9adjectives.txt</item>
         <item >chap9verbs.txt</item>
         <item >chap9wordsAndExpressions.txt</item>
+		
 		<item>chapter10NounsPart1.txt</item>
 		<item>chapter10NounsPart2.txt</item>
 		<item>chapter10Adjectives.txt</item>        
 		<item>chapter10Verbs.txt</item>
 		<item>chapter10Additional.txt</item>
+		
 		<item>chapter11NounsPart1.txt</item>
 		<item>chapter11NounsPart2.txt</item>
 		<item>chapter11Adjectives.txt</item>        

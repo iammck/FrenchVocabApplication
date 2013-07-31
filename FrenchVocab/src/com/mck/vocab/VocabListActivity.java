@@ -177,7 +177,8 @@ public class VocabListActivity extends FragmentActivity implements
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		Log.v(TAG, "onLoadFinished has started");
+		Log.v(TAG, "onLoadFinished has started with " 
+				+ String.valueOf(cursor.getCount()) + " items");
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
 									.findFragmentById(R.id.vocab_list_frag_container));
 		((SimpleCursorAdapter) frag.getListAdapter()).changeCursor(cursor);
@@ -211,11 +212,9 @@ public class VocabListActivity extends FragmentActivity implements
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// Provider stores _id as an integer, so no data loss.
 		Integer vocabWordNumber = Integer.valueOf( (int) id);
-		// TODO create content values
 		ContentValues values = new ContentValues();
 		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_FLIP_ACTIVE_VOCAB_WORD);
 		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, vocabWordNumber);
-		// TODO ship to provider
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
 
@@ -241,6 +240,7 @@ public class VocabListActivity extends FragmentActivity implements
 		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
 		values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
 		// get the content provider and update
-		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);			
+		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
+		Log.v(TAG, "TEST STRING");
 	}
 }

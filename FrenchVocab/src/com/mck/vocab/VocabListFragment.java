@@ -85,9 +85,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		((VocabListActivity) vocabListActivity).onListItemClick(l, v, position, id);
-	}
-
-	
+	}	
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> av, View v, int position,	long id) {
@@ -96,4 +94,14 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		vocabListActivity.removeVocabWord(position);
 		return true;
 	}
+
+//	@Override
+//	public void onStart() {
+//		super.onStart();
+//		BaseAdapter ba = (BaseAdapter) getListAdapter();
+//		if (ba!= null){
+//			ba.notifyDataSetChanged();
+//		}
+//	}
+	
 }

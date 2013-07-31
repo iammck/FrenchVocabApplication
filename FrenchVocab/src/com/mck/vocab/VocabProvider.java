@@ -125,6 +125,7 @@ public class VocabProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
+		Log.v(TAG, "A query has been made.");
 		db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(ACTIVE_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
 		
@@ -260,6 +261,13 @@ public class VocabProvider extends ContentProvider {
 		}
 		setActiveTableToVocabTable(vocabNumber);
 		
+		// save the new active chapter in the shared prefs. TODO
+		prefs.edit().putInt(VALUES_VOCAB_NUMBER, vocabNumber).commit();
+
+		
+		
+		
+		
 		getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 
 		return 0;
@@ -379,7 +387,7 @@ public class VocabProvider extends ContentProvider {
 		prefs.edit().putString(VALUES_VOCAB_NAME, vocabName)
 			.putInt(VALUES_VOCAB_NUMBER, vocabNumber).commit();
 
-
+	
 
 		// get some sample data
 		getSampleVocabTableFromFile(vocabName, vocabNumber);
@@ -830,7 +838,7 @@ public class VocabProvider extends ContentProvider {
 		 * @return the cursor for the vocabWord
 		 */
 		public Cursor queryVocabTableForVocabWord(int vocabWordNumber){
-			Log.v(TAG, "query db for vocabWordNumber "+ vocabWordNumber +"from vocab table");
+			Log.v(TAG, "query vocab table for vocabWordNumber "+ vocabWordNumber);
 			db = getWritableDatabase();
 			
 			String[] columns = null; // want all columns for the row
@@ -853,7 +861,7 @@ public class VocabProvider extends ContentProvider {
 		 * @return the cursor for the vocabWord
 		 */
 		public Cursor queryActiveTableForVocabWord(int vocabWordNumber){
-			Log.v(TAG, "query db for vocabWordNumber "+ vocabWordNumber +"from vocab table");
+			Log.v(TAG, "query active table for vocabWordNumber "+ vocabWordNumber);
 			db = getWritableDatabase();
 			String[] columns = null; // want all columns for the row
 			String selection = " " + VocabProvider.C_ID + " = " + String.valueOf(vocabWordNumber);
