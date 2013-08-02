@@ -5,5 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="vocab_word_text_padding">10dp</dimen>
     <dimen name="vocab_word_text_size">18sp</dimen>
+    <dimen name="easy_dialog_question_text_size">22sp</dimen>
+    <dimen name="easy_dialog_text_padding">20dp</dimen>
 
 </resources>

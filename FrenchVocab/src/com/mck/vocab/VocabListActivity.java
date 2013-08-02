@@ -22,9 +22,12 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.mck.vocab.ChangeLanguageDialogFragment.ChangeLanguageCallback;
+import com.mck.vocab.EasyDialogAnswerFragment.EasyDialogFragmentCallback;
 
 public class VocabListActivity extends FragmentActivity implements 
-	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
+	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>,
+	EasyDialogAnswerFragment.EasyDialogFragmentCallback
+	{
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
 	public String[] AVAILABLE_CHAPTERS; 
@@ -150,15 +153,21 @@ public class VocabListActivity extends FragmentActivity implements
 
 	// to the content resolver.
 	public void removeVocabWord(int position) {
+		Integer vocabWordNumber = getVocabWordNumberFromPosition(Integer.valueOf(position));
+		removeVocabWordWithWordNumber(vocabWordNumber);
+	}
+
+	// to the content resolver.
+	public void removeVocabWordWithWordNumber(int vocabWordNumber) {
 		// get the right values for content values
 		ContentValues values = new ContentValues();
 		
 		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_REMOVE_ACTIVE_VOCAB_WORD);
-		Integer vocabWordNumber = getVocabWordNumberFromPosition(Integer.valueOf(position));
 		values.put(VocabProvider.VALUES_VOCAB_WORD_NUMBER, vocabWordNumber);
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
+	
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
@@ -173,7 +182,7 @@ public class VocabListActivity extends FragmentActivity implements
 				 				null );
 		//return null;
 	}
-
+	
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
@@ -242,4 +251,35 @@ public class VocabListActivity extends FragmentActivity implements
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
+
+
+	@Override
+	public void easyDialogNext(int current, boolean discardWord) {
+		// if discardWord, then remove it
+		if (discardWord){
+			removeVocabWordWithWordNumber(current);
+		}
+		// start easyDialog
+		startEasyDialog();
+	}
+
+
+	public void startEasyDialog() {
+		// TODO get a random vocab word number from the list of vocab words. 
+		int vocabWordNumber = 0;
+		// TODO query for the english and french words then set as the 
+		// right and question/answer(english/french) for the easy dialog sequence.
+		String question = "",answer = "";
+		Log.v(TAG, "startEasyDialog() begining");
+		FragmentManager fragMan= getSupportFragmentManager();
+		EasyDialogQuestionFragment questionFrag = new EasyDialogQuestionFragment();
+		Bundle bundle = new Bundle();
+		bundle.putString(EasyDialogQuestionFragment.QUESTION, question);
+		bundle.putString(EasyDialogAnswerFragment.ANSWER, answer);
+		bundle.putInt(EasyDialogAnswerFragment.WORDNUMBER, vocabWordNumber);
+		questionFrag.setArguments(bundle);
+		
+		questionFrag.show(fragMan, TAG);	
+	}
+
 }

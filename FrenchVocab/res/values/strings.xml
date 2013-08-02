@@ -97,4 +97,8 @@
         <string name="english">English</string>
         <string name="french">French</string>
         <string name="cancel">Cancel</string>
+        <string name="translate">Translate</string>
+        <string name="easy_dialog_question_text">The Question</string>
+        <string name="remove">Remove</string>
+        <string name="next">Next</string>
 </resources>
