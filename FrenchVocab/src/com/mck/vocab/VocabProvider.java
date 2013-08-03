@@ -125,20 +125,33 @@ public class VocabProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		Log.v(TAG, "A query has been made.");
-		db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.query(ACTIVE_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
-		
-		cursor.setNotificationUri(getContext().getContentResolver(), CONTENT_URI);
-		//		return context.getContentResolver().query(vocabProvider.CONTENT_URI,
-		//				null,null,null, vocabProvider.C_ID + " DESC");
-		
+		Cursor cursor;
+		String segment = uri.getLastPathSegment();
+		// If the segment is to query the active table
+		if (segment.equals(ACTIVE_TABLE)){
+			Log.v(TAG, "A query has been made to the active table!");
+			db = dbHelper.getReadableDatabase();
+			cursor = db.query(ACTIVE_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
+			// let any listeners know that an update happened.
+			// I'm almost sure this should now match the passed in uri since that is what did work.
+			// cursor.setNotificationUri(getContext().getContentResolver(), CONTENT_URI);
+			cursor.setNotificationUri(getContext().getContentResolver(), uri);
+			// to get to this if statement try something like
+			//		return context.getContentResolver().query(vocabProvider.ACTIVE_TABLE-URI,
+			//				null,null,null, vocabProvider.C_ID + " DESC");
+
+			return cursor;
+		}
+		Log.v(TAG, "A query has been made for VocabWordNumber " + segment);
+		//should be a vocab word number, query the db for number
+		int vocabWordNumber = Integer.valueOf(segment).intValue();
+		cursor = dbHelper.queryVocabTableForVocabWord(vocabWordNumber);
 		return cursor;
 	}
 
 	/**
 	 * Entry points for VocabListActivity
-	 * This provder needs to handle getting methods for several requests by the activity, 
+	 * This provider needs to handle getting methods for several requests by the activity, 
 	 * 	changing active table vocab, (loading new chapter) 
 	 * 	change a active table row language, (change a single rows language)
 	 * 	change active table language (change all item's language)

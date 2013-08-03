@@ -28,7 +28,6 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 	private String answer;
 	private int wordNumber;
 	private EasyDialogFragmentCallback edfcb;
-	private int vocabWordNumber;
 	
 	public interface EasyDialogFragmentCallback{
 		public void easyDialogNext(int current, boolean discardWord);
@@ -76,11 +75,11 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 			return;
 		case R.id.buttonRemove:
 			Log.v(TAG, "reacting to buttonRemove");
-			edfcb.easyDialogNext(this.vocabWordNumber, true);
+			edfcb.easyDialogNext(this.wordNumber, true);
 			return;
 		case R.id.buttonNext:
 			Log.v(TAG, "reacting to buttonNext");
-			edfcb.easyDialogNext(this.vocabWordNumber, false);
+			edfcb.easyDialogNext(this.wordNumber, false);
 		}
 	}
 	

@@ -2,6 +2,7 @@ package com.mck.vocab;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -19,10 +20,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.mck.vocab.ChangeLanguageDialogFragment.ChangeLanguageCallback;
-import com.mck.vocab.EasyDialogAnswerFragment.EasyDialogFragmentCallback;
 
 public class VocabListActivity extends FragmentActivity implements 
 	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>,
@@ -30,14 +31,7 @@ public class VocabListActivity extends FragmentActivity implements
 	{
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
-	public String[] AVAILABLE_CHAPTERS; 
-	/*	{	"chap9nounsPart1.txt",
-			"chap9nounsPart2.txt",
-			"chap9nounsPart3.txt",
-			"chap9adjectives.txt",
-			"chap9verbs.txt",
-			"chap9wordsAndExpressions.txt"			
-		}; */
+	public String[] AVAILABLE_VOCAB; 
 	SharedPreferences prefs;
 	
     @Override
@@ -45,11 +39,9 @@ public class VocabListActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         Log.v(TAG,"onCreate() has begun");
         
-        // TODO available vocab set names here
-        AVAILABLE_CHAPTERS = 
-        		getResources().getStringArray(R.array.available_vocab_names);
+        AVAILABLE_VOCAB = getResources().getStringArray(R.array.available_vocab_names);
         
-        // create a content provider atleast once?
+        // create a content provider at least once?
 		getContentResolver().update(VocabProvider.CONTENT_URI, new ContentValues(), null, null);
 
         this.getSupportLoaderManager().initLoader(vocabCursorLoaderId, null, this);
@@ -142,7 +134,7 @@ public class VocabListActivity extends FragmentActivity implements
 			ContentValues values = new ContentValues();
 			// file vocabName as name of file and current chapter
 			String currentChapter = prefs.getString("current_chapter", "1");
-			String vocabName = AVAILABLE_CHAPTERS[Integer.valueOf(currentChapter).intValue() - 1];
+			String vocabName = AVAILABLE_VOCAB[Integer.valueOf(currentChapter).intValue() - 1];
 			values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_OPEN_VOCAB);
 			values.put(VocabProvider.VALUES_VOCAB_NAME, vocabName);
 			values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
@@ -172,15 +164,13 @@ public class VocabListActivity extends FragmentActivity implements
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		String[] projection = {VocabProvider.C_ID, VocabProvider.C_AWORD};
-		 
 		return new CursorLoader(
 				 				this, 
-				 				Uri.parse(VocabProvider.AUTHORITY), // VocabProvider.ACTIVE_TABLE,
+				 				VocabProvider.ACTIVE_TABLE_URI,
 				 				projection,
 				 				null,
 				 				null,
 				 				null );
-		//return null;
 	}
 	
 
@@ -265,12 +255,42 @@ public class VocabListActivity extends FragmentActivity implements
 
 
 	public void startEasyDialog() {
-		// TODO get a random vocab word number from the list of vocab words. 
-		int vocabWordNumber = 0;
-		// TODO query for the english and french words then set as the 
-		// right and question/answer(english/french) for the easy dialog sequence.
-		String question = "",answer = "";
 		Log.v(TAG, "startEasyDialog() begining");
+		// Get a random vocab word number uri from the list of vocab words.
+		int vocabWordNumber = -1;
+		// will need current list adapter
+		ListAdapter adapter = ((VocabListFragment)getSupportFragmentManager()
+				.findFragmentById(R.id.vocab_list_frag_container))
+				.getListAdapter();
+		// how many items are in the vocabListFragment 
+		int listCount = adapter.getCount();
+		int random = (int) (Math.random() * 1000) % listCount ;
+		// use the random number to  get vocabWordNumber
+		vocabWordNumber = (int) adapter.getItemId(random);
+		// get the  word number uri
+		Uri uri = Uri.parse(VocabProvider.VOCAB_TABLE + "/" + String.valueOf(vocabWordNumber));
+		
+		// Query for the english and french words then set as the 
+		// question/answer for the easy dialog sequence.
+		String question = "",answer = "";
+		Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG , Context.MODE_PRIVATE);
+		// if english active
+		if (prefs.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true)){
+			// put english as question and french as anser
+			cursor.moveToFirst();
+			int index = cursor.getColumnIndex(VocabProvider.C_EWORD);
+			question = cursor.getString(index);
+			index = cursor.getColumnIndex(VocabProvider.C_FWORD);
+			answer = cursor.getString(index);
+		} // else do the reverse.
+		cursor.moveToFirst();
+		int index = cursor.getColumnIndex(VocabProvider.C_FWORD);
+		question = cursor.getString(index);
+		index = cursor.getColumnIndex(VocabProvider.C_EWORD);
+		answer = cursor.getString(index);
+		
+		// Load up the arguments into a new EasyDialogQeustionFramgent 
 		FragmentManager fragMan= getSupportFragmentManager();
 		EasyDialogQuestionFragment questionFrag = new EasyDialogQuestionFragment();
 		Bundle bundle = new Bundle();
@@ -278,7 +298,7 @@ public class VocabListActivity extends FragmentActivity implements
 		bundle.putString(EasyDialogAnswerFragment.ANSWER, answer);
 		bundle.putInt(EasyDialogAnswerFragment.WORDNUMBER, vocabWordNumber);
 		questionFrag.setArguments(bundle);
-		
+		// and show.
 		questionFrag.show(fragMan, TAG);	
 	}
 
