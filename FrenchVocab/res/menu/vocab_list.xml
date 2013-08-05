@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/options_item_start" android:title="@string/start"></item>
     <item android:id="@+id/options_item_language" android:title="@string/language"></item>
-    <item android:id="@+id/options_item_prefs" android:title="@string/preferences"></item>
     <item android:id="@+id/options_item_restart" android:title="@string/restart"></item>
-
+    <item android:id="@+id/options_item_more_vocab" android:title="@string/more_vocab"></item>   
 </menu>

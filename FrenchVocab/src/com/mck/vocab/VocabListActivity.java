@@ -9,6 +9,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -38,6 +39,8 @@ public class VocabListActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG,"onCreate() has begun");
+        //Log.v(TAG,"debug is on");
+        //Debug.startMethodTracing();
         
         AVAILABLE_VOCAB = getResources().getStringArray(R.array.available_vocab_names);
         
@@ -63,8 +66,17 @@ public class VocabListActivity extends FragmentActivity implements
         setContentView(R.layout.activity_vocab_list);
     }
 
+    
 
     @Override
+	protected void onStop() {
+		super.onStop();
+		Log.v(TAG,"debug is off");
+       //Debug.stopMethodTracing();
+	}
+
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.vocab_list, menu);
@@ -75,12 +87,11 @@ public class VocabListActivity extends FragmentActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()){
-		case R.id.options_item_prefs:
+		case R.id.options_item_more_vocab:
 			Log.v(TAG, "options item preferences selected");
 			startActivity(new Intent(this, PrefsActivity.class));
 			//do stuff then return true
-			return true;
-		
+			return true;		
 		case R.id.options_item_restart:
 			Log.v(TAG, "options item restart selected");
 			restartVocabList();
@@ -91,16 +102,17 @@ public class VocabListActivity extends FragmentActivity implements
 			FragmentManager fragMan= getSupportFragmentManager();
 			ChangeLanguageDialogFragment frag = new ChangeLanguageDialogFragment();
 			frag.show(fragMan, ChangeLanguageDialogFragment.TAG);
-			
-				
 			return true;
-			
-		
+		case R.id.options_item_start:	
+			Log.v(TAG, "options item start selected");
+			startDialogSequence();
 		default:
 			return false;
 		}
 	}
 	
+	
+
 	public void restartVocabList(){
 		Log.v(TAG, "restartVocabList has begun");
 		// get the right values for content values
@@ -243,16 +255,25 @@ public class VocabListActivity extends FragmentActivity implements
 	}
 
 
+	int lastDiscarded = -1; // last discarded should never be -1 
 	@Override
 	public void easyDialogNext(int current, boolean discardWord) {
 		// if discardWord, then remove it
 		if (discardWord){
+			// this can start a race condition if the prev word isn't removed
+			// prior to getting the new word, so keep last discarded wordNumber
+			lastDiscarded = current;
 			removeVocabWordWithWordNumber(current);
 		}
 		// start easyDialog
 		startEasyDialog();
 	}
 
+
+	private void startDialogSequence() {
+		// TODO Auto-generated method stub
+		startEasyDialog();
+	}
 
 	public void startEasyDialog() {
 		Log.v(TAG, "startEasyDialog() begining");
@@ -264,32 +285,44 @@ public class VocabListActivity extends FragmentActivity implements
 				.getListAdapter();
 		// how many items are in the vocabListFragment 
 		int listCount = adapter.getCount();
-		int random = (int) (Math.random() * 1000) % listCount ;
-		// use the random number to  get vocabWordNumber
-		vocabWordNumber = (int) adapter.getItemId(random);
+		if (listCount == 0){
+			Log.v(TAG, "no list items so not starting easy dialog");
+			return;
+		}
+		do {
+			int random = (int) (Math.random() * 1000) % listCount ;
+			// use the random number to  get vocabWordNumber
+			vocabWordNumber = (int) adapter.getItemId(random);
+		} while (vocabWordNumber == lastDiscarded && listCount > 1);
+		if( listCount == 1 && vocabWordNumber == lastDiscarded){
+			Log.v(TAG, "no list items so not starting easy dialog");
+			return;
+		}
 		// get the  word number uri
-		Uri uri = Uri.parse(VocabProvider.VOCAB_TABLE + "/" + String.valueOf(vocabWordNumber));
+		String uriString = VocabProvider.VOCAB_TABLE_URI.toString() + "/" + String.valueOf(vocabWordNumber);
+		Uri uri = Uri.parse(uriString);
 		
 		// Query for the english and french words then set as the 
 		// question/answer for the easy dialog sequence.
 		String question = "",answer = "";
 		Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG , Context.MODE_PRIVATE);
+		// TODO working here
 		// if english active
-		if (prefs.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true)){
+		if (prefs.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true)){ 
 			// put english as question and french as anser
 			cursor.moveToFirst();
 			int index = cursor.getColumnIndex(VocabProvider.C_EWORD);
 			question = cursor.getString(index);
 			index = cursor.getColumnIndex(VocabProvider.C_FWORD);
 			answer = cursor.getString(index);
-		} // else do the reverse.
-		cursor.moveToFirst();
-		int index = cursor.getColumnIndex(VocabProvider.C_FWORD);
-		question = cursor.getString(index);
-		index = cursor.getColumnIndex(VocabProvider.C_EWORD);
-		answer = cursor.getString(index);
-		
+		} else { // else do the reverse.
+			cursor.moveToFirst();
+			int index = cursor.getColumnIndex(VocabProvider.C_FWORD);
+			question = cursor.getString(index);
+			index = cursor.getColumnIndex(VocabProvider.C_EWORD);
+			answer = cursor.getString(index);
+		}
 		// Load up the arguments into a new EasyDialogQeustionFramgent 
 		FragmentManager fragMan= getSupportFragmentManager();
 		EasyDialogQuestionFragment questionFrag = new EasyDialogQuestionFragment();

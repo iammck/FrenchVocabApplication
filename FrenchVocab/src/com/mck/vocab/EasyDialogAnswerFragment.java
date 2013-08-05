@@ -33,6 +33,14 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 		public void easyDialogNext(int current, boolean discardWord);
 	}
 
+	
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		this.setStyle(STYLE_NO_TITLE, 0);
+	}
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -75,10 +83,12 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 			return;
 		case R.id.buttonRemove:
 			Log.v(TAG, "reacting to buttonRemove");
+			dismiss();
 			edfcb.easyDialogNext(this.wordNumber, true);
 			return;
 		case R.id.buttonNext:
 			Log.v(TAG, "reacting to buttonNext");
+			dismiss();
 			edfcb.easyDialogNext(this.wordNumber, false);
 		}
 	}

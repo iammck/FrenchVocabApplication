@@ -6,7 +6,7 @@
     <string name="hello_world">Salut les gars!</string>
     <string name="display_english_language">english</string>
     <string name="the_starting_language">Starting Language</string>
-    <string name="preferences">More Vocab</string>
+    <string name="more_vocab">More Vocab</string>
     <string name="restart">Reset Vocab</string>
     <string name="language">Language</string>
     <string name="default_language">english</string>
@@ -101,4 +101,6 @@
         <string name="easy_dialog_question_text">The Question</string>
         <string name="remove">Remove</string>
         <string name="next">Next</string>
+        <string name="start">Start</string>
+        <string name="easy_dialog_answer_text">Answer</string>
 </resources>
