@@ -20,6 +20,13 @@
         android:entries="@array/vocab_unit_11_names" 
         android:entryValues="@array/vocab_unit_11_names_values"/>
         />
+     <ListPreference 
+          android:title="@string/vocab_12" 
+        android:key="current_chapter" 
+        android:summary="@string/vocab_12_summary" 
+        android:entries="@array/vocab_unit_12_names" 
+        android:entryValues="@array/vocab_unit_12_names_values"/>
+        />
     
 
 </PreferenceScreen>

@@ -20,6 +20,8 @@
     <string name="vocab_10_summary">Vocab from unit 10</string>
     <string name="vocab_11">Vocab 11</string>
     <string name="vocab_11_summary">Vocab from unit 11</string>
+     <string name="vocab_12">Vocab 12</string>
+    <string name="vocab_12_summary">Vocab from unit 12</string>
     
     <string-array name="vocab_unit_9_names">
         <item >Chapter 9 nouns 1</item>
@@ -69,6 +71,34 @@
         <item >16</item>
     </string-array>
     
+    
+    
+    
+    
+    
+    
+    <string-array name="vocab_unit_12_names">
+        <item >Chapter 12 nouns 1</item>
+    	<item >Chapter 12 nouns 2</item>
+    	<item >Chapter 12 adjectives</item>
+    	<item >Chapter 12 verbs</item>
+    	<item >Chapter 12 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_12_names_values">
+        <item >17</item>
+        <item >18</item>
+        <item >19</item>
+        <item >20</item>
+        <item >21</item>
+    </string-array>
+    
+    
+    
+    
+    
+    
+    
+    
     <string-array name="available_vocab_names">
         <item >chap9nounsPart1.txt</item>
         <item >chap9nounsPart2.txt</item>
@@ -88,6 +118,13 @@
 		<item>chapter11Adjectives.txt</item>        
 		<item>chapter11Verbs.txt</item>
 		<item>chapter11Additional.txt</item>
+		
+		<item>chapter12NounsPart1.txt</item>
+		<item>chapter12NounsPart2.txt</item>
+		<item>chapter12Adjectives.txt</item>        
+		<item>chapter12Verbs.txt</item>
+		<item>chapter12Additional.txt</item>
+		
     </string-array>
     
 
