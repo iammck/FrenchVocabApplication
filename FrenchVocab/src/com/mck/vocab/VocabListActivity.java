@@ -15,12 +15,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -30,10 +34,17 @@ public class VocabListActivity extends ActionBarActivity implements
 	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>,
 	EasyDialogAnswerFragment.EasyDialogFragmentCallback
 	{
+	
+	
+
+
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
 	public String[] AVAILABLE_VOCAB; 
 	SharedPreferences prefs;
+	
+	private DrawerLayout drawerLayout;
+	private ListView drawerList;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,8 @@ public class VocabListActivity extends ActionBarActivity implements
         Log.v(TAG,"onCreate() has begun");
         //Log.v(TAG,"debug is on");
         //Debug.startMethodTracing();
+
+		
         
         AVAILABLE_VOCAB = getResources().getStringArray(R.array.available_vocab_names);
         
@@ -64,8 +77,33 @@ public class VocabListActivity extends ActionBarActivity implements
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		prefs.registerOnSharedPreferenceChangeListener(this);
         setContentView(R.layout.activity_vocab_list);
-    }
+        
+     // get the drawer list and layout.
+        String[] rowTitles =	getResources().getStringArray(R.array.drawer_row_titles);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
+        // set the list view adapter
+        drawerList.setAdapter(new ArrayAdapter<String>(this, 
+        		android.R.layout.simple_list_item_1, rowTitles));
+		// set the list's clickListener
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+    }
+    
+    
+
+
+
+	public class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			// TODO Auto-generated method stub
+			Log.v(TAG, "drawerItemClickListener onItemClick is starting");
+		}
+
+	}
     
 
     @Override

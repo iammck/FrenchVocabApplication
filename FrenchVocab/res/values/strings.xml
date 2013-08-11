@@ -140,4 +140,12 @@
         <string name="next">Next</string>
         <string name="start">Start</string>
         <string name="easy_dialog_answer_text">Answer</string>
+        
+        
+        <string-array name="drawer_row_titles">
+        	<item >titlE 1</item>
+        	<item >titlE 2</item>
+       	 	<item >titlE 3</item>
+        	<item >titlE 4</item>
+    	</string-array>
 </resources>
