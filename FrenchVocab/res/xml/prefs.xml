@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <ListPreference 
-        android:title="@string/vocab_9" 
+        android:title="@string/unit_9" 
         android:key="current_chapter" 
-        android:summary="@string/vocab_9_summary" 
+        android:summary="@string/unit_9_summary" 
         android:entries="@array/vocab_unit_9_names" 
         android:entryValues="@array/vocab_unit_9_names_values"/>
      <ListPreference 
-          android:title="@string/vocab_10" 
+          android:title="@string/unit_10" 
         android:key="current_chapter" 
-        android:summary="@string/vocab_10_summary" 
+        android:summary="@string/unit_10_summary" 
         android:entries="@array/vocab_unit_10_names" 
         android:entryValues="@array/vocab_unit_10_names_values"/>
         />
     <ListPreference 
-          android:title="@string/vocab_11" 
+          android:title="@string/unit_11" 
         android:key="current_chapter" 
-        android:summary="@string/vocab_11_summary" 
+        android:summary="@string/unit_11_summary" 
         android:entries="@array/vocab_unit_11_names" 
         android:entryValues="@array/vocab_unit_11_names_values"/>
         />
      <ListPreference 
-          android:title="@string/vocab_12" 
+          android:title="@string/unit_12" 
         android:key="current_chapter" 
-        android:summary="@string/vocab_12_summary" 
+        android:summary="@string/unit_12_summary" 
         android:entries="@array/vocab_unit_12_names" 
         android:entryValues="@array/vocab_unit_12_names_values"/>
         />
-    
+     <ListPreference 
+          android:title="@string/unit_13" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_13_summary" 
+        android:entries="@array/vocab_unit_13_names" 
+        android:entryValues="@array/vocab_unit_13_names_values"/>
+        />
+     <ListPreference 
+          android:title="@string/unit_14" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_14_summary" 
+        android:entries="@array/vocab_unit_14_names" 
+        android:entryValues="@array/vocab_unit_14_names_values"/>
+        />
 
 </PreferenceScreen>

@@ -8,17 +8,29 @@
     tools:context=".VocabListActivity" 
     android:background="@android:color/background_light">
 
-      
-    <LinearLayout
-        android:id="@+id/vocab_list_frag_container"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
-    </LinearLayout>
-
+    
+    	<LinearLayout
+            android:id="@+id/vocab_list_frag_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+        <TextView android:id="@id/android:empty"
+            
+        	android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"
+        	android:background="@drawable/empty"
+        	android:gravity="fill_vertical|fill_horizontal" />
+            <!--
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="#ff0000"
+               android:text="No data"
+                -->
+        </LinearLayout>
+    
     <ListView
         android:id="@+id/left_drawer"
-        android:layout_width="140dp"
+        android:layout_width="206dp"
         android:layout_height="fill_parent"
         android:layout_gravity="left"
         android:background="@android:color/background_light"

@@ -3,6 +3,7 @@
  */
 package com.mck.vocab;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,7 +11,9 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
@@ -40,6 +43,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		
 	}
 
+
 	/**
 	 * gets the current chapter vocab from the
 	 * 
@@ -63,8 +67,18 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		//		R.layout.vocab_word_cell, R.id.vocab_word_text, vocabIds));
 		
 		
-		// set the adapter to a simple list adapter TODO
 		//this.setListAdapter(new SimpleCursorAdapter(vocabListActivity, R.layout.vocab_word_cell, null, null, null, 0));
+		
+//		// add a picture for no list
+//		ImageView emptyView = new ImageView(vocabListActivity);
+//		LayoutParams params ;
+//		emptyView.setLayoutParams(params);
+//		emptyView.setImageResource(R.drawable.empty);
+//		this.getListView().setEmptyView(emptyView);	
+
+//		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+//		View emptyView = inflater.inflate(R.layout.empty_list_layout, null, false);
+//		getListView().setEmptyView(emptyView);
 		
 		// should i put this in an earlier lifecycle method?
 		// set the adapter to a simple cursor adapter
@@ -80,6 +94,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		// add item long press call back
 		this.getListView().setLongClickable(true);
 		this.getListView().setOnItemLongClickListener(this);
+		
 	}
 
 	@Override

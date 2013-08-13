@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- vocab titles and summaries -->
+    <string name="unit_9">Unit 9</string>
+    <string name="unit_9_summary">Vocab from unit 9</string>
+    <string name="unit_10">Unit 10</string>
+    <string name="unit_10_summary">Vocab from unit 10</string>
+    <string name="unit_11">Unit 11</string>
+    <string name="unit_11_summary">Vocab from unit 11</string>
+    <string name="unit_12">Unit 12</string>
+    <string name="unit_12_summary">Vocab from unit 12</string>
+	<string name="unit_13">Unit 13</string>
+    <string name="unit_13_summary">Vocab from unit 13</string>
+    <string name="unit_14">Unit 14</string>
+    <string name="unit_14_summary">Vocab from unit 14</string>
+    
+    <!-- vocab unit section names and vales -->
+    <string-array name="vocab_unit_9_names">
+        <item>Unit 9 nouns 1</item>
+        <item>Unit 9 nouns 2</item>
+        <item>Unit 9 nouns 3</item>
+        <item>Unit 9 adjectives</item>
+        <item>Unit 9 verbs</item>
+        <item>Unit 9 etc.</item>
+    </string-array>
+    <string-array name="vocab_unit_9_names_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="vocab_unit_10_names">
+        <item>Unit 10 nouns 1</item>
+        <item>Unit 10 nouns 2</item>
+        <item>Unit 10 adjectives</item>
+        <item>Unit 10 verbs</item>
+        <item>Unit 10 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_10_names_values">
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+    </string-array>
+    <string-array name="vocab_unit_11_names">
+        <item>Unit 11 nouns 1</item>
+        <item>Unit 11 nouns 2</item>
+        <item>Unit 11 adjectives</item>
+        <item>Unit 11 verbs</item>
+        <item>Unit 11 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_11_names_values">
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+    </string-array>
+    <string-array name="vocab_unit_12_names">
+        <item>Unit 12 nouns 1</item>
+        <item>Unit 12 nouns 2</item>
+        <item>Unit 12 adjectives</item>
+        <item>Unit 12 verbs</item>
+        <item>Unit 12 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_12_names_values">
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_13_names">
+        <item>Unit 13 nouns 1</item>
+        <item>Unit 13 nouns 2</item>
+        <item>Unit 13 nouns 3</item>
+        <item>Unit 13 adjectives</item>
+        <item>Unit 13 verbs</item>
+        <item>Unit 13 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_13_names_values">
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>        
+    </string-array>
+    
+    <string-array name="vocab_unit_14_names">
+        <item>Unit 14 nouns 1</item>
+        <item>Unit 14 nouns 2</item>
+        <item>Unit 14 adjectives</item>
+        <item>Unit 14 verbs</item>
+        <item>Unit 14 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_14_names_values">
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>       
+    </string-array>
+    
+    
+    
+    
+    
+    <!-- vocab unit file names  -->
+    <string-array name="available_vocab_file_names">
+        <item>chap9nounsPart1.txt</item>
+        <item>chap9nounsPart2.txt</item>
+        <item>chap9nounsPart3.txt</item>
+        <item>chap9adjectives.txt</item>
+        <item>chap9verbs.txt</item>
+        <item>chap9wordsAndExpressions.txt</item>
+        
+        <item>chapter10NounsPart1.txt</item>
+        <item>chapter10NounsPart2.txt</item>
+        <item>chapter10Adjectives.txt</item>
+        <item>chapter10Verbs.txt</item>
+        <item>chapter10Additional.txt</item>
+    
+        <item>chapter11NounsPart1.txt</item>
+        <item>chapter11NounsPart2.txt</item>
+        <item>chapter11Adjectives.txt</item>
+        <item>chapter11Verbs.txt</item>
+        <item>chapter11Additional.txt</item>
+        
+        <item>chapter12NounsPart1.txt</item>
+        <item>chapter12NounsPart2.txt</item>
+        <item>chapter12Adjectives.txt</item>
+        <item>chapter12Verbs.txt</item>
+        <item>chapter12Additional.txt</item>
+    
+    	<item>chapter13NounsPart1.txt</item>
+        <item>chapter13NounsPart2.txt</item>
+        <item>chapter13NounsPart3.txt</item>
+        <item>chapter13Adjectives.txt</item>
+        <item>chapter13Verbs.txt</item>
+        <item>chapter13Additional.txt</item>
+    
+    	<item>chapter14NounsPart1.txt</item>
+        <item>chapter14NounsPart2.txt</item>
+        <item>chapter14Adjectives.txt</item>
+        <item>chapter14Verbs.txt</item>
+        <item>chapter14Additional.txt</item>
+    
+    </string-array>
+    
+</resources>

@@ -6,11 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
@@ -22,12 +23,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
 import com.mck.vocab.ChangeLanguageDialogFragment.ChangeLanguageCallback;
 
 public class VocabListActivity extends ActionBarActivity implements 
@@ -40,11 +39,12 @@ public class VocabListActivity extends ActionBarActivity implements
 
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
-	public String[] AVAILABLE_VOCAB; 
+	public String[] AVAILABLE_VOCAB_FILE_NAMES; 
 	SharedPreferences prefs;
 	
 	private DrawerLayout drawerLayout;
 	private ListView drawerList;
+	private ActionBarDrawerToggle drawerToggle;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,8 @@ public class VocabListActivity extends ActionBarActivity implements
         Log.v(TAG,"onCreate() has begun");
         //Log.v(TAG,"debug is on");
         //Debug.startMethodTracing();
-
-		
         
-        AVAILABLE_VOCAB = getResources().getStringArray(R.array.available_vocab_names);
+        AVAILABLE_VOCAB_FILE_NAMES = getResources().getStringArray(R.array.available_vocab_file_names);
         
         // create a content provider at least once?
 		getContentResolver().update(VocabProvider.CONTENT_URI, new ContentValues(), null, null);
@@ -77,30 +75,87 @@ public class VocabListActivity extends ActionBarActivity implements
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		prefs.registerOnSharedPreferenceChangeListener(this);
         setContentView(R.layout.activity_vocab_list);
-        
-     // get the drawer list and layout.
-        String[] rowTitles =	getResources().getStringArray(R.array.drawer_row_titles);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+       
+        // get the drawer layout, list  and actionBar toggle.
+        String[] drawerTitles =	getResources().getStringArray(R.array.drawer_row_titles);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);        
         drawerList = (ListView) findViewById(R.id.left_drawer);
         // set the list view adapter
         drawerList.setAdapter(new ArrayAdapter<String>(this, 
-        		android.R.layout.simple_list_item_1, rowTitles));
+        		android.R.layout.simple_list_item_1, drawerTitles));
 		// set the list's clickListener
-        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
+        // set the support actionbar to display home.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer,
+        		R.string.drawer_open, R.string.drawer_close){
+        	public void onDrawerClosed(View view) {
+                //getActionBar().setTitle(mTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
 
+            public void onDrawerOpened(View drawerView) {
+                //getActionBar().setTitle(mDrawerTitle);
+            	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        
+        
+        drawerLayout.setDrawerListener(drawerToggle);
+        
+        
+        
     }
     
-    
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
 
 
 
 	public class DrawerItemClickListener implements ListView.OnItemClickListener {
-
+		VocabListActivity activity;
+		
+		public DrawerItemClickListener(VocabListActivity activity){
+			this.activity = activity;
+		}
+		
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
-			// TODO Auto-generated method stub
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
 			Log.v(TAG, "drawerItemClickListener onItemClick is starting");
+			switch (position){
+			case 0:
+				Log.v(TAG, "drawer item start selected");
+				startDialogSequence();
+				break;		
+			case 1:
+				Log.v(TAG, "drawer item language selected");
+				FragmentManager fragMan= getSupportFragmentManager();
+				ChangeLanguageDialogFragment frag = new ChangeLanguageDialogFragment();
+				frag.show(fragMan, ChangeLanguageDialogFragment.TAG);
+				break;
+			case 2:
+				Log.v(TAG, "drawer item restart selected");
+				restartVocabList();
+				break;
+			case 3:	
+				Log.v(TAG, "drawer item preferences selected");
+				startActivity(new Intent(activity, PrefsActivity.class));
+			default:
+				break;
+			}
+			activity.drawerLayout.closeDrawer(activity.drawerList);
 		}
 
 	}
@@ -121,9 +176,21 @@ public class VocabListActivity extends ActionBarActivity implements
         return true;
     }
 
+	/* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		// this line allows the actionbar icon touch to open the drawer
+		if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 		switch (item.getItemId()){
 		case R.id.options_item_more_vocab:
 			Log.v(TAG, "options item preferences selected");
@@ -144,8 +211,9 @@ public class VocabListActivity extends ActionBarActivity implements
 		case R.id.options_item_start:	
 			Log.v(TAG, "options item start selected");
 			startDialogSequence();
+			return true;
 		default:
-			return false;
+			return super.onOptionsItemSelected(item);
 		}
 	}
 	
@@ -184,7 +252,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			ContentValues values = new ContentValues();
 			// file vocabName as name of file and current chapter
 			String currentChapter = prefs.getString("current_chapter", "1");
-			String vocabName = AVAILABLE_VOCAB[Integer.valueOf(currentChapter).intValue() - 1];
+			String vocabName = AVAILABLE_VOCAB_FILE_NAMES[Integer.valueOf(currentChapter).intValue() - 1];
 			values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_OPEN_VOCAB);
 			values.put(VocabProvider.VALUES_VOCAB_NAME, vocabName);
 			values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
@@ -226,8 +294,9 @@ public class VocabListActivity extends ActionBarActivity implements
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		int count = cursor.getCount();
 		Log.v(TAG, "onLoadFinished has started with " 
-				+ String.valueOf(cursor.getCount()) + " items");
+				+ String.valueOf(count) + " items");
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
 									.findFragmentById(R.id.vocab_list_frag_container));
 		((SimpleCursorAdapter) frag.getListAdapter()).changeCursor(cursor);
@@ -309,7 +378,6 @@ public class VocabListActivity extends ActionBarActivity implements
 
 
 	private void startDialogSequence() {
-		// TODO Auto-generated method stub
 		startEasyDialog();
 	}
 
@@ -345,7 +413,6 @@ public class VocabListActivity extends ActionBarActivity implements
 		String question = "",answer = "";
 		Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG , Context.MODE_PRIVATE);
-		// TODO working here
 		// if english active
 		if (prefs.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true)){ 
 			// put english as question and french as anser

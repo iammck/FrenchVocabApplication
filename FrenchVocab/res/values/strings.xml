@@ -12,140 +12,27 @@
     <string name="default_language">english</string>
     <string name="preferences_language_summary">Select the starting language.</string>
     <string name="loading_database">Loading the Database</string>
-    
-    
-    <string name="vocab_9">Vocab 9</string>
-    <string name="vocab_9_summary">Vocab from unit 9</string>
-	<string name="vocab_10">Vocab 10</string>
-    <string name="vocab_10_summary">Vocab from unit 10</string>
-    <string name="vocab_11">Vocab 11</string>
-    <string name="vocab_11_summary">Vocab from unit 11</string>
-     <string name="vocab_12">Vocab 12</string>
-    <string name="vocab_12_summary">Vocab from unit 12</string>
-    
-    <string-array name="vocab_unit_9_names">
-        <item >Chapter 9 nouns 1</item>
-    	<item >Chapter 9 nouns 2</item>
-    	<item >Chapter 9 nouns 3</item>
-    	<item >Chapter 9 adjectives</item>
-    	<item >Chapter 9 verbs</item>
-    	<item >Chapter 9 etc.</item>
-    </string-array>
-    <string-array name="vocab_unit_9_names_values">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-    </string-array>
-    
-    <string-array name="vocab_unit_10_names">
-        <item >Chapter 10 nouns 1</item>
-    	<item >Chapter 10 nouns 2</item>
-    	<item >Chapter 10 adjectives</item>
-    	<item >Chapter 10 verbs</item>
-    	<item >Chapter 10 additional </item>
-    </string-array>
-    <string-array name="vocab_unit_10_names_values">
-        <item >7</item>
-        <item >8</item>
-        <item >9</item>
-        <item >10</item>
-        <item >11</item>
-    </string-array>
-    
-    
-    <string-array name="vocab_unit_11_names">
-        <item >Chapter 11 nouns 1</item>
-    	<item >Chapter 11 nouns 2</item>
-    	<item >Chapter 11 adjectives</item>
-    	<item >Chapter 11 verbs</item>
-    	<item >Chapter 11 additional </item>
-    </string-array>
-    <string-array name="vocab_unit_11_names_values">
-        <item >12</item>
-        <item >13</item>
-        <item >14</item>
-        <item >15</item>
-        <item >16</item>
-    </string-array>
-    
-    
-    
-    
-    
-    
-    
-    <string-array name="vocab_unit_12_names">
-        <item >Chapter 12 nouns 1</item>
-    	<item >Chapter 12 nouns 2</item>
-    	<item >Chapter 12 adjectives</item>
-    	<item >Chapter 12 verbs</item>
-    	<item >Chapter 12 additional </item>
-    </string-array>
-    <string-array name="vocab_unit_12_names_values">
-        <item >17</item>
-        <item >18</item>
-        <item >19</item>
-        <item >20</item>
-        <item >21</item>
-    </string-array>
-    
-    
-    
-    
-    
-    
-    
-    
-    <string-array name="available_vocab_names">
-        <item >chap9nounsPart1.txt</item>
-        <item >chap9nounsPart2.txt</item>
-        <item >chap9nounsPart3.txt</item>
-        <item >chap9adjectives.txt</item>
-        <item >chap9verbs.txt</item>
-        <item >chap9wordsAndExpressions.txt</item>
-		
-		<item>chapter10NounsPart1.txt</item>
-		<item>chapter10NounsPart2.txt</item>
-		<item>chapter10Adjectives.txt</item>        
-		<item>chapter10Verbs.txt</item>
-		<item>chapter10Additional.txt</item>
-		
-		<item>chapter11NounsPart1.txt</item>
-		<item>chapter11NounsPart2.txt</item>
-		<item>chapter11Adjectives.txt</item>        
-		<item>chapter11Verbs.txt</item>
-		<item>chapter11Additional.txt</item>
-		
-		<item>chapter12NounsPart1.txt</item>
-		<item>chapter12NounsPart2.txt</item>
-		<item>chapter12Adjectives.txt</item>        
-		<item>chapter12Verbs.txt</item>
-		<item>chapter12Additional.txt</item>
-		
-    </string-array>
+	<string name="loading_screen_message">Fetching List. . .</string>
+    <string name="select_language_text">"Set the language of current list "</string>
+    <string name="english">English</string>
+    <string name="french">French</string>
+    <string name="cancel">Cancel</string>
+    <string name="translate">Translate</string>
+    <string name="easy_dialog_question_text">The Question</string>
+    <string name="remove">Remove</string>
+    <string name="next">Next</string>
+    <string name="start">Start</string>
+    <string name="easy_dialog_answer_text">Answer</string>
+    <string name="drawer_open">Open the drawer</string>
+    <string name="drawer_close">Close the drawer</string>
+    <string name="this_is_an_emtpy_list">This is an empty list, Select More vocab from options.</string>
     
 
-    
-        <string name="loading_screen_message">Fetching List. . .</string>
-        <string name="select_language_text">"Set the language of current list "</string>
-        <string name="english">English</string>
-        <string name="french">French</string>
-        <string name="cancel">Cancel</string>
-        <string name="translate">Translate</string>
-        <string name="easy_dialog_question_text">The Question</string>
-        <string name="remove">Remove</string>
-        <string name="next">Next</string>
-        <string name="start">Start</string>
-        <string name="easy_dialog_answer_text">Answer</string>
-        
-        
-        <string-array name="drawer_row_titles">
-        	<item >titlE 1</item>
-        	<item >titlE 2</item>
-       	 	<item >titlE 3</item>
-        	<item >titlE 4</item>
-    	</string-array>
+    <string-array name="drawer_row_titles">
+        <item>@string/start</item>
+        <item>@string/language</item>
+        <item>@string/restart</item>
+        <item>@string/more_vocab</item>
+    </string-array>
+
 </resources>
