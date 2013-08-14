@@ -20,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.mck.vocab.ChangeLanguageDialogFragment.ChangeLanguageCallback;
 
 public class VocabListActivity extends ActionBarActivity implements 
@@ -232,6 +235,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	}
 
 
+	//TODO push to prefs and call this one
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
@@ -295,6 +299,11 @@ public class VocabListActivity extends ActionBarActivity implements
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		int count = cursor.getCount();
+		if (count == 0){
+			// swap out frags via runnable on uiTh via Activity.runonUithread
+			// or open the drawer
+			drawerLayout.openDrawer(Gravity.LEFT);
+		}
 		Log.v(TAG, "onLoadFinished has started with " 
 				+ String.valueOf(count) + " items");
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
@@ -393,6 +402,14 @@ public class VocabListActivity extends ActionBarActivity implements
 		int listCount = adapter.getCount();
 		if (listCount == 0){
 			Log.v(TAG, "no list items so not starting easy dialog");
+			//display in short period of time
+			Toast t = Toast .makeText(getApplicationContext(), "There is no active vocab, select some from options.", Toast.LENGTH_SHORT);
+			t.setGravity(Gravity.CENTER, 0, 0);
+			t.show();
+			// not working possibly because the drawer isn't closed from start click seq.
+			// might try a runnable on a timer? could be not in ui thread?
+			// is there a way to printf the thread id? TODO
+			drawerLayout.openDrawer(Gravity.LEFT);
 			return;
 		}
 		do {
