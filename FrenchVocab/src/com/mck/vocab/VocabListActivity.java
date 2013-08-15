@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -104,9 +105,10 @@ public class VocabListActivity extends ActionBarActivity implements
             }
         };
         
-        
         drawerLayout.setDrawerListener(drawerToggle);
         
+     
+        	
         
         
     }
@@ -163,8 +165,24 @@ public class VocabListActivity extends ActionBarActivity implements
 
 	}
     
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		 // always want to show the drawer if the list dne or is empty
+	     //get the list from the fragment
+	     ListFragment list = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.vocab_list_frag_container);
+	     // if there is no list or f the list is empty
+	     //if(list != null && list.getListView().getCount() == 0){
+	     if(list == null || list.getListView().getCount() == 0){
+	    	 // show the drawer
+	     	drawerLayout.openDrawer(Gravity.LEFT);
+	     }
+	}
 
-    @Override
+	@Override
 	protected void onStop() {
 		super.onStop();
 		Log.v(TAG,"debug is off");
