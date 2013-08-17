@@ -25,10 +25,10 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 	public static final String WORDNUMBER = "wordnumber";
 
 
+	private String question;
 	private String answer;
 	private int wordNumber;
 	private EasyDialogFragmentCallback edfcb;
-	
 	public interface EasyDialogFragmentCallback{
 		public void easyDialogNext(int current, boolean discardWord);
 	}
@@ -39,7 +39,7 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		this.setStyle(STYLE_NO_TITLE, 0);
+		//this.setStyle(STYLE_NO_TITLE, 0);
 	}
 
 	@Override
@@ -65,12 +65,24 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 
 		// Get and set arguments for text view
 		Bundle b = getArguments();
+		this.question =  b.getString(EasyDialogQuestionFragment.QUESTION);
 		this.answer =  b.getString(EasyDialogAnswerFragment.ANSWER);
 		this.wordNumber =b.getInt(EasyDialogAnswerFragment.WORDNUMBER);
-		TextView tv = (TextView) view.findViewById(R.id.easy_dialog_answer_textview);
-		tv.setText(answer);
+		TextView qtv = (TextView) view.findViewById(R.id.easy_dialog_question_textview);
+		qtv.setText("( "+ question + " )");
+		TextView atv = (TextView) view.findViewById(R.id.easy_dialog_answer_textview);
+		atv.setText(answer);
 
 		return view;
+	}
+
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.DialogFragment#onStart()
+	 */
+	@Override
+	public void onStart() {
+		super.onStart();
+		this.getDialog().setTitle(answer);
 	}
 
 	@Override

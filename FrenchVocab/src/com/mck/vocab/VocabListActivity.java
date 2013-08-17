@@ -100,7 +100,7 @@ public class VocabListActivity extends ActionBarActivity implements
             }
 
             public void onDrawerOpened(View drawerView) {
-                //getActionBar().setTitle(mDrawerTitle);
+            	//getActionBar().setTitle(mDrawerTitle);
             	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };

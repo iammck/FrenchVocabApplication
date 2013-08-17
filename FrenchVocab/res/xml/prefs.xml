@@ -41,5 +41,22 @@
         android:entries="@array/vocab_unit_14_names" 
         android:entryValues="@array/vocab_unit_14_names_values"/>
         />
+        
+        <ListPreference 
+          android:title="@string/unit_15" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_15_summary" 
+        android:entries="@array/vocab_unit_15_names" 
+        android:entryValues="@array/vocab_unit_15_names_values"/>
+        />
+        
+        
+         <ListPreference 
+          android:title="@string/unit_16" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_16_summary" 
+        android:entries="@array/vocab_unit_16_names" 
+        android:entryValues="@array/vocab_unit_16_names_values"/>
+        />
 
 </PreferenceScreen>

@@ -1,47 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/background_dark"
     android:orientation="vertical" >
- 	
- 	<RelativeLayout
- 	    android:layout_width="fill_parent"
- 	    android:layout_height="wrap_content"
- 	    android:layout_gravity="center_horizontal" >
-
-    	<TextView
-    	    android:id="@+id/easy_dialog_question_textview"
-        	android:layout_width="fill_parent"
-  	     	android:layout_height="wrap_content"
-    	    android:gravity="center_horizontal|clip_horizontal"
-        	android:padding="@dimen/easy_dialog_text_padding"
-       	 	android:text="@string/easy_dialog_question_text"
-        	android:textSize="@dimen/easy_dialog_question_text_size" />
-    </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/easy_dialog_question_margin" >
 
-        <Button
-            android:id="@+id/buttonTranslate"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/easy_dialog_question_textview"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/easy_dialog_answer_textview"
+            android:gravity="center"
+            android:padding="@dimen/easy_dialog_text_padding"
+            android:text="@string/easy_dialog_question_text"
+            android:textSize="@dimen/easy_dialog_question_text_size" />
+
+        <TextView
+            android:id="@+id/easy_dialog_answer_textview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerHorizontal="true"
-            android:text="@string/translate" />
+            android:background="@drawable/question_mark_blue_md"
+            android:textSize="@dimen/easy_dialog_question_text_size" />
+
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/buttonTranslate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/translate" />
+
+    <Button
+        android:id="@+id/buttonCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/cancel" />
+
+</LinearLayout><!--
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+    android:background="@drawable/grey_background"
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/buttonCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:layout_height="wrap_content" 
+ 	    android:layout_gravity="center_horizontal">
+        
+        <TextView
+            android:id="@+id/easy_dialog_answer_textview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
-            android:text="@string/cancel" />
-    </RelativeLayout>
+            android:layout_centerVertical="true"
+            android:background="@drawable/question_mark_blue_md"
+            android:padding="@dimen/easy_dialog_text_padding"
+            android:textSize="@dimen/easy_dialog_question_text_size" />
 
-</LinearLayout>
+    	</RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/easy_dialog_question_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/easy_dialog_text_padding"
+                android:text="@string/easy_dialog_question_text"
+                android:textSize="@dimen/easy_dialog_question_text_size" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/buttonTranslate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/translate" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/cancel" />
+
+        </RelativeLayout>
+
+
+-->

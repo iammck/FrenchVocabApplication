@@ -1,0 +1,42 @@
+title
+UNITÉ 16 Adjectives
+amusant(e)	
+funny
+antipathique	
+unpleasant
+brillant(e)	
+shining
+bronzé(e)	
+tanned
+délicieux, délicieuse	
+delicious
+dernier, dernière	
+last
+fier, fière	
+proud
+furieux, furieuse	
+furious
+gêné(e)	
+embarrassed
+incompétent(e)	
+incompetent
+ingénieux, ingénieuse	
+inventive
+inoubliable	
+unforgettable
+inquiet, inquiète	
+worried
+insupportable	
+unbearable
+inutile	
+useless
+maladroit(e)	
+clumsy
+marrant(e)	
+funny
+mou, molle	
+limp
+utile	
+useful
+vécu(e)	
+experienced

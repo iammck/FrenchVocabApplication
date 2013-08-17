@@ -12,10 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * 
- */
-
-/**
  * @author Michael
  *
  */
@@ -31,7 +27,7 @@ public class EasyDialogQuestionFragment extends DialogFragment implements OnClic
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		this.setStyle(STYLE_NO_TITLE, 0);
+		//this.setStyle(STYLE_NO_TITLE, 0);
 	}
 
 
@@ -60,8 +56,19 @@ public class EasyDialogQuestionFragment extends DialogFragment implements OnClic
 		
 		return view;
 	}	
+
 	
 	
+
+
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.DialogFragment#onStart()
+	 */
+	@Override
+	public void onStart() {
+		super.onStart();
+		this.getDialog().setTitle(question);
+	}
 
 
 	@Override
@@ -84,7 +91,6 @@ public class EasyDialogQuestionFragment extends DialogFragment implements OnClic
 		answerFrag.show(fragMan, TAG);
 		//ragMan.beginTransaction().remove(this).add(answerFrag, TAG).commit();
 	}
-	
 	
 
 }

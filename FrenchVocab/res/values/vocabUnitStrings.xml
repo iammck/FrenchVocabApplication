@@ -13,6 +13,11 @@
     <string name="unit_13_summary">Vocab from unit 13</string>
     <string name="unit_14">Unit 14</string>
     <string name="unit_14_summary">Vocab from unit 14</string>
+    <string name="unit_15">Unit 15</string>
+    <string name="unit_15_summary">Vocab from unit 15</string>
+    <string name="unit_16">Unit 16</string>
+    <string name="unit_16_summary">Vocab from unit 16</string>
+    
     
     <!-- vocab unit section names and vales -->
     <string-array name="vocab_unit_9_names">
@@ -107,6 +112,34 @@
     </string-array>
     
     
+
+    <string-array name="vocab_unit_15_names">
+        <item>Unit 15 nouns 1</item>
+        <item>Unit 15 nouns 2</item>
+        <item>Unit 15 adjectives</item>
+        <item>Unit 15 verbs</item>
+        <item>Unit 15 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_15_names_values">
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>       
+    </string-array>
+    
+    <string-array name="vocab_unit_16_names">
+        <item>Unit 16 nouns 1</item>
+        <item>Unit 16 adjectives</item>
+        <item>Unit 16 verbs</item>
+        <item>Unit 16 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_16_names_values">
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>     
+    </string-array>
     
     
     
@@ -149,6 +182,17 @@
         <item>chapter14Adjectives.txt</item>
         <item>chapter14Verbs.txt</item>
         <item>chapter14Additional.txt</item>
+    
+        <item>chapter15NounsPart1.txt</item>
+        <item>chapter15NounsPart2.txt</item>
+        <item>chapter15Adjectives.txt</item>
+        <item>chapter15Verbs.txt</item>
+        <item>chapter15Additional.txt</item>
+    
+        <item>chapter16NounsPart1.txt</item>
+        <item>chapter16Adjectives.txt</item>
+        <item>chapter16Verbs.txt</item>
+        <item>chapter16Additional.txt</item>
     
     </string-array>
     
