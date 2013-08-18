@@ -104,7 +104,4 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 			edfcb.easyDialogNext(this.wordNumber, false);
 		}
 	}
-	
-	
-
 }
