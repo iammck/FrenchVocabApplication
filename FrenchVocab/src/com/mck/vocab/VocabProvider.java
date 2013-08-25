@@ -7,8 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.content.ContentProvider;
@@ -28,79 +26,66 @@ import android.util.Log;
  */
 @SuppressWarnings("deprecation")
 public class VocabProvider extends ContentProvider {
-	
+	// Tag matches the class name
 	public static final String TAG = "VocabProvider";
-
+	
 	public static final String AUTHORITY = "content://com.mck.vocab";
 	public static final Uri CONTENT_URI = Uri.parse(AUTHORITY);
+
+	// the database name and database version
+	public static final String DB_NAME = "vocab.db";
+	public static final int DB_VERSION = 1;
+	// tables and table uri's
 	public static final String VOCAB_TABLE = "vocabword";
 	public static final Uri VOCAB_TABLE_URI = Uri.parse(AUTHORITY + "/" + VOCAB_TABLE);
 	public static final String ACTIVE_TABLE = "activetable";
 	public static final Uri ACTIVE_TABLE_URI = Uri.parse(AUTHORITY+ "/" + ACTIVE_TABLE);
-	
 	public static final String PREVIOUSLY_ACTIVE_TABLE = "previously_active";
 	public static final Uri PREVIOUSLY_ACTIVE_TABLE_URI = Uri.parse(AUTHORITY+ "/" + PREVIOUSLY_ACTIVE_TABLE);
 	public static final String TITES_TABLE = "title";
 	public static final Uri TITES_TABLE_URI = Uri.parse(AUTHORITY+ "/" + TITES_TABLE);
-	
-	
-	public static final String DB_NAME = "vocab.db";
-	public static final int DB_VERSION = 1;
-	public static final String VOCAB_LANGUAGE = "vocab_language";
-	
+	// column names
 	public static final String C_ID = "_id";
 	public static final String C_VOCAB_NUMBER = "chapter";
 	public static final String C_EWORD = "english";
 	public static final String C_FWORD = "french";
 	public static final String C_AWORD = "aword";
 	public static final String C_TITLE = "title";
+	// create table statements
+	private static final String CREATE_VOCAB_TABLE_SQL_STATEMENT = String.format("create table %s " +
+			"(%s int primary key, %s int, %s text, %s text)",
+			VOCAB_TABLE, C_ID, C_VOCAB_NUMBER, C_EWORD, C_FWORD);
+	private static final String CREATE_ACTIVE_TABLE_SQL_STATEMENT = String.format("create table %s " +
+			"(%s int primary key, %s text)",
+			ACTIVE_TABLE,C_ID, C_AWORD);
+	private static final String CREATE_PREVIOUSLY_ACTIVE_TABLE_SQL_STATEMENT = String.format("create table %s " +
+			"(%s int primary key,%s int, %s text)",
+			PREVIOUSLY_ACTIVE_TABLE,C_ID, C_VOCAB_NUMBER, C_AWORD);
+	private static final String CREATE_TITES_TABLE_SQL_STATEMENT = String.format("create table %s " +
+			"(%s int primary key, %s text)",
+			TITES_TABLE,C_ID, C_TITLE);
 	
-
+	// update types
 	public static final String UPDATE_TYPE_OPEN_VOCAB = "update_type_open_vocab";
 	public static final String UPDATE_TYPE_RESET_VOCAB = "update_type_reset_vocab";
 	public static final String UPDATE_TYPE_FLIP_ACTIVE_VOCAB_WORD = "update_type_flip_active_vocab_word";
 	public static final String UPDATE_TYPE_VOCAB_LANGUAGE = "update_type_vocab_language";
 	public static final String UPDATE_TYPE_REMOVE_ACTIVE_VOCAB_WORD = "update_type_remove_vocab_word";
-
-	public static final String UPDATE_OPEN_VOCAB_NAME = "update_open_vocab_name";
-
+	// the values found inside content values during an update() call.
 	public static final String VALUES_UPDATE_TYPE = "update_type";
 	public static final String VALUES_VOCAB_NAME = "vocab_name";
 	public static final String VALUES_VOCAB_NUMBER = "vocab_number";
 	public static final String VALUES_VOCAB_WORD_NUMBER = "values_vocab_word_numbr";
 	public static final String VALUES_VOCAB_LANGUAGE = "vocab_language";
-
-	public static final int SAMPLE_SIZE = 10;
-	
-	private static final String CREATE_VOCAB_TABLE_SQL_STATEMENT = String.format("create table %s " +
-			"(%s int primary key, %s int, %s text, %s text)",
-			VOCAB_TABLE, C_ID, C_VOCAB_NUMBER, C_EWORD, C_FWORD);
-	
-	private static final String CREATE_ACTIVE_TABLE_SQL_STATEMENT = String.format("create table %s " +
-			"(%s int primary key, %s text)",
-			ACTIVE_TABLE,C_ID, C_AWORD);
-
-	private static final String CREATE_PREVIOUSLY_ACTIVE_TABLE_SQL_STATEMENT = String.format("create table %s " +
-			"(%s int primary key,%s int, %s text)",
-			PREVIOUSLY_ACTIVE_TABLE,C_ID, C_VOCAB_NUMBER, C_AWORD);
-
-	private static final String CREATE_TITES_TABLE_SQL_STATEMENT = String.format("create table %s " +
-			"(%s int primary key, %s text)",
-			TITES_TABLE,C_ID, C_TITLE);
-	
-	
+	// the values found in prefferences.
+	public static final String PREFERENCES_IS_ENGLISH_ACTIVIE = "is_english_active";
 	public static final String PREFERENCES_VOCAB_IN_TABLE = "preferences_vocab_in_table";
 	public static final String PREFERENCES_VOCAB_IN_PREVIOUSLY_ACTIVE_TABLE = "preferences_vocab_in_previously_active_table";
 	public static final String PREFERENCES_VOCAB_WORD_COUNT ="vocabWordCount";
-	
-	public static final String PREFERENCES_IS_ENGLISH_ACTIVIE = "is_english_active";
 
-
-
+	// the actual database and database helper.
 	SQLiteDatabase db;
 	DBHelper dbHelper;
-	//Integer vocabNumber;
-	//String vocabLanguage;
 	
 	/**
 	 * Happens the first time that a VocabResolver is created.
@@ -118,7 +103,6 @@ public class VocabProvider extends ContentProvider {
 			prefs.edit().putInt(VocabProvider.PREFERENCES_VOCAB_WORD_COUNT, 0).commit();
 		}
 		// set initial language
-		prefs.getString(VOCAB_LANGUAGE, VocabProvider.C_EWORD);
 		prefs.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true);
 		
 		// now set up the datebase via a new db helper. It needs the context.
@@ -207,11 +191,11 @@ public class VocabProvider extends ContentProvider {
 			return 0;	
 		} 
 		if(reqType != null && reqType.equals(UPDATE_TYPE_VOCAB_LANGUAGE)){
+			
 			String vocabLanguage = values.getAsString(VALUES_VOCAB_LANGUAGE);
 			// set the initial language from the prefs.
 			SharedPreferences prefs = this.getContext()
 					.getSharedPreferences(TAG , Context.MODE_PRIVATE);
-			prefs.edit().putString(VOCAB_LANGUAGE, vocabLanguage).commit();
 			if(vocabLanguage.equals(C_FWORD)){
 				prefs.edit().putBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, false).commit();	
 			} else {
