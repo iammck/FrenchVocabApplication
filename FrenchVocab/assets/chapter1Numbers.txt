@@ -1,0 +1,26 @@
+title
+UNITÉ 1 Numbers
+un	
+One
+deux	
+Two
+trois	
+Three
+quatre	
+Four
+cinq	
+Five
+six	
+Six
+sept	
+Seven
+huit	
+Eight
+neuf	
+Nine
+dix	
+Ten
+onze	
+Eleven
+douze	
+Twelve

@@ -1,0 +1,28 @@
+title
+UNITÉ 1 European countries 
+l’Allemagne	
+Germany
+l’Angleterre	
+England
+l’Autriche	
+Austria
+la Belgique	
+Belgium
+l’Espagne	
+Spain
+la France	
+France
+l’Italie	
+Italy
+la Norvège	
+Norway
+les Pays-Bas	
+Netherlands
+la Pologne	
+Poland
+le Royaume-Uni	
+United Kingdom
+la Suède	
+Sweden
+la Suisse	
+Switzerland

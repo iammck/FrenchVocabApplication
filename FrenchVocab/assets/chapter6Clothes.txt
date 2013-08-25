@@ -1,0 +1,50 @@
+title
+UNITÉ 6 Les vêtements
+l’écharpe (f)	
+scarf
+l’imperméable (m)	
+raincoat
+la chemise	
+shirt
+la cravate	
+tie
+la jupe	
+skirt
+la robe	
+dress
+la veste	
+jacket
+le chapeau	
+hat
+le chemisier	
+blouse
+le collier	
+necklace
+le costume	
+suit 
+le jean	
+jeans
+le manteau	
+coat 
+le pantalon	
+pants
+le pull	
+sweater 
+le sac	
+bag
+le short	
+shorts
+le tee-shirt	
+T-shirt 
+les bottes (f)	
+boots
+les chaussettes (f)	
+socks
+les chaussures (f)	
+shoes
+les sandales (f)	
+sandals 
+les tennis (f), les baskets (f)	
+tennis shoes
+les vêtements (m)	
+clothes

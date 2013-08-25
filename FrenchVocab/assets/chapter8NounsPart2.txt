@@ -1,0 +1,52 @@
+title
+UNITÉ 8 Nouns Part 2
+le code postal	
+zip code
+le coéquipier	
+teammate
+le coureur	
+runner
+le courriel	
+e-mail
+le départ	
+departure
+le fer à repasser	
+iron
+le jour	
+day
+le liquide	
+cash
+le matin	
+morning
+le midi	
+noon
+le mois	
+month
+le moyen de transport	
+mode of transportation
+le parcours	
+journey
+le passeport	
+passport
+le plan	
+map
+le porte-clés	
+key chain
+le pressing	
+cleaners
+le rendez-vous	
+appointment
+le retour	
+return
+le soir	
+evening
+le train	
+train
+le vol	
+flight
+le voyage	
+travel, trip
+le voyage d’affaires	
+business trip
+les clés (f)	
+keys

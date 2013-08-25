@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <ListPreference 
+        android:title="@string/unit_1" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_1_summary" 
+        android:entries="@array/vocab_unit_1_names" 
+        android:entryValues="@array/vocab_unit_1_names_values"/>
+     
+     <ListPreference 
+        android:title="@string/unit_2" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_2_summary" 
+        android:entries="@array/vocab_unit_2_names" 
+        android:entryValues="@array/vocab_unit_2_names_values"/>
+    
+    <ListPreference 
+        android:title="@string/unit_3" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_3_summary" 
+        android:entries="@array/vocab_unit_3_names" 
+        android:entryValues="@array/vocab_unit_3_names_values"/>
+    
+    <ListPreference 
+        android:title="@string/unit_4" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_4_summary" 
+        android:entries="@array/vocab_unit_4_names" 
+        android:entryValues="@array/vocab_unit_4_names_values"/>
+    
+    <ListPreference 
+        android:title="@string/unit_5" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_5_summary" 
+        android:entries="@array/vocab_unit_5_names" 
+        android:entryValues="@array/vocab_unit_5_names_values"/>
+    
+    <ListPreference 
+        android:title="@string/unit_6" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_6_summary" 
+        android:entries="@array/vocab_unit_6_names" 
+        android:entryValues="@array/vocab_unit_6_names_values"/>
+    
+    <ListPreference 
+        android:title="@string/unit_7" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_7_summary" 
+        android:entries="@array/vocab_unit_7_names" 
+        android:entryValues="@array/vocab_unit_7_names_values"/>
+    
+    <ListPreference 
+        android:title="@string/unit_8" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_8_summary" 
+        android:entries="@array/vocab_unit_8_names" 
+        android:entryValues="@array/vocab_unit_8_names_values"/>
+    
+    
     <ListPreference 
         android:title="@string/unit_9" 
         android:key="current_chapter" 
@@ -57,6 +115,14 @@
         android:summary="@string/unit_16_summary" 
         android:entries="@array/vocab_unit_16_names" 
         android:entryValues="@array/vocab_unit_16_names_values"/>
+        />
+
+         <ListPreference 
+          android:title="@string/unit_17" 
+        android:key="current_chapter" 
+        android:summary="@string/unit_17_summary" 
+        android:entries="@array/vocab_unit_17_names" 
+        android:entryValues="@array/vocab_unit_17_names_values"/>
         />
 
 </PreferenceScreen>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- vocab titles and summaries -->
+    
     <string name="unit_9">Unit 9</string>
     <string name="unit_9_summary">Vocab from unit 9</string>
     <string name="unit_10">Unit 10</string>
@@ -17,6 +18,25 @@
     <string name="unit_15_summary">Vocab from unit 15</string>
     <string name="unit_16">Unit 16</string>
     <string name="unit_16_summary">Vocab from unit 16</string>
+    <string name="unit_17">Unit 17</string>
+    <string name="unit_17_summary">Vocab from unit 17</string>
+    
+    <string name="unit_1">Unit 1</string>
+    <string name="unit_1_summary">Vocab from unit 1</string>
+    <string name="unit_2">Unit 2</string>
+    <string name="unit_2_summary">Vocab from unit 2</string>
+    <string name="unit_3">Unit 3</string>
+    <string name="unit_3_summary">Vocab from unit 3</string>
+    <string name="unit_4">Unit 4</string>
+    <string name="unit_4_summary">Vocab from unit 4</string>
+    <string name="unit_5">Unit 5</string>
+    <string name="unit_5_summary">Vocab from unit 5</string>
+    <string name="unit_6">Unit 6</string>
+    <string name="unit_6_summary">Vocab from unit 6</string>
+    <string name="unit_7">Unit 7</string>
+    <string name="unit_7_summary">Vocab from unit 7</string>
+    <string name="unit_8">Unit 8</string>
+    <string name="unit_8_summary">Vocab from unit 8</string>
     
     
     <!-- vocab unit section names and vales -->
@@ -141,16 +161,161 @@
         <item>41</item>     
     </string-array>
     
+    <string-array name="vocab_unit_17_names">
+        <item>Unit 17 nouns 1</item>
+        <item>Unit 17 nouns 2</item>
+        <item>Unit 17 adjectives</item>
+        <item>Unit 17 verbs</item>
+        <item>Unit 17 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_17_names_values">
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>     
+    </string-array>
     
+    <string-array name="vocab_unit_1_names">
+        <item>Unit 1 Numbers</item>
+        <item>Unit 1 Nouns</item>
+        <item>Unit 1 countries</item>
+        <item>Unit 1 verbs</item>
+        <item>Unit 1 additional</item>
+    </string-array>
+    <string-array name="vocab_unit_1_names_values">
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+    </string-array>
     
+    <string-array name="vocab_unit_2_names">
+        <item>Unit 2 Numbers</item>
+        <item>Unit 2 Professions</item>
+        <item>Unit 2 Nouns 1</item>
+        <item>Unit 2 Nouns 2</item>
+        <item>Unit 2 Adjectives</item>
+        <item>Unit 2 verbs</item>
+        <item>Unit 2 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_2_names_values">
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_3_names">
+        <item>Unit 3 Months</item>
+        <item>Unit 3 Nouns 1</item>
+        <item>Unit 3 Nouns 2</item>
+        <item>Unit 3 Adjectives</item>
+        <item>Unit 3 verbs</item>
+        <item>Unit 3 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_3_names_values">
+        <item>59</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_4_names">
+        <item>Unit 4 Days</item>
+        <item>Unit 4 Nouns 1</item>
+        <item>Unit 4 Nouns 2</item>
+        <item>Unit 4 Adjectives</item>
+        <item>Unit 4 verbs</item>
+        <item>Unit 4 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_4_names_values">
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_5_names">
+        <item>Unit 5 Professions</item>
+        <item>Unit 5 Nouns</item>
+        <item>Unit 5 Adjectives</item>
+        <item>Unit 5 verbs</item>
+        <item>Unit 5 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_5_names_values">
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_6_names">
+        <item>Unit 6 Numbers</item>
+        <item>Unit 6 Clothes</item>
+        <item>Unit 6 Nouns Part 1</item>
+        <item>Unit 6 Nouns Part 2</item>
+        <item>Unit 6 Adjectives</item>
+        <item>Unit 6 verbs</item>
+        <item>Unit 6 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_6_names_values">	
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>80</item>
+        <item>81</item>
+        <item>82</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_7_names">
+        <item>Unit 7 nouns 1</item>
+        <item>Unit 7 nouns 2</item>
+        <item>Unit 7 adjectives</item>
+        <item>Unit 7 verbs</item>
+        <item>Unit 7 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_7_names_values">
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>     
+        <item>87</item>
+    </string-array>
+    
+    <string-array name="vocab_unit_8_names">
+        <item>Unit 8 nouns 1</item>
+        <item>Unit 8 nouns 2</item>
+        <item>Unit 8 adjectives</item>
+        <item>Unit 8 verbs</item>
+        <item>Unit 8 additional </item>
+    </string-array>
+    <string-array name="vocab_unit_8_names_values">
+        <item>88</item>
+        <item>89</item>
+        <item>90</item>
+        <item>91</item>     
+        <item>92</item>
+    </string-array>
     <!-- vocab unit file names  -->
     <string-array name="available_vocab_file_names">
-        <item>chap9nounsPart1.txt</item>
-        <item>chap9nounsPart2.txt</item>
-        <item>chap9nounsPart3.txt</item>
-        <item>chap9adjectives.txt</item>
-        <item>chap9verbs.txt</item>
-        <item>chap9wordsAndExpressions.txt</item>
+        <item>chapter9NounsPart1.txt</item>
+        <item>chapter9NounsPart2.txt</item>
+        <item>chapter9NounsPart3.txt</item>
+        <item>chapter9Adjectives.txt</item>
+        <item>chapter9Verbs.txt</item>
+        <item>chapter9Additional.txt</item>
+        
         
         <item>chapter10NounsPart1.txt</item>
         <item>chapter10NounsPart2.txt</item>
@@ -194,6 +359,68 @@
         <item>chapter16Verbs.txt</item>
         <item>chapter16Additional.txt</item>
     
+        <item>chapter17NounsPart1.txt</item>
+        <item>chapter17NounsPart2.txt</item>
+        <item>chapter17Adjectives.txt</item>
+        <item>chapter17Verbs.txt</item>
+        <item>chapter17Additional.txt</item>
+    
+        <item>chapter1Numbers.txt</item>
+    	<item>chapter1Nouns.txt</item>
+        <item>chapter1Countries.txt</item>
+        <item>chapter1Verbs.txt</item>
+        <item>chapter1Additional.txt</item>
+        
+        <item>chapter2Numbers.txt</item>
+        <item>chapter2Professions.txt</item>
+        <item>chapter2NounsPart1.txt</item>
+        <item>chapter2NounsPart2.txt</item>
+        <item>chapter2Adjectives.txt</item>
+        <item>chapter2Verbs.txt</item>
+        <item>chapter2Additional.txt</item>
+    
+
+        <item>chapter3Months.txt</item>
+        <item>chapter3NounsPart1.txt</item>
+        <item>chapter3NounsPart2.txt</item>
+        <item>chapter3Adjectives.txt</item>
+        <item>chapter3Verbs.txt</item>
+        <item>chapter3Additional.txt</item>
+
+        <item>chapter4Days.txt</item>
+        <item>chapter4NounsPart1.txt</item>
+        <item>chapter4NounsPart2.txt</item>
+        <item>chapter4Adjectives.txt</item>
+        <item>chapter4Verbs.txt</item>
+        <item>chapter4Additional.txt</item>
+
+		<item>chapter5Professions.txt</item>
+        <item>chapter5Nouns.txt</item>
+        <item>chapter5Adjectives.txt</item>
+        <item>chapter5Verbs.txt</item>
+        <item>chapter5Additional.txt</item>
+
+        <item>chapter6Numbers.txt</item>
+        <item>chapter6Clothes.txt</item>
+        <item>chapter6NounsPart1.txt</item>
+        <item>chapter6NounsPart2.txt</item>
+        <item>chapter6Adjectives.txt</item>
+        <item>chapter6Verbs.txt</item>
+        <item>chapter6Additional.txt</item>
+        
+        <item>chapter7NounsPart1.txt</item>
+        <item>chapter7NounsPart2.txt</item>
+        <item>chapter7Adjectives.txt</item>
+        <item>chapter7Verbs.txt</item>
+        <item>chapter7Additional.txt</item>
+        
+        <item>chapter8NounsPart1.txt</item>
+        <item>chapter8NounsPart2.txt</item>
+        <item>chapter8Adjectives.txt</item>
+        <item>chapter8Verbs.txt</item>
+        <item>chapter8Additional.txt</item>
+        
+        
     </string-array>
     
 </resources>

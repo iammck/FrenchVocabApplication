@@ -1,0 +1,32 @@
+title
+UNITÉ 2 Professions
+l’architecte (m, f)	
+architect
+l’assistant social, l’assistante 
+sociale	social worker
+l’étudiant, l’étudiante	
+student
+l’infirmier, l’infirmière	
+nurse
+l’informaticien, l’informaticienne	
+computer specialist
+l’instituteur, l’institutrice	
+schoolteacher
+le cuisinier, la cuisinière	
+cook 
+le directeur, la directrice	
+director 
+le musicien, la musicienne	
+musician 
+le professeur	
+teacher
+le sculpteur, la sculptrice	
+sculptor 
+le/la dentiste	
+dentist
+le/la journaliste	
+journalist 
+le/la percussionniste	
+drummer
+le/la publicitaire	
+publicist

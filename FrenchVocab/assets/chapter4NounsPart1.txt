@@ -1,0 +1,46 @@
+title
+UNITÉ 4 Nouns Part 1
+l’alimentation (f)	
+diet (what you eat) 
+l’an (m)	
+year
+l’après-midi (m)	
+afternoon 
+l’athlétisme (m)	
+track 
+l’eau (f)	
+water 
+l’emploi (m)	
+job 
+l’environnement (m)	
+environment 
+l’escrime (f)	
+fencing 
+l’heure (f)	
+hour
+l’horaire (m)	
+schedule
+l’humeur (f)	
+mood
+l’œil (m)	
+eye 
+l’ordinateur (m)	
+computer
+la bouche	
+mouth 
+la chaise	
+chair 
+la graisse	
+fat 
+la gymnastique	
+gymnastics
+la jambe	
+leg 
+la main	
+hand
+la marche à pied	
+walking 
+la semaine	
+week
+la sieste	
+nap

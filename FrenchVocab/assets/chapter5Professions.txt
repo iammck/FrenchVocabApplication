@@ -1,0 +1,42 @@
+title
+UNITÉ 5 Professions
+l'agriculteur, l'agricultrice	
+farmer 
+l'architecte (m,f)	
+architect
+l'artisan, la femme artisan	
+artisan
+l'assistant(e) social(e)	
+social worker
+l'avocat, l'avocate	
+lawyer 
+l'employé(e) de bureau	
+office worker
+l'enseignant(e)	
+teacher
+l'informaticien, l'informaticienne 	
+IT person 
+l'ingénieur, la femme ingénieur	
+engineer 
+l'instituteur, l'institutrice	
+school teacher 
+l'interprète (m,f)	
+interpreter
+l'ouvrier, l'ouvrière	
+factory worker 
+le boulanger, la boulangère 	
+baker 
+le camionneur, la camionneuse 	
+truck driver 
+le coiffeur, la coiffeuse	
+hair dresser 
+le cuisinier, la cuisinière	
+cook 
+le juge, la femme juge	
+judge
+le médecin, la femme médecin 	
+medical doctor 
+le musicien, la musicienne	
+musician 
+le pompier, la femme pompier	
+firefighter
