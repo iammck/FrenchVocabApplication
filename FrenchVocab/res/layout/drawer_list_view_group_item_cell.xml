@@ -9,7 +9,7 @@
         android:layout_width="24dp"
         android:layout_height="48dp"
         android:padding="8dp"
-        android:src="@drawable/question_mark_blue_md"
+        android:src="@drawable/ic_question_mark_blue_md"
         android:visibility="invisible" />
 
     <RelativeLayout
@@ -25,15 +25,6 @@
             android:text="TextView"
 			android:textAppearance="?android:attr/textAppearanceMedium"
          />
-
-        <ImageView
-            android:id="@+id/groupItemImageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:padding="16dp"
-            android:src="@drawable/question_mark_blue_md" />
 
     </RelativeLayout>
 

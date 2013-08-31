@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mck.vocab;
+package com.mck.vocab.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.mck.vocab.R;
+import com.mck.vocab.VocabProvider;
 
 /**
  * @author Michael
@@ -41,7 +44,7 @@ public class ChangeLanguageDialogFragment extends DialogFragment implements OnCl
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// inflate the view
-		View view = inflater.inflate(R.layout.change_language_dialog_layout, container);
+		View view = inflater.inflate(R.layout.change_language_dialog_fragment_layout, container);
 		// set the on click listener
 		Button button = (Button) view.findViewById(R.id.buttonEnglish);
 		button.setOnClickListener(this);

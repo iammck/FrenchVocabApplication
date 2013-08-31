@@ -38,7 +38,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mck.vocab.ChangeLanguageDialogFragment.ChangeLanguageCallback;
+import com.mck.vocab.fragments.ChangeLanguageDialogFragment;
+import com.mck.vocab.fragments.EasyDialogAnswerFragment;
+import com.mck.vocab.fragments.EasyDialogQuestionFragment;
+import com.mck.vocab.fragments.VocabListFragment;
+import com.mck.vocab.fragments.ChangeLanguageDialogFragment.ChangeLanguageCallback;
 
 public class VocabListActivity extends ActionBarActivity implements 
 	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>,
@@ -87,7 +91,7 @@ public class VocabListActivity extends ActionBarActivity implements
         // register to get changes to the prefs.
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		prefs.registerOnSharedPreferenceChangeListener(this);
-        setContentView(R.layout.activity_vocab_list);
+        setContentView(R.layout.vocab_list_activity_layout);
        
         
         
@@ -787,16 +791,9 @@ public class VocabListActivity extends ActionBarActivity implements
 				convertView = inflater.inflate(R.layout.drawer_list_view_group_item_cell, null);
 			}
 			TextView textView = (TextView) convertView.findViewById(R.id.groupItemText);
-			ImageView imageView = (ImageView) convertView.findViewById(R.id.groupItemImageView);
-
+			
 			// set the text view
 			textView.setText(text);
-			// if the group item has items,
-			if (isOpen){
-				imageView.setImageResource(R.drawable.ic_down_arrow);
-			}else{
-				imageView.setImageResource(R.drawable.ic_right_arrow);
-			}
 			return convertView;
 		}
 	}

@@ -10,7 +10,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:padding="8dp"
-        android:src="@drawable/question_mark_blue_md" />
+        android:src="@drawable/ic_question_mark_blue_md" />
 
     <TextView
         android:id="@+id/itemText"

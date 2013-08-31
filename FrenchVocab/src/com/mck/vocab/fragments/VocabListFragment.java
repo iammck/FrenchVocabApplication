@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mck.vocab;
+package com.mck.vocab.fragments;
 
 
 import android.app.Activity;
@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+
+import com.mck.vocab.R;
+import com.mck.vocab.VocabListActivity;
+import com.mck.vocab.VocabProvider;
 
 
 /**
@@ -53,37 +55,11 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		super.onActivityCreated(savedInstanceState);
 		Log.v(TAG,"onActivityCreated() has begun");
 
-//		// get the current ChapterVocabList
-//		HashMap<Integer,ChapterVocab.VocabWord> vocab;
-//		vocab = vocabListActivity.chapterVocab.getVocabList();
-//		// for each get the id into an array list
-//		ArrayList<Integer> vocabIds = new ArrayList<Integer>();
-//		for(Integer vocabId: vocab.keySet()){
-//			vocabIds.add(vocabId);
-//		}
-
-		// set it to the fragment with setListAdapter
-		//this.setListAdapter(new VocabListAdapter(vocabListActivity, 
-		//		R.layout.vocab_word_cell, R.id.vocab_word_text, vocabIds));
-		
-		
-		//this.setListAdapter(new SimpleCursorAdapter(vocabListActivity, R.layout.vocab_word_cell, null, null, null, 0));
-		
-//		// add a picture for no list
-//		ImageView emptyView = new ImageView(vocabListActivity);
-//		LayoutParams params ;
-//		emptyView.setLayoutParams(params);
-//		emptyView.setImageResource(R.drawable.empty);
-//		this.getListView().setEmptyView(emptyView);	
-
-//		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-//		View emptyView = inflater.inflate(R.layout.empty_list_layout, null, false);
-//		getListView().setEmptyView(emptyView);
 		
 		// should i put this in an earlier lifecycle method?
 		// set the adapter to a simple cursor adapter
 		Context context = this.getActivity().getApplicationContext();
-		int cellview = R.layout.vocab_word_cell;
+		int cellview = R.layout.vocab_list_fragment_word_cell;
 		Cursor cursor = null;
 		String[] from = {VocabProvider.C_AWORD};
 		int[] to = {R.id.vocab_word_text};
