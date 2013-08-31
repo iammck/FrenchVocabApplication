@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.ContentProvider;
@@ -42,8 +43,8 @@ public class VocabProvider extends ContentProvider {
 	public static final Uri ACTIVE_TABLE_URI = Uri.parse(AUTHORITY+ "/" + ACTIVE_TABLE);
 	public static final String PREVIOUSLY_ACTIVE_TABLE = "previously_active";
 	public static final Uri PREVIOUSLY_ACTIVE_TABLE_URI = Uri.parse(AUTHORITY+ "/" + PREVIOUSLY_ACTIVE_TABLE);
-	public static final String TITES_TABLE = "title";
-	public static final Uri TITES_TABLE_URI = Uri.parse(AUTHORITY+ "/" + TITES_TABLE);
+	public static final String TITLES_TABLE = "title";
+	public static final Uri TITLES_TABLE_URI = Uri.parse(AUTHORITY+ "/" + TITLES_TABLE);
 	// column names
 	public static final String C_ID = "_id";
 	public static final String C_VOCAB_NUMBER = "chapter";
@@ -63,7 +64,7 @@ public class VocabProvider extends ContentProvider {
 			PREVIOUSLY_ACTIVE_TABLE,C_ID, C_VOCAB_NUMBER, C_AWORD);
 	private static final String CREATE_TITES_TABLE_SQL_STATEMENT = String.format("create table %s " +
 			"(%s int primary key, %s text)",
-			TITES_TABLE,C_ID, C_TITLE);
+			TITLES_TABLE,C_ID, C_TITLE);
 	
 	// update types
 	public static final String UPDATE_TYPE_OPEN_VOCAB = "update_type_open_vocab";
@@ -82,7 +83,10 @@ public class VocabProvider extends ContentProvider {
 	public static final String PREFERENCES_VOCAB_IN_TABLE = "preferences_vocab_in_table";
 	public static final String PREFERENCES_VOCAB_IN_PREVIOUSLY_ACTIVE_TABLE = "preferences_vocab_in_previously_active_table";
 	public static final String PREFERENCES_VOCAB_WORD_COUNT ="vocabWordCount";
+	public static final String PREFERENCES_ACTIVE_VOCAB_NUMBER = "preferences_active_vocab_number";
 
+
+	
 	// the actual database and database helper.
 	SQLiteDatabase db;
 	DBHelper dbHelper;
@@ -147,6 +151,23 @@ public class VocabProvider extends ContentProvider {
 
 			return cursor;
 		}
+		List<String> segments = uri.getPathSegments();
+		if(segments.contains(TITLES_TABLE)){ // trying to get active table title?
+			Log.v(TAG, "A query has been made for vocab title " + segment);
+
+			// if just the active table
+			if (segment.equals(TITLES_TABLE)){
+				SharedPreferences prefs = getContext().getSharedPreferences(TAG , Context.MODE_PRIVATE);
+				int vocabNumber = prefs.getInt(VocabProvider.PREFERENCES_ACTIVE_VOCAB_NUMBER, -1);
+				if (vocabNumber == -1){
+					Log.v(TAG,"attempting to query for active title, but none in preferences.");
+					return null;
+				}
+				return dbHelper.queryTitleTableForVocabNumber(vocabNumber);
+			} else {
+				return dbHelper.queryTitleTableForVocabNumber(Integer.valueOf(segment).intValue());
+			}
+		}
 		Log.v(TAG, "A query has been made for VocabWordNumber " + segment);
 		//should be a vocab word number, query the db for number
 		int vocabWordNumber = Integer.valueOf(segment).intValue();
@@ -179,13 +200,20 @@ public class VocabProvider extends ContentProvider {
 			String[] selectionArgs) {
 		String reqType = (String) values.get(VALUES_UPDATE_TYPE);
 		
-		Log.v(TAG,"begining an " + reqType + " update in update()");		
+		Log.v(TAG,"Begining an " + reqType + " update in update()");		
 		if(reqType != null && reqType.equals(UPDATE_TYPE_OPEN_VOCAB)){
 			return this.openVocabAsActive(values);	
 		}
 		if(reqType != null && reqType.equals(UPDATE_TYPE_RESET_VOCAB)){
-			int vocabNumber = values.getAsInteger(VALUES_VOCAB_NUMBER);
-			// get the new sample vocab into the active table and notify
+			// get prefs
+			SharedPreferences prefs = this.getContext()
+					.getSharedPreferences(TAG , Context.MODE_PRIVATE);
+			// get preferences active table
+			int vocabNumber = prefs.getInt(PREFERENCES_ACTIVE_VOCAB_NUMBER, -1);
+			if (vocabNumber == -1){
+				Log.v(TAG, "update request reset failed to get he active vocab number from prefs");
+			}
+			// set the active table to the vocab table and notify
 			setActiveTableToVocabTable(vocabNumber);
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 			return 0;	
@@ -202,11 +230,6 @@ public class VocabProvider extends ContentProvider {
 				prefs.edit().putBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, true).commit();	
 			}
 			setActiveTableToCurrentLanguage();
-//			// get the active vocab number from prefs 
-//			int vocabNumber = prefs.getInt(VALUES_VOCAB_NUMBER, 1);
-//			// get the vocab into the active table and notify
-//			setActiveTableToVocabNumber(vocabNumber); // TODO can not do it this way. =\
-//			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 			return 0;	
 		} // 
 		if(reqType != null && reqType.equals(UPDATE_TYPE_FLIP_ACTIVE_VOCAB_WORD)){
@@ -216,12 +239,6 @@ public class VocabProvider extends ContentProvider {
 			atCursor.moveToFirst();
 			// get the row from the VocabTable
 			Cursor vtCursor = dbHelper.queryVocabTableForVocabWord(vocabWordNumber);
-//			if(vtCursor.getCount() < 1){
-//				return 0; // TODO This is not the right soln for this problem.
-//							// what is happening is that the reloading of the data
-//							// from file is giving items new id's different from
-//							// the ones that may be contained in the active table. bama
-//			}
 			vtCursor.moveToFirst();
 			// get the active word and the english word
 			int  index = atCursor.getColumnIndex(C_AWORD);
@@ -257,7 +274,6 @@ public class VocabProvider extends ContentProvider {
 	private void setActiveTableToCurrentLanguage() {
 
 		Log.v(TAG, "setActiveTableToCurrentLanguage has begun.");
-		// TODO Auto-generated method stub
 		// Get the language from the prefs.
 		SharedPreferences prefs = getContext().getSharedPreferences(TAG , Context.MODE_PRIVATE);
 		boolean isEnglish = prefs.getBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, true);
@@ -268,6 +284,9 @@ public class VocabProvider extends ContentProvider {
 			vocabWordColumn = C_FWORD;	
 		}
 		dbHelper.updateActiveTableToLanguage(vocabWordColumn);
+		
+	}
+
 //		// get a cursor for active table
 //		Cursor aCursor = dbHelper.queryActiveTable();
 //		// if no active cursor, return
@@ -319,7 +338,7 @@ public class VocabProvider extends ContentProvider {
 //		getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 
 
-	}
+//	}
 	private int openVocabAsActive(ContentValues values){
 		// get what we need from values
 		String vocabName = values.getAsString(VALUES_VOCAB_NAME);
@@ -346,17 +365,12 @@ public class VocabProvider extends ContentProvider {
 		}
 		// now set the active table to the vocabNumber
 		setActiveTableToVocabNumber(vocabNumber);
-		
-		// save the new active chapter in the shared prefs.
-		prefs.edit().putInt(VALUES_VOCAB_NUMBER, vocabNumber).commit();
+		// notify users of the privider that the data has been changed.
 		getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 
 		return 0;
 	}
 		
-
-	// TODO setActiveTableToPreviousTable
-	
 	private void setActiveTableToVocabNumber(int vocabNumber){
 		// Will use a flag when finding out if the vocabNumber is in the db.
 		boolean isPrevious = false;
@@ -376,6 +390,9 @@ public class VocabProvider extends ContentProvider {
 		} else { // set from the previously loaded table
 			setActiveTableToPreviousVocabTable(vocabNumber);
 		}
+		// save the new active chapter in the shared prefs.
+		prefs.edit().putInt(PREFERENCES_ACTIVE_VOCAB_NUMBER, vocabNumber).commit();
+				
 	}
 	
 	private void setActiveTableToVocabTable(int vocabId){
@@ -402,7 +419,7 @@ public class VocabProvider extends ContentProvider {
 		}
 		int idColumn = vCursor.getColumnIndex(C_ID);			
 		
-		// TODO Rewrite with sqliteStatement helper class.
+		// Rewrite with sqliteStatement helper class.
 		// using the depreciated InsertHelper
 		InsertHelper iHelper;
 					
@@ -500,7 +517,7 @@ public class VocabProvider extends ContentProvider {
 		int vocabWordColumn = pCursor.getColumnIndex(C_AWORD);
 		int idColumn = pCursor.getColumnIndex(C_ID);			
 		
-		// TODO Rewrite with sqliteStatement helper class.
+		// Rewrite with sqliteStatement helper class.
 		// using the depreciated InsertHelper
 		InsertHelper iHelper;
 					
@@ -633,13 +650,11 @@ public class VocabProvider extends ContentProvider {
 		
 		
 		private void putFileIntoVocabTable(String vocabName, int vocabNumber){
-			
 			// delete any vocab with that number already present in vocab table
 			deleteVocabTableContent(vocabNumber);
 			
-			
 			// Need the current word count.
-			SharedPreferences prefs = getContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
+			SharedPreferences prefs = getContext().getSharedPreferences(VocabProvider.TAG, Context.MODE_PRIVATE);
 			int vocabWordCount = prefs.getInt(VocabProvider.PREFERENCES_VOCAB_WORD_COUNT, 0);
 			// using the depreciated InsertHelper
 			InsertHelper iHelper;
@@ -652,6 +667,11 @@ public class VocabProvider extends ContentProvider {
 				InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "Cp1252");
 				// get a buffered reader
 				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				// First two lines are the title
+				String title = bufferedReader.readLine(); // first line says title
+				title = bufferedReader.readLine(); // second line is the actual title.
+				// now put the title in the title table using this vocabNumber.
+				putTitleWithVocabNumberInTitleTable(title, vocabNumber);  
 				db = getWritableDatabase();
 				// create an insert helper to make this a bulk insert
 				iHelper = new InsertHelper(db, VocabProvider.VOCAB_TABLE);
@@ -675,18 +695,8 @@ public class VocabProvider extends ContentProvider {
 					iHelper.bind(eWordColumn, eWord);
 					iHelper.bind(fWordColumn, fWord);
 					iHelper.execute();
-					
-//					// Create a content values and put stuff in it. 
-//					// Might want to put directly into operations.
-//					ContentValues values = new ContentValues();
-//					values.put(C_ID, vocabWordNumber);
-//					values.put(C_VOCAB_NUMBER, vocabNumber);
-//					values.put(C_EWORD, eWord);
-//					values.put(C_FWORD, fWord);
-//					iHelper.insert(values);
-					
-					
 				}
+
 				// apply the batch transaction
 				db.setTransactionSuccessful();
 				db.endTransaction();
@@ -704,6 +714,20 @@ public class VocabProvider extends ContentProvider {
 		}
 		
 		
+		private void putTitleWithVocabNumberInTitleTable(String title, int vocabNumber) {
+			db = getWritableDatabase();
+			
+			String table =VocabProvider.TITLES_TABLE;
+			ContentValues values = new ContentValues();
+			values.put(C_TITLE, title);
+			values.put(C_ID, Integer.valueOf(vocabNumber));
+			int conflictAlgorithm = SQLiteDatabase.CONFLICT_REPLACE;
+			Long result = db.insertWithOnConflict(table, null, values, conflictAlgorithm);
+			if (result == -1){
+				Log.e(TAG, "putTitleWithVocabNumberInTitleTable() db.insert returned an error code -1");
+			}
+		}
+
 		private void putActiveTableIntoPreviouslyActiveTable(){
 			Log.v(TAG, "putActiveTableIntoPreviouslyActiveTable is beggining.");
 			// get a cursor to the active table
@@ -729,9 +753,7 @@ public class VocabProvider extends ContentProvider {
 			int vocabNumber = vCursor.getInt(vocabNumberColumn); 
 			// having the cursor and the chapter number, remove anything in the previously active table
 			deletePreviouslyActiveTableContent(vocabNumber);
-			// now do a bulk insert into the db
-			// TODO Rewrite with sqliteStatement helper class.
-			// using the depreciated InsertHelper
+			// now do a bulk insert into the prev active table using the depreciated InsertHelper
 			InsertHelper iHelper;
 			// add the first item then the rest
 			aCursor.moveToFirst();
@@ -882,7 +904,6 @@ public class VocabProvider extends ContentProvider {
 			}
 			// Prepare for insert into actie table, clear the active table
 			deleteActiveTableContent();
-			// TODO Rewrite with sqliteStatement helper class.
 			InsertHelper iHelper;
 			// create and set up insert helper to make this a bulk insert
 			iHelper = new InsertHelper(db, VocabProvider.ACTIVE_TABLE);
@@ -978,6 +999,26 @@ public class VocabProvider extends ContentProvider {
 			Cursor cursor = db.query(VocabProvider.ACTIVE_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
 			return cursor;
 		}
+
+		/**
+		 * Returns a cursor for the row with the vocabWordNumber
+		 * @param vocabNumber the number of the vocab word to retrieve.
+		 * @return the cursor for the vocabWord
+		 */
+		public Cursor queryTitleTableForVocabNumber(int vocabNumber){
+			Log.v(TAG, "queryTitleTableForVocabNumber for vocabNumber "+ vocabNumber);
+			db = getWritableDatabase();
+			String[] columns = null; // want all columns for the row
+			String selection = " " + VocabProvider.C_ID + " = " + String.valueOf(vocabNumber);
+			String[] selectionArgs = null;//{String.valueOf(vocabWordNumber)};
+			String groupBy = null;
+			String having = null;
+			String sortBy =  C_ID + " ASC";
+			Cursor cursor = db.query(VocabProvider.TITLES_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			Log.v(TAG, "queryTitleTableForVocabNumber found " + cursor.getCount() + " titles.");
+			return cursor;
+		}
+
 		
 		/**
 		 * NOT WORKING :/
@@ -987,7 +1028,6 @@ public class VocabProvider extends ContentProvider {
 		 */
 		public Cursor queryVocabTableForVocabWords(String[] vocabWordNumbers){
 			Log.v(TAG, "query active table for vocabWordNumbers "+ vocabWordNumbers);
-			// TODO Need orStatement in select. nope!
 			String orStatement = "";
 			for(int x= 0; x < vocabWordNumbers.length - 1;x++){
 				orStatement += vocabWordNumbers[x] + " OR ";
@@ -998,7 +1038,7 @@ public class VocabProvider extends ContentProvider {
 			
 			db = getWritableDatabase();
 			String[] columns = null; // want all columns for the row
-			String selection = " " + VocabProvider.C_ID + " = " +  orStatement ; // TODO cross your fingers!!
+			String selection = " " + VocabProvider.C_ID + " = " +  orStatement ;
 			String[] selectionArgs = null; // = vocabWordNumbers;//{String.valueOf(vocabWordNumber)};
 			String groupBy = null;
 			String having = null;
