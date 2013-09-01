@@ -7,7 +7,9 @@
     <string name="display_english_language">english</string>
     <string name="the_starting_language">Starting Language</string>
     <string name="more_vocab">More Vocab</string>
-    <string name="restart">Reset Vocab</string>
+    <string name="get_vocab">Get Vocab</string>
+    <string name="history">History</string>
+    <string name="restart">Reset List</string>
     <string name="language">Language</string>
     <string name="default_language">english</string>
     <string name="preferences_language_summary">Select the starting language.</string>

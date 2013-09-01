@@ -1,7 +1,9 @@
 package com.mck.vocab;
 
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,14 +50,17 @@ public class VocabListActivity extends ActionBarActivity implements
 	ChangeLanguageCallback,OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>,
 	EasyDialogAnswerFragment.EasyDialogFragmentCallback
 	{
-	
-	
 
 
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
 	private static final String PREFERENCES_SUB_ITEM_TITLES = "preferences_sub_item_titles";
 	private static final String PREFERENCES_SUB_ITEM_VOCAB_NUMBERS = "preferences_sub_item_vocab_numbers";
+	private static final String PREFERENCES_ITEM_SET = "preferences_item_set";
+	private static final int PREFERENCES_ITEM_SET_GET_VOCAB = 1;
+	private static final int PREFERENCES_ITEM_SET_NO_START = 2;
+	private static final int PREFERENCES_ITEM_SET_NO_RESET = 3;
+	private static final int PREFERENCES_ITEM_SET_DEFAULT = 4;
 	public String[] AVAILABLE_VOCAB_FILE_NAMES; 
 	SharedPreferences prefs;
 	
@@ -92,10 +97,6 @@ public class VocabListActivity extends ActionBarActivity implements
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		prefs.registerOnSharedPreferenceChangeListener(this);
         setContentView(R.layout.vocab_list_activity_layout);
-       
-        
-        
-        
         
         // get the drawer layout, list  and actionBar toggle.
         // String[] drawerTitles =	getResources().getStringArray(R.array.drawer_row_titles);
@@ -104,19 +105,9 @@ public class VocabListActivity extends ActionBarActivity implements
         // set the list view adapter
         DrawerListArrayAdapter adapter = createDrawerListAdapter(this);
         drawerList.setAdapter(adapter);
-//        drawerList.setAdapter(
-//        		new ArrayAdapter<String>(	this, 
-//					        				android.R.layout.simple_list_item_1, 
-//					        				drawerTitles));
-        
         // set the list's clickListener
         drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
-        
-        
-        
-        
-        
-        
+
         // set the support actionbar to display home.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -132,13 +123,7 @@ public class VocabListActivity extends ActionBarActivity implements
             	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-        
         drawerLayout.setDrawerListener(drawerToggle);
-        
-     
-        	
-        
-        
     }
     
     @Override
@@ -154,8 +139,6 @@ public class VocabListActivity extends ActionBarActivity implements
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-
-
 	public class DrawerItemClickListener implements ListView.OnItemClickListener {
 		VocabListActivity activity;
 		
@@ -167,6 +150,9 @@ public class VocabListActivity extends ActionBarActivity implements
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Log.v(TAG, "drawerItemClickListener onItemClick is starting");
+			// TODO position 1-4 are no longer static and this must all change.
+			// TODO but wait until create adapter and adapter are finished.
+/*
 			switch (position){
 			case 0:
 				Log.v(TAG, "drawer item start selected");
@@ -188,29 +174,15 @@ public class VocabListActivity extends ActionBarActivity implements
 			case 4:
 				break;
 			default: 
-				
-				
 				//onSharedPreferenceChanged(SharedPreferences sharedPreferences
 				// must be be a subItem, get it.
 				String key = ((DrawerListArrayAdapter)drawerList.getAdapter()).itemTextArray[position];
 				SubItem item = (SubItem) ((DrawerListArrayAdapter)drawerList.getAdapter())
-													.itemTable.get(key);
+						.subItemsTable.get(key);
 				prefs.edit().putString("current_chapter", String.valueOf(item.vocabNumber)).commit();
-				
-				
-//				
-//				// get the right values for content values
-//				ContentValues values = new ContentValues();
-//				// file vocabName as name of file and current chapter
-//				String currentChapter = String.valueOf(item.vocabNumber);
-//				String vocabName = AVAILABLE_VOCAB_FILE_NAMES[Integer.valueOf(currentChapter).intValue() - 1];
-//				values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_OPEN_VOCAB);
-//				values.put(VocabProvider.VALUES_VOCAB_NAME, vocabName);
-//				values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
-//				// get the content provider and update
-//				getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);		
 				break;
 			}
+			*/
 			activity.drawerLayout.closeDrawer(activity.drawerList);
 		}
 	}
@@ -294,14 +266,12 @@ public class VocabListActivity extends ActionBarActivity implements
 		Log.v(TAG, "restartVocabList has begun");
 		// get the right values for content values
 		ContentValues values = new ContentValues();
-//		// get vocabNumber as name of current chapter
-//		String currentChapter = prefs.getString("current_chapter", "1");
 		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_RESET_VOCAB);
-//		values.put(VocabProvider.VALUES_VOCAB_NUMBER, currentChapter);
 		// get the content provider and update
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
 
+	// TODO does this change with the changes to adapter?
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
@@ -389,7 +359,6 @@ public class VocabListActivity extends ActionBarActivity implements
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
 	
-
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		String[] projection = {VocabProvider.C_ID, VocabProvider.C_AWORD};
@@ -402,7 +371,6 @@ public class VocabListActivity extends ActionBarActivity implements
 				 				null );
 	}
 	
-
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		int count = cursor.getCount();
@@ -481,19 +449,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	@Override
 	public void onChangeLanguageCallback(String language) {
 		Log.v(TAG, "onChangeLanguageCallback called with language " + language);
-		
-//		String language;
-//		// get the current language from the vocabProvider's shared prefs
-//		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG, Context.MODE_PRIVATE);
-//		String currentLanguage = 
-//				prefs.getString(VocabProvider.VOCAB_LANGUAGE, VocabProvider.C_EWORD);
-//		// then use the other language
-//		if (currentLanguage.equals(VocabProvider.C_EWORD)){
-//			language = VocabProvider.C_FWORD;
-//		} else {
-//			language = VocabProvider.C_EWORD;
-//		}
-		// now set up the active table in the other language using vocabProvider
+		// Set up the active table in the other language using vocabProvider
 		ContentValues values = new ContentValues();
 		// file vocabName as name of file and current chapter
 		values.put(VocabProvider.VALUES_UPDATE_TYPE, VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
@@ -587,76 +543,117 @@ public class VocabListActivity extends ActionBarActivity implements
 		questionFrag.setArguments(bundle);
 		// and show.
 		questionFrag.show(fragMan, TAG);	
-	}
-	
-	
+	}	
 	
 	public DrawerListArrayAdapter createDrawerListAdapter(Context context){
 		// need the following
-		String[] itemTextArray;
-		Item[] itemArray;
-		int resource;
-		int viewTypeCount;
+		Hashtable<Integer, Item> itemTable = null;
+		Hashtable<Integer, Item> subItemTable = null;
+		ArrayList<Integer> itemIdList = new ArrayList();
+		int resource = 0;
+		int viewTypeCount = 0;
 		// to get the result
 		DrawerListArrayAdapter result;
-		// will also need subItems
+		// get items
+		Item[] items = getItems();
+		// get any sub items
 		SubItem[] subItems = getSubItems();
-		// if there is subItems and not 0 length 
-		if ( subItems != null && subItems.length != 0){
-			// arrays of length for 4 items, 1 group, and length of subItems.
-			itemTextArray = new String[4 + 1 + subItems.length];
-			itemArray = new Item[4 + 1 + subItems.length];			
-			viewTypeCount = 3;
-		} else { // no sub items
-			itemTextArray = new String[4];
-			itemArray = new Item[4];			
-			viewTypeCount = 1;
-		}
-
-		// Add the main items to item text array
-		itemTextArray[0] = "Start";
-		itemTextArray[1] = "Language";
-		itemTextArray[2] = "Reset";
-		itemTextArray[3] = "More Vocab";
-		// if there are sub items then add them to item text array.
-		if ( subItems != null && subItems.length != 0){
-			itemTextArray[4] = "History";
-			for(int x = 0; x < subItems.length ; x++){
-				itemTextArray[5 + x] = subItems[x].text;
+		// A counter for number of adapter items.
+		int itemCount = 0;
+		// put items into itemsTable and update view type count
+		viewTypeCount = 1;
+		if (items != null && items.length != 0){
+			itemTable = new Hashtable<Integer, Item>();
+			for(Item i: items){
+				i.id = itemCount;
+				itemIdList.add(Integer.valueOf(itemCount));
+				itemTable.put(Integer.valueOf(itemCount++), i);
 			}
 		}
-		
-		// Add the main items to item array
-		for(int x = 0; x < 4 ; x++){
-			itemArray[x] = new Item();
-			itemArray[x].id = x;
-			itemArray[x].text = itemTextArray[x];
+		// put subItems into subItemsTable and update viewTypeCount
+		if (subItems != null && items.length != 0){
+			viewTypeCount = 3;
+			subItemTable = new Hashtable<Integer, Item>();
+			// put in the group item first
+			GroupItem gItem = new GroupItem();
+			gItem.text = getString(R.string.history);
+			gItem.id = itemCount;
+			itemIdList.add(Integer.valueOf(itemCount));
+			subItemTable.put(Integer.valueOf(itemCount++), gItem);
+			// iterate through the sub items, putting them into the table
+			for(Item i: subItems){ // with the right ids
+				i.id = itemCount;
+				itemIdList.add(Integer.valueOf(itemCount));
+				subItemTable.put(Integer.valueOf(itemCount++), i);
+			}
 		}
-		itemArray[0].imageResource = R.drawable.ic_start_star;
-		itemArray[1].imageResource = R.drawable.ic_language_bubble;
-		itemArray[2].imageResource = R.drawable.ic_restart;
-		itemArray[3].imageResource = R.drawable.ic_more_vocab;
-
-		// if there are sub items then add them to item array with a group.
-		if ( subItems != null && subItems.length != 0){
-			// add group as open
-			itemArray[4] = new GroupItem();
-			itemArray[4].id = 4;
-			itemArray[4].text = itemTextArray[4];
-			
-			for(int x = 5; x < subItems.length + 5 ; x++){
-				itemArray[x] = new SubItem();
-				itemArray[x].id = x;
-				itemArray[x].text = itemTextArray[x];
-				((SubItem) itemArray[x]).vocabNumber = subItems[x-5].vocabNumber;
-			}			
-		}	
-		
-		resource = 0; // No resource
-		result = new DrawerListArrayAdapter(context, resource, itemTextArray, itemArray, viewTypeCount);
+		// the adapter needs some strings
+		result = new DrawerListArrayAdapter(context, resource, 
+							itemTable, subItemTable, itemIdList, viewTypeCount);
 		return result;
 	}
+
+	/**
+	 * Get the items to display in the drawer list.
+	 * @return
+	 */
+	public Item[] getItems(){
+		Item[] items;
+		int itemSet = prefs.getInt(PREFERENCES_ITEM_SET, PREFERENCES_ITEM_SET_DEFAULT);
+		switch(itemSet){
+		// set to just show get vocab and no other items
+		case (PREFERENCES_ITEM_SET_GET_VOCAB):
+			items = new Item[1];
+			items[0].text = getString(R.string.get_vocab);			
+			items[0].imageResource = R.drawable.ic_start_star;
+			break;
+		// set to show all items but the reset
+		case (PREFERENCES_ITEM_SET_NO_RESET):
+			items = new Item[3];
+			for(int x = 0; x < 3 ; x++){
+				items[x] = new Item();
+			}
+			items[0].text = getString(R.string.start);
+			items[1].text = getString(R.string.language);
+			items[2].text = getString(R.string.more_vocab);			
+			items[0].imageResource = R.drawable.ic_start_star;
+			items[1].imageResource = R.drawable.ic_language_bubble;
+			items[2].imageResource = R.drawable.ic_more_vocab;
+			break;
+		// set to show no start item, but all the rest.
+		case (PREFERENCES_ITEM_SET_NO_START):
+			items = new Item[3];
+			for(int x = 0; x < 3 ; x++){
+				items[x] = new Item();
+			}
+			items[0].text = getString(R.string.language);
+			items[1].text = getString(R.string.restart);
+			items[2].text = getString(R.string.more_vocab);			
+			items[0].imageResource = R.drawable.ic_language_bubble;
+			items[1].imageResource = R.drawable.ic_restart;
+			items[2].imageResource = R.drawable.ic_more_vocab;
+			break;
+		// The default is to show all items
+		case (PREFERENCES_ITEM_SET_DEFAULT):
+		default:
+			items = new Item[4];
+			for(int x = 0; x < 4 ; x++){
+				items[x] = new Item();
+			}
+			items[0].text = getString(R.string.start);
+			items[1].text = getString(R.string.language);
+			items[2].text = getString(R.string.restart);
+			items[3].text = getString(R.string.more_vocab);			
+			items[0].imageResource = R.drawable.ic_start_star;
+			items[1].imageResource = R.drawable.ic_language_bubble;
+			items[2].imageResource = R.drawable.ic_restart;
+			items[3].imageResource = R.drawable.ic_more_vocab;
+		break;
+		}
+		return items;
+	}
 	public SubItem[] getSubItems(){
+		// TODO faster! faster! faster!
 		String subItemTitles = prefs.getString(PREFERENCES_SUB_ITEM_TITLES, "");
 		String subItemVocabNumbers= prefs.getString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, "");
 		if (subItemVocabNumbers.equals("")){
@@ -692,27 +689,33 @@ public class VocabListActivity extends ActionBarActivity implements
 	 * @author Michael
 	 *
 	 */
-	public class DrawerListArrayAdapter extends ArrayAdapter<String>{
+	public class DrawerListArrayAdapter extends ArrayAdapter<Integer>{
 
-		String[] itemTextArray;
-		Hashtable<String,Item> itemTable;
+		// This approach is too static and does not allow for easy manipulation of base items.
+		// Items should bee in a dynamic list. position may change.
+		Hashtable<Integer, Item> itemTable;
+		Hashtable<Integer,Item> subItemsTable;
 		int viewTypeCount = 0;
-		
+				
 		public DrawerListArrayAdapter(Context context, int resource,
-				String[] itemTextArray,Item[] itemArray, int viewTypeCount) {
-			super(context, resource, itemTextArray);
-			this.itemTextArray = itemTextArray;
+										Hashtable<Integer, Item> itemTable,
+										Hashtable<Integer, Item> subItemTable,
+										List<Integer> itemIdList,
+										int viewTypeCount) {
+			super(context, resource, itemIdList);
 			// Use the itemTextArray and itemArray to build up the itemTable.
-			itemTable = new Hashtable<String, Item>(); // a blank Hashtable.
-			for(int x = 0; x < itemTextArray.length; x++){
-				itemTable.put(itemTextArray[x], itemArray[x]);
-			}
+			this.itemTable = itemTable;
+			this.subItemsTable = subItemTable;
 			this.viewTypeCount = viewTypeCount;
 		}
 		
 		@Override
 		public int getCount() {
-			return itemTable.size();
+			if (subItemsTable != null){
+				return itemTable.size() + subItemsTable.size() ;
+			} else {
+				return itemTable.size();
+			}
 		}
 
 		@Override
@@ -722,34 +725,24 @@ public class VocabListActivity extends ActionBarActivity implements
 		
 		@Override
 		public int getItemViewType(int position) {
-			Item item = null;
-			// is position zero or one based? Suppose zero 
-			item = this.itemTable.get(itemTextArray[position]);
-			return item.type;		
+			Item item = this.itemTable.get(Integer.valueOf(position));
+			if (item == null){
+				item = this.subItemsTable.get(Integer.valueOf(position));
+			}
+			return item.type;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View result;
 			Item item = null;
-			item = this.itemTable.get(itemTextArray[position]);
+			item = this.itemTable.get(Integer.valueOf(position));
+			if (item == null){
+				item = this.subItemsTable.get(Integer.valueOf(position));
+			}
 			result = item.getView(position, convertView, parent);
 			return result;
 		}
-
-		@Override
-		public void insert(String object, int index) {
-			// TODO Auto-generated method stub
-			super.insert(object, index);
-		}
-
-		@Override
-		public void remove(String object) {
-			// TODO Auto-generated method stub
-			super.remove(object);
-		}	
-	
-		
 	}
 
 	private class Item {
@@ -776,10 +769,12 @@ public class VocabListActivity extends ActionBarActivity implements
 
 			return convertView;
 		}
+		public String toString(){
+			return text;
+		}
 	}
 
 	private class GroupItem extends Item {
-		public boolean isOpen = true;
 		public GroupItem(){
 			type = 1;
 		}
@@ -791,8 +786,7 @@ public class VocabListActivity extends ActionBarActivity implements
 				convertView = inflater.inflate(R.layout.drawer_list_view_group_item_cell, null);
 			}
 			TextView textView = (TextView) convertView.findViewById(R.id.groupItemText);
-			
-			// set the text view
+			// Set the text view
 			textView.setText(text);
 			return convertView;
 		}
@@ -800,7 +794,6 @@ public class VocabListActivity extends ActionBarActivity implements
 
 	private class SubItem extends Item {
 		public int vocabNumber;
-		
 		public SubItem(){
 			type = 2;
 		}
