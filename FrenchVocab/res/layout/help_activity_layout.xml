@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Help..."
+        android:text="Help"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -35,33 +35,28 @@
         android:text="Once the drawer is open, select 'More Vocab'. Select the unit then select a vocab list." />
     
     <TextView
-        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Invisible"
         android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Changing the active vocab list"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open the application drawer by pressing the icon found near the top left corner." />
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Once the drawer is open, select 'More Vocab'. Select the unit then select a vocab list." />
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Alernatively if the vocab list has preveiously been opened, it may be found in the history section of the application drawer." />

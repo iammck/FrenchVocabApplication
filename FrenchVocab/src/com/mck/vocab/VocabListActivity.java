@@ -322,15 +322,16 @@ public class VocabListActivity extends ActionBarActivity implements
 				}
 				
 				// TODO and check for max history.
-				// if max history,
+				// if max history, remove first in
 				subItemTitles = subItemTitles + "\n" + title;
 				subItemVocabNumbers = subItemVocabNumbers + "\n" + number;
 				prefs.edit()
 					.putString(PREFERENCES_SUB_ITEM_TITLES, subItemTitles)
 					.putString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, subItemVocabNumbers)
 					.commit();
-				// update the drawerListAdapter
+				// update the drawerListAdapter and close the cursor
 				drawerList.setAdapter(createDrawerListAdapter(this));
+				titleCursor.close();
 			}
 			
 			// get the right values for content values
@@ -366,6 +367,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		Log.v(TAG,"onCreateLoader has begun.");
 		String[] projection = {VocabProvider.C_ID, VocabProvider.C_AWORD};
 		return new CursorLoader(
 				 				this, 
@@ -381,10 +383,18 @@ public class VocabListActivity extends ActionBarActivity implements
 		int count = cursor.getCount();
 		Log.v(TAG, "onLoadFinished has started with " 
 				+ String.valueOf(count) + " items");
-		if (count == 0){
-			// swap out frags via runnable on uiTh via Activity.runonUithread
+		if (count == 0){ // if the list is empty
+			// set the drawer list without start
+			prefs.edit().putInt(PREFERENCES_ITEM_SET, PREFERENCES_ITEM_SET_NO_START).commit();
+			drawerList.setAdapter(createDrawerListAdapter(getApplication()));
 			// or open the drawer
 			drawerLayout.openDrawer(Gravity.LEFT);
+		} else { // there must be some stuff in the list
+			// show default list view
+			prefs.edit().putInt(PREFERENCES_ITEM_SET, PREFERENCES_ITEM_SET_DEFAULT).commit();
+			drawerList.setAdapter(createDrawerListAdapter(getApplication()));
+			// this is where the loading the list without the the reset should happen aswell.
+			
 		}
 		// set the vocabList adpter to the cursor.
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
@@ -411,6 +421,12 @@ public class VocabListActivity extends ActionBarActivity implements
 					int index = titleCursor.getColumnIndex(VocabProvider.C_TITLE);
 					title = titleCursor.getString(index);
 					getSupportActionBar().setTitle(title);
+					titleCursor.close();
+				} else { // since there is no title, there is no vocab, set the drawer to reflect this.
+					prefs.edit().putInt(PREFERENCES_ITEM_SET, PREFERENCES_ITEM_SET_GET_VOCAB).commit();
+					drawerList.setAdapter(createDrawerListAdapter(getApplication()));
+					// let the user know that they need to load vocab
+					
 				}
 			}
 			}.execute();
@@ -610,6 +626,7 @@ public class VocabListActivity extends ActionBarActivity implements
 		// set to just show get vocab and no other items
 		case (PREFERENCES_ITEM_SET_GET_VOCAB):
 			items = new Item[1];
+			items[0] = new Item();
 			items[0].text = getString(R.string.get_vocab);			
 			items[0].imageResource = R.drawable.ic_start_star;
 			items[0].itemTypeAction = ItemTypeAction.MORE_VOCAB;
@@ -634,19 +651,16 @@ public class VocabListActivity extends ActionBarActivity implements
 			break;
 		// set to show no start item, but all the rest.
 		case (PREFERENCES_ITEM_SET_NO_START):
-			items = new Item[3];
-			for(int x = 0; x < 3 ; x++){
+			items = new Item[2];
+			for(int x = 0; x < 2 ; x++){
 				items[x] = new Item();
 			}
-			items[0].text = getString(R.string.language);
-			items[1].text = getString(R.string.restart);
-			items[2].text = getString(R.string.more_vocab);			
-			items[0].imageResource = R.drawable.ic_language_bubble;
-			items[1].imageResource = R.drawable.ic_restart;
-			items[2].imageResource = R.drawable.ic_more_vocab;
-			items[0].itemTypeAction = ItemTypeAction.LANGUAGE;
-			items[1].itemTypeAction = ItemTypeAction.RESET;
-			items[2].itemTypeAction = ItemTypeAction.MORE_VOCAB;
+			items[0].text = getString(R.string.restart);
+			items[1].text = getString(R.string.more_vocab);			
+			items[0].imageResource = R.drawable.ic_restart;
+			items[1].imageResource = R.drawable.ic_more_vocab;
+			items[0].itemTypeAction = ItemTypeAction.RESET;
+			items[1].itemTypeAction = ItemTypeAction.MORE_VOCAB;
 			
 			
 			break;
@@ -773,6 +787,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	}
 
 	private class Item {
+		@SuppressWarnings("unused")
 		public int id;
 		public int type;
 		public ItemTypeAction itemTypeAction;
