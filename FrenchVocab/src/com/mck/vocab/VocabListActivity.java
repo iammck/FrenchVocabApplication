@@ -150,39 +150,45 @@ public class VocabListActivity extends ActionBarActivity implements
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Log.v(TAG, "drawerItemClickListener onItemClick is starting");
-			// TODO position 1-4 are no longer static and this must all change.
-			// TODO but wait until create adapter and adapter are finished.
-/*
-			switch (position){
-			case 0:
+			
+			Item item = ((DrawerListArrayAdapter)drawerList.getAdapter())
+					.itemTable.get(position);
+			if (item == null){
+				item = ((DrawerListArrayAdapter)drawerList.getAdapter())
+					.subItemsTable.get(position);
+			}
+			
+			
+			switch (item.itemTypeAction){
+			case START:
 				Log.v(TAG, "drawer item start selected");
 				startDialogSequence();
 				break;		
-			case 1:
+			case LANGUAGE:
 				Log.v(TAG, "drawer item language selected");
 				FragmentManager fragMan= getSupportFragmentManager();
 				ChangeLanguageDialogFragment frag = new ChangeLanguageDialogFragment();
 				frag.show(fragMan, ChangeLanguageDialogFragment.TAG);
 				break;
-			case 2:
-				Log.v(TAG, "drawer item restart selected");
+			case RESET:
+				Log.v(TAG, "drawer item reset selected");
 				restartVocabList();
 				break;
-			case 3:	
-				Log.v(TAG, "drawer item preferences selected");
+			case MORE_VOCAB:
+				Log.v(TAG, "drawer item more vocab selected");
 				startActivity(new Intent(activity, PrefsActivity.class));
-			case 4:
 				break;
-			default: 
+			case HISTORY:
+				Log.v(TAG, "drawer item history selected");
+				return; // don't close the drawer, just return.
+			case OPEN_PREVIOUS_VOCAB:
 				//onSharedPreferenceChanged(SharedPreferences sharedPreferences
 				// must be be a subItem, get it.
-				String key = ((DrawerListArrayAdapter)drawerList.getAdapter()).itemTextArray[position];
-				SubItem item = (SubItem) ((DrawerListArrayAdapter)drawerList.getAdapter())
-						.subItemsTable.get(key);
-				prefs.edit().putString("current_chapter", String.valueOf(item.vocabNumber)).commit();
+				prefs.edit().putString("current_chapter", String.valueOf(((SubItem)item).vocabNumber)).commit();			
 				break;
+			
 			}
-			*/
+			
 			activity.drawerLayout.closeDrawer(activity.drawerList);
 		}
 	}
@@ -271,7 +277,6 @@ public class VocabListActivity extends ActionBarActivity implements
 		getContentResolver().update(VocabProvider.CONTENT_URI, values, null, null);
 	}
 
-	// TODO does this change with the changes to adapter?
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
@@ -549,7 +554,7 @@ public class VocabListActivity extends ActionBarActivity implements
 		// need the following
 		Hashtable<Integer, Item> itemTable = null;
 		Hashtable<Integer, Item> subItemTable = null;
-		ArrayList<Integer> itemIdList = new ArrayList();
+		ArrayList<Integer> itemIdList = new ArrayList<Integer>();
 		int resource = 0;
 		int viewTypeCount = 0;
 		// to get the result
@@ -577,6 +582,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			// put in the group item first
 			GroupItem gItem = new GroupItem();
 			gItem.text = getString(R.string.history);
+			gItem.itemTypeAction = ItemTypeAction.HISTORY;
 			gItem.id = itemCount;
 			itemIdList.add(Integer.valueOf(itemCount));
 			subItemTable.put(Integer.valueOf(itemCount++), gItem);
@@ -606,6 +612,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			items = new Item[1];
 			items[0].text = getString(R.string.get_vocab);			
 			items[0].imageResource = R.drawable.ic_start_star;
+			items[0].itemTypeAction = ItemTypeAction.MORE_VOCAB;
 			break;
 		// set to show all items but the reset
 		case (PREFERENCES_ITEM_SET_NO_RESET):
@@ -619,6 +626,11 @@ public class VocabListActivity extends ActionBarActivity implements
 			items[0].imageResource = R.drawable.ic_start_star;
 			items[1].imageResource = R.drawable.ic_language_bubble;
 			items[2].imageResource = R.drawable.ic_more_vocab;
+			items[0].itemTypeAction = ItemTypeAction.START;
+			items[1].itemTypeAction = ItemTypeAction.LANGUAGE;
+			items[2].itemTypeAction = ItemTypeAction.MORE_VOCAB;
+			
+			
 			break;
 		// set to show no start item, but all the rest.
 		case (PREFERENCES_ITEM_SET_NO_START):
@@ -632,6 +644,11 @@ public class VocabListActivity extends ActionBarActivity implements
 			items[0].imageResource = R.drawable.ic_language_bubble;
 			items[1].imageResource = R.drawable.ic_restart;
 			items[2].imageResource = R.drawable.ic_more_vocab;
+			items[0].itemTypeAction = ItemTypeAction.LANGUAGE;
+			items[1].itemTypeAction = ItemTypeAction.RESET;
+			items[2].itemTypeAction = ItemTypeAction.MORE_VOCAB;
+			
+			
 			break;
 		// The default is to show all items
 		case (PREFERENCES_ITEM_SET_DEFAULT):
@@ -648,7 +665,12 @@ public class VocabListActivity extends ActionBarActivity implements
 			items[1].imageResource = R.drawable.ic_language_bubble;
 			items[2].imageResource = R.drawable.ic_restart;
 			items[3].imageResource = R.drawable.ic_more_vocab;
-		break;
+			items[0].itemTypeAction = ItemTypeAction.START;
+			items[1].itemTypeAction = ItemTypeAction.LANGUAGE;
+			items[2].itemTypeAction = ItemTypeAction.RESET;
+			items[3].itemTypeAction = ItemTypeAction.MORE_VOCAB;
+			
+			break;
 		}
 		return items;
 	}
@@ -669,6 +691,7 @@ public class VocabListActivity extends ActionBarActivity implements
 				SubItem subItem = new SubItem();
 				subItem.text = titles[x];
 				subItem.vocabNumber = Integer.valueOf(numbers[x]).intValue();
+				subItem.itemTypeAction = ItemTypeAction.OPEN_PREVIOUS_VOCAB;
 				result[x-1] = subItem;
 			}
 			return result;
@@ -744,10 +767,15 @@ public class VocabListActivity extends ActionBarActivity implements
 			return result;
 		}
 	}
+	
+	private enum ItemTypeAction{
+		START,LANGUAGE,RESET,MORE_VOCAB,HISTORY,OPEN_PREVIOUS_VOCAB
+	}
 
 	private class Item {
 		public int id;
 		public int type;
+		public ItemTypeAction itemTypeAction;
 		public String text;
 		public int imageResource;
 		
@@ -811,5 +839,5 @@ public class VocabListActivity extends ActionBarActivity implements
 
 			return convertView;
 		}
-	}	
+		}	
 	}
