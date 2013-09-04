@@ -28,6 +28,7 @@
     <string name="drawer_open">Open the drawer</string>
     <string name="drawer_close">Close the drawer</string>
     <string name="this_is_an_emtpy_list">This is an empty list, Select More vocab from options.</string>
+    <string name="help">Help</string>
     
 
     <string-array name="drawer_row_titles">

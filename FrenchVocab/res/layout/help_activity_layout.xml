@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:scrollbars="vertical" >
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/help_activity_back_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:onClick="backFromHelpButton"
+        android:text="Back" />
+
+<ScrollView
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_above="@id/help_activity_back_button" >
+
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    >
+    
 
     <TextView
         android:layout_width="wrap_content"
@@ -136,10 +157,10 @@
         android:layout_height="wrap_content"
         android:text="The initial language of a vocab list may be changed by opening the application drawer then selecting &apos;Language&apos;" />
 
-    <Button
-        android:id="@+id/help_activity_back_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Back" />
     
 </LinearLayout>
+
+</ScrollView>
+
+</RelativeLayout>
+    

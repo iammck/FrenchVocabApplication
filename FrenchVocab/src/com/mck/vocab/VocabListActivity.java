@@ -258,6 +258,15 @@ public class VocabListActivity extends ActionBarActivity implements
 			Log.v(TAG, "options item start selected");
 			startDialogSequence();
 			return true;
+		case R.id.options_item_help:
+			Log.v(TAG, "options item help selected");
+			startActivity(new Intent(this, HelpActivity.class));
+			//do stuff then return true
+			return true;		
+		
+		
+		
+		
 		default:
 			return super.onOptionsItemSelected(item);
 		}
