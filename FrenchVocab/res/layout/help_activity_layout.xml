@@ -24,7 +24,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" 
     >
-    
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,6 +63,23 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Start Practicing"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="After getting some active vocab, open the application drawer and press &apos;Start&apos;. The sequence will begin automatically." />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invisible"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Changing the active vocab list"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -83,24 +99,6 @@
         android:text="Alernatively if the vocab list has preveiously been opened, it may be found in the history section of the application drawer." />
     
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Invisible"
-        android:visibility="invisible" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Practicing"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="After getting some active vocab, open the application drawer and press 'Start'. The sequence will begin automatically." />
-    
-    
- <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Invisible"
