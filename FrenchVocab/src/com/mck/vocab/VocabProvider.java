@@ -65,7 +65,8 @@ public class VocabProvider extends ContentProvider {
 	private static final String CREATE_TITES_TABLE_SQL_STATEMENT = String.format("create table %s " +
 			"(%s int primary key, %s text)",
 			TITLES_TABLE,C_ID, C_TITLE);
-	
+	// sort statement
+	private static final String SORT_BY_DESCENDING = C_ID + " DESC";
 	// update types
 	public static final String UPDATE_TYPE_OPEN_VOCAB = "update_type_open_vocab";
 	public static final String UPDATE_TYPE_RESET_VOCAB = "update_type_reset_vocab";
@@ -933,7 +934,7 @@ public class VocabProvider extends ContentProvider {
 		public Cursor queryVocabTable(int chapNumber){
 			String whereClaus = C_VOCAB_NUMBER + "=" +chapNumber;
 			db = getWritableDatabase();
-			Cursor cursor = db.query(VOCAB_TABLE, null, whereClaus, null, null, null, C_ID + " DESC");
+			Cursor cursor = db.query(VOCAB_TABLE, null, whereClaus, null, null, null, SORT_BY_DESCENDING);
 			return cursor;
 		}
 		
@@ -945,7 +946,7 @@ public class VocabProvider extends ContentProvider {
 		public Cursor queryPreiouslyActiveTable(int chapNumber){
 			String whereClaus = C_VOCAB_NUMBER + "=" +chapNumber;
 			db = getWritableDatabase();
-			Cursor cursor = db.query(PREVIOUSLY_ACTIVE_TABLE, null, whereClaus, null, null, null, C_ID + " DESC");
+			Cursor cursor = db.query(PREVIOUSLY_ACTIVE_TABLE, null, whereClaus, null, null, null,SORT_BY_DESCENDING);
 			return cursor;
 		}
 		
@@ -973,9 +974,9 @@ public class VocabProvider extends ContentProvider {
 			String[] selectionArgs = null; // {String.valueOf(vocabWordNumber)};
 			String groupBy = null;
 			String having = null;
-			String sortBy = C_ID + " ASC";
+			//String sortBy = C_ID + " ASC";
 			
-			Cursor cursor = db.query(VocabProvider.VOCAB_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			Cursor cursor = db.query(VocabProvider.VOCAB_TABLE, columns, selection, selectionArgs, groupBy, having, SORT_BY_DESCENDING);
 			return cursor;
 		}
 		
@@ -995,8 +996,8 @@ public class VocabProvider extends ContentProvider {
 			String[] selectionArgs = null;//{String.valueOf(vocabWordNumber)};
 			String groupBy = null;
 			String having = null;
-			String sortBy =  C_ID + " ASC";
-			Cursor cursor = db.query(VocabProvider.ACTIVE_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			//String sortBy =  C_ID + " ASC";
+			Cursor cursor = db.query(VocabProvider.ACTIVE_TABLE, columns, selection, selectionArgs, groupBy, having, SORT_BY_DESCENDING);
 			return cursor;
 		}
 
@@ -1013,8 +1014,8 @@ public class VocabProvider extends ContentProvider {
 			String[] selectionArgs = null;//{String.valueOf(vocabWordNumber)};
 			String groupBy = null;
 			String having = null;
-			String sortBy =  C_ID + " ASC";
-			Cursor cursor = db.query(VocabProvider.TITLES_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			//String sortBy =  C_ID + " ASC";
+			Cursor cursor = db.query(VocabProvider.TITLES_TABLE, columns, selection, selectionArgs, groupBy, having, SORT_BY_DESCENDING);
 			Log.v(TAG, "queryTitleTableForVocabNumber found " + cursor.getCount() + " titles.");
 			return cursor;
 		}
@@ -1042,8 +1043,8 @@ public class VocabProvider extends ContentProvider {
 			String[] selectionArgs = null; // = vocabWordNumbers;//{String.valueOf(vocabWordNumber)};
 			String groupBy = null;
 			String having = null;
-			String sortBy =  C_ID + " ASC";
-			Cursor cursor = db.query(VocabProvider.VOCAB_TABLE, columns, selection, selectionArgs, groupBy, having, sortBy);
+			//String sortBy =  C_ID + " ASC";
+			Cursor cursor = db.query(VocabProvider.VOCAB_TABLE, columns, selection, selectionArgs, groupBy, having, SORT_BY_DESCENDING);
 
 			return cursor;
 		}
@@ -1058,7 +1059,7 @@ public class VocabProvider extends ContentProvider {
 		 */
 		public Cursor queryActiveTable(){
 			db = getWritableDatabase();
-			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, C_ID + " ASC");
+			Cursor cursor = db.query(ACTIVE_TABLE, null, null, null, null, null, SORT_BY_DESCENDING);
 			
 			return cursor;
 		}

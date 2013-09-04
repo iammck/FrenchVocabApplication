@@ -3,8 +3,10 @@ package com.mck.vocab;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -290,15 +292,9 @@ public class VocabListActivity extends ActionBarActivity implements
 				int numberIndex = titleCursor.getColumnIndex(VocabProvider.C_ID);
 				title = titleCursor.getString(titleIndex);
 				number = titleCursor.getString(numberIndex);
-			
-				// TODO DrawerListArrayAdapter
-				// update the drawerListAdapter the change in listItems is what is wrong. 
-				DrawerListArrayAdapter drawerListArrayAdapter = (DrawerListArrayAdapter)drawerList.getAdapter();
-				drawerListArrayAdapter.addSubItem(title,number);
-				drawerList.setAdapter(drawerListArrayAdapter);
-				//((DrawerListArrayAdapter)drawerList.getAdapter()).addSubItem(title,number);
-				//((BaseAdapter) drawerList.getAdapter()).notifyDataSetInvalidated();
-				//((BaseAdapter) drawerList.getAdapter()).notifyDataSetChanged();
+				// add the sub item to the adapter and notify data set changed.
+				((DrawerListArrayAdapter)drawerList.getAdapter()).addSubItem(title,number);
+				((BaseAdapter) drawerList.getAdapter()).notifyDataSetChanged();
 				// close the cursor
 				titleCursor.close();
 			}
@@ -352,20 +348,24 @@ public class VocabListActivity extends ActionBarActivity implements
 		Log.v(TAG, "onLoadFinished has started with " 
 				+ String.valueOf(count) + " items");
 		if (count == 0){ // if the list is empty
-			// set the drawer list without start
+			// set the drawer list without start, invalidating the adapter below
 			((DrawerListArrayAdapter) drawerList.getAdapter()).setActiveTableToItemSet(PREFERENCES_ITEM_SET_NO_START);
 			// and open the drawer
 			drawerLayout.openDrawer(Gravity.LEFT);
 		} else { // there must be some stuff in the list
-			// show default list view
+			// show default list view , invalidating the adapter below
 			((DrawerListArrayAdapter) drawerList.getAdapter()).setActiveTableToItemSet(PREFERENCES_ITEM_SET_DEFAULT);
 			// TODO this is where the loading the list without the the reset should happen aswell.
 			
 		}
+		// this should make all three possible changes appear as one.
+		((BaseAdapter) drawerList.getAdapter()).notifyDataSetChanged();
 		// set the vocabList adpter to the cursor.
 		VocabListFragment frag = ((VocabListFragment)getSupportFragmentManager()
 									.findFragmentById(R.id.vocab_list_frag_container));
 		((SimpleCursorAdapter) frag.getListAdapter()).changeCursor(cursor);
+		
+		
 		// set the title to the active table inside an asyncTask
 		new AsyncTask<Integer, Integer, Integer>() {
 			Cursor titleCursor;
@@ -374,10 +374,9 @@ public class VocabListActivity extends ActionBarActivity implements
 				titleCursor = getContentResolver().query(VocabProvider.TITLES_TABLE_URI, null, null, null, null);
 				return null;
 			}
+			
+			
 
-			/* (non-Javadoc)
-			 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-			 */
 			@Override
 			protected void onPostExecute(Integer result) {
 				super.onPostExecute(result);
@@ -388,14 +387,17 @@ public class VocabListActivity extends ActionBarActivity implements
 					title = titleCursor.getString(index);
 					getSupportActionBar().setTitle(title);
 					titleCursor.close();
-				} else { // since there is no title, there is no vocab, set the drawer to reflect this.
-					// let the user know that they need to load vocab
-					((DrawerListArrayAdapter) drawerList.getAdapter()).setActiveTableToItemSet(PREFERENCES_ITEM_SET_GET_VOCAB);
+				} else { // let the user know that they need to load vocab
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							// since there is no title, there is no vocab, set the drawer to reflect this.
+							((DrawerListArrayAdapter) drawerList.getAdapter()).setActiveTableToItemSet(PREFERENCES_ITEM_SET_GET_VOCAB);
+							((BaseAdapter) drawerList.getAdapter()).notifyDataSetChanged();
+						}
+					});
 				}
-				DrawerListArrayAdapter drawerListArrayAdapter = (DrawerListArrayAdapter)drawerList.getAdapter();
-				drawerList.setAdapter(drawerListArrayAdapter);
 				// this should make all three possible changes appear as one.
-				//((BaseAdapter) drawerList.getAdapter()).notifyDataSetChanged();
 			}
 		}.execute();
 	}
@@ -536,7 +538,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	public DrawerListArrayAdapter cDrawerListAdapter(Context context){
 		
 		int resource = 0;
-		int viewTypeCount = 0;
+		int viewTypeCount = 3;
 		ArrayList<Integer> itemIdList = new ArrayList<Integer>();
 
 		// get the item table
@@ -574,13 +576,10 @@ public class VocabListActivity extends ActionBarActivity implements
 		itemTable.put(3, item);
 		itemIdList.add(3);
 		
-		viewTypeCount = 1;
 		
 		// get the subItemTable
-		// No guarantee that the getStringSet is is ordered. 
-		// Set<String> subItemTitles = prefs.getStringSet(PREFERENCES_SUB_ITEM_TITLES, new HashSet<String>());
-		// Set<String> subItemVocabNumbers = prefs.getStringSet(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, new HashSet<String>());
 		LinkedHashMap<Integer,Item> subItemsMap = null;
+		// No guarantee that the getStringSet is is ordered so using getString as opposed to getStringSet. 
 		String subItemTitles = prefs.getString(PREFERENCES_SUB_ITEM_TITLES, "");
 		String subItemVocabNumbers= prefs.getString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, "");
 		if (!subItemVocabNumbers.equals("")){
@@ -590,7 +589,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			GroupItem gItem = new GroupItem();
 			gItem.text = getString(R.string.history);
 			gItem.itemTypeAction = ItemTypeAction.NONE;
-			subItemsMap.put(0, gItem);
+			subItemsMap.put(-1, gItem); // TODO make this -1 a constant
 			itemIdList.add(4);
 			
 			// get the titles and numbers, modified for a blank leading title
@@ -602,167 +601,16 @@ public class VocabListActivity extends ActionBarActivity implements
 				subItem.text = titles[x];
 				subItem.vocabNumber = Integer.valueOf(numbers[x]).intValue();
 				subItem.itemTypeAction = ItemTypeAction.OPEN_PREVIOUS_VOCAB;
-				subItemsMap.put(x, subItem);
+				Integer number = Integer.valueOf(numbers[x]);
+				subItemsMap.put(number, subItem);
 				itemIdList.add(4+x);
 			}
-			viewTypeCount = 3;
 		}
 		DrawerListArrayAdapter result = new DrawerListArrayAdapter(context, resource, 
 				itemTable, subItemsMap, itemIdList, viewTypeCount);
 		return result;
 	}
 	
-	
-	
-	
-//	public DrawerListArrayAdapter createDrawerListAdapter(Context context){
-//		// need the following
-//		Hashtable<Integer, Item> itemTable = null;
-//		Hashtable<Integer, Item> subItemTable = null;
-//		ArrayList<Integer> itemIdList = new ArrayList<Integer>();
-//		int resource = 0;
-//		int viewTypeCount = 0;
-//		// to get the result
-//		DrawerListArrayAdapter result;
-//		// get items
-//		Item[] items = getItems();
-//		// get any sub items
-//		SubItem[] subItems = getSubItems();
-//		
-//		
-//		
-//		// A counter for number of adapter items.
-//		int itemCount = 0;
-//		// put items into itemsTable and update view type count
-//		viewTypeCount = 1;
-//		if (items != null && items.length != 0){
-//			itemTable = new Hashtable<Integer, Item>();
-//			for(Item i: items){
-//				i.id = itemCount;
-//				itemIdList.add(Integer.valueOf(itemCount));
-//				itemTable.put(Integer.valueOf(itemCount++), i);
-//			}
-//		}
-//		
-//		
-//		// put subItems into subItemsTable and update viewTypeCount
-//		if (subItems != null && items.length != 0){
-//			viewTypeCount = 3;
-//			subItemTable = new Hashtable<Integer, Item>();
-//			// put in the group item first
-//			GroupItem gItem = new GroupItem();
-//			gItem.text = getString(R.string.history);
-//			gItem.itemTypeAction = ItemTypeAction.NONE;
-//			gItem.id = itemCount;
-//			itemIdList.add(Integer.valueOf(itemCount));
-//			subItemTable.put(Integer.valueOf(itemCount++), gItem);
-//			// iterate through the sub items, putting them into the table
-//			for(Item i: subItems){ // with the right ids
-//				i.id = itemCount;
-//				itemIdList.add(Integer.valueOf(itemCount));
-//				subItemTable.put(Integer.valueOf(itemCount++), i);
-//			}
-//		}
-//		result = new DrawerListArrayAdapter(context, resource, 
-//							itemTable, subItemTable, itemIdList, viewTypeCount);
-//		return result;
-//	}
-
-//	/**
-//	 * Get the items to display in the drawer list.
-//	 * @return
-//	 */
-//	public Item[] getItems(){
-//		Item[] items;
-//		int itemSet = prefs.getInt(PREFERENCES_ITEM_SET, PREFERENCES_ITEM_SET_DEFAULT);
-//		switch(itemSet){
-//		// set to just show get vocab and no other items
-//		case (PREFERENCES_ITEM_SET_GET_VOCAB):
-//			items = new Item[1];
-//			items[0] = new Item();
-//			items[0].text = getString(R.string.get_vocab);			
-//			items[0].imageResource = R.drawable.ic_start_star;
-//			items[0].itemTypeAction = ItemTypeAction.MORE_VOCAB;
-//			break;
-//		// set to show all items but the reset
-//		case (PREFERENCES_ITEM_SET_NO_RESET):
-//			items = new Item[3];
-//			for(int x = 0; x < 3 ; x++){
-//				items[x] = new Item();
-//			}
-//			items[0].text = getString(R.string.start);
-//			items[1].text = getString(R.string.language);
-//			items[2].text = getString(R.string.more_vocab);			
-//			items[0].imageResource = R.drawable.ic_start_star;
-//			items[1].imageResource = R.drawable.ic_language_bubble;
-//			items[2].imageResource = R.drawable.ic_more_vocab;
-//			items[0].itemTypeAction = ItemTypeAction.START;
-//			items[1].itemTypeAction = ItemTypeAction.LANGUAGE;
-//			items[2].itemTypeAction = ItemTypeAction.MORE_VOCAB;
-//			
-//			
-//			break;
-//		// set to show no start item, but all the rest.
-//		case (PREFERENCES_ITEM_SET_NO_START):
-//			items = new Item[2];
-//			for(int x = 0; x < 2 ; x++){
-//				items[x] = new Item();
-//			}
-//			items[0].text = getString(R.string.restart);
-//			items[1].text = getString(R.string.more_vocab);			
-//			items[0].imageResource = R.drawable.ic_restart;
-//			items[1].imageResource = R.drawable.ic_more_vocab;
-//			items[0].itemTypeAction = ItemTypeAction.RESET;
-//			items[1].itemTypeAction = ItemTypeAction.MORE_VOCAB;
-//			
-//			
-//			break;
-//		// The default is to show all items
-//		case (PREFERENCES_ITEM_SET_DEFAULT):
-//		default:
-//			items = new Item[4];
-//			for(int x = 0; x < 4 ; x++){
-//				items[x] = new Item();
-//			}
-//			items[0].text = getString(R.string.start);
-//			items[1].text = getString(R.string.language);
-//			items[2].text = getString(R.string.restart);
-//			items[3].text = getString(R.string.more_vocab);			
-//			items[0].imageResource = R.drawable.ic_start_star;
-//			items[1].imageResource = R.drawable.ic_language_bubble;
-//			items[2].imageResource = R.drawable.ic_restart;
-//			items[3].imageResource = R.drawable.ic_more_vocab;
-//			items[0].itemTypeAction = ItemTypeAction.START;
-//			items[1].itemTypeAction = ItemTypeAction.LANGUAGE;
-//			items[2].itemTypeAction = ItemTypeAction.RESET;
-//			items[3].itemTypeAction = ItemTypeAction.MORE_VOCAB;
-//			
-//			break;
-//		}
-//		return items;
-//	}
-//	public SubItem[] getSubItems(){
-//		String subItemTitles = prefs.getString(PREFERENCES_SUB_ITEM_TITLES, "");
-//		String subItemVocabNumbers= prefs.getString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, "");
-//		if (subItemVocabNumbers.equals("")){
-//			return null;
-//		}else{
-//			SubItem[] result = null;
-//			// get the titles and numbers, modified for a blank leading title
-//			String[] titles = subItemTitles.split("\n");
-//			String[] numbers = subItemVocabNumbers.split("\n");
-//			result = new SubItem[titles.length-1];
-//			// for each, skipping first slot
-//			for(int x = 1; x < numbers.length; x++){
-//				SubItem subItem = new SubItem();
-//				subItem.text = titles[x];
-//				subItem.vocabNumber = Integer.valueOf(numbers[x]).intValue();
-//				subItem.itemTypeAction = ItemTypeAction.OPEN_PREVIOUS_VOCAB;
-//				result[x-1] = subItem;
-//			}
-//			return result;
-//		}
-//	}
 
 	/**
 	 * This extension of an ArrayAdapter is to be used with the drawer List. It
@@ -781,17 +629,16 @@ public class VocabListActivity extends ActionBarActivity implements
 		int[] activeArray;
 		int viewTypeCount = 0;
 		int MAX = 7;
-				// TODO
 		public DrawerListArrayAdapter(Context context, int resource,
 										Hashtable<Integer, Item> itemTable,
-										LinkedHashMap<Integer,Item> subItemTable,
+										LinkedHashMap<Integer,Item> subItemMap,
 										List<Integer> itemIdList,
 										int viewTypeCount) {
 			super(context, resource, itemIdList);
 			
 			// Set the tables.
 			this.itemTable = itemTable;
-			this.subItemsMap = subItemTable;
+			this.subItemsMap = subItemMap;
 			
 			// set the active array
 			// get the item set from prefs.
@@ -799,14 +646,15 @@ public class VocabListActivity extends ActionBarActivity implements
 			// Set the active look up table to item set
 			setActiveTableToItemSet(itemSet);
 			// if not item set get vocab
-			if (itemSet != PREFERENCES_ITEM_SET_GET_VOCAB){
-				// if there is a subItemTable
-				if (subItemTable != null && subItemTable.size() != 0){
-					for (Integer key: subItemTable.keySet()){
-						addSubItem(subItemTable.get(key));
-					}
-				}
-			}			
+//			if (itemSet != PREFERENCES_ITEM_SET_GET_VOCAB){
+//				
+//				// if there is a subItemTable
+//				if (subItemMap != null && subItemMap.size() != 0){
+//					for (Integer key: subItemMap.keySet()){
+//						addSubItem(subItemMap.get(key));
+//					}
+//				}
+//			}			
 			this.viewTypeCount = viewTypeCount;
 		}
 		
@@ -821,7 +669,6 @@ public class VocabListActivity extends ActionBarActivity implements
 			case (PREFERENCES_ITEM_SET_GET_VOCAB):
 				activeArray = new int[1 + subItemsLength];
 				activeArray[0] = 3;
-				viewTypeCount = 1;
 				itemCount = 1;
 				break;
 			// set to show all items but the reset
@@ -850,23 +697,37 @@ public class VocabListActivity extends ActionBarActivity implements
 				itemCount = 4;
 				break;
 			}
-			// now if there is a sub item list, then for each subItem add to active
+			// now if there is a sub item list, then for each subItem add to active in reverse
 			if (subItemsMap != null){
-				viewTypeCount = 3;
-				for(Integer key: subItemsMap.keySet()){
-					activeArray[itemCount++] = key;
+				
+				int activeIndex = activeArray.length - 1; // index starts with 0
+				Iterator<Integer> i = subItemsMap.keySet().iterator();
+				// the group item goes first
+				Integer first = i.next(); 
+				activeArray[itemCount] = first;
+				// now add the rest
+				while (i.hasNext()){
+					activeArray[activeIndex--] = i.next();
 				}
 			}
 		}
-		
+		// TODO
 		public void addSubItem(String title, String number) {
 			SubItem subItem = new SubItem();
 			subItem.text = title;
 			subItem.vocabNumber = Integer.valueOf(number).intValue();
 			addSubItem(subItem);
+			String subItemTitles = prefs.getString(PREFERENCES_SUB_ITEM_TITLES, "");
+			String subItemVocabNumbers= prefs.getString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, "");
+			subItemTitles = subItemTitles + "\n" + title;
+			subItemVocabNumbers = subItemVocabNumbers + "\n" + number;
+			prefs.edit()
+				.putString(PREFERENCES_SUB_ITEM_TITLES, subItemTitles)
+				.putString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, subItemVocabNumbers)
+				.commit();
 		}
 		
-		public void addSubItem(Item item){
+		private void addSubItem(Item item){
 			// Will add item to the map by it's vocabNumber
 			int vocabNumber = ((SubItem)item).vocabNumber;
 			// The resulting active array will
@@ -893,6 +754,13 @@ public class VocabListActivity extends ActionBarActivity implements
 				// attempt to remove old item, then put it in again so that last in.
 				subItemsMap.remove(vocabNumber);
 				subItemsMap.put( vocabNumber, item);
+				// Now if it is more than the max, remove the first in sub item.
+				if (subItemsMap.size() > MAX){
+					Iterator<Integer> i = subItemsMap.keySet().iterator();
+					i.next();// the group item.
+					int oldest = i.next(); // the oldest entry
+					subItemsMap.remove(oldest);					
+				}
 			}
 			
 			// put itemsTable (via active array) stuff into result first
@@ -900,14 +768,24 @@ public class VocabListActivity extends ActionBarActivity implements
 				result[x] = activeArray[x];
 			}
 			// for each subItem add to active
-			for(Integer key: subItemsMap.keySet()){
-				result[itemCount++] = key;
+			int activeIndex = result.length - 1; // index starts with 0
+			Iterator<Integer> i = subItemsMap.keySet().iterator();
+			// the group item goes first
+			Integer first = i.next(); 
+			result[itemCount] = first;
+			// now add the rest
+			while (i.hasNext()){
+				result[activeIndex--] = i.next();
 			}
+			
+			
+			
+			
+//			for(Integer key: subItemsMap.keySet()){
+//				result[itemCount++] = key;
+//			}
 			// done so set activeArray to result
 			activeArray = result;
-		
-			viewTypeCount = 3;
-			
 		}
 
 
@@ -972,22 +850,11 @@ public class VocabListActivity extends ActionBarActivity implements
 			itemTypeAction = ItemTypeAction.NONE;
 		}
 		public View getView(int position, View convertView, ViewGroup parent){
-			Log.v(TAG, "getView for position = "	+ Integer.valueOf(position)
-					+ ",text = " + text
-					+" and is of type = " + Integer.valueOf(type));
-		
 			if (convertView == null){
-				Log.v(TAG, "getView did not come with a convertView ");
 				// create the new view
 				LayoutInflater inflater = getLayoutInflater();
 				convertView = inflater.inflate(R.layout.drawer_list_view_item_cell, null);
-				Log.v(TAG, "getView new convertView " + convertView.toString());
-			} else {
-				Log.v(TAG, "getView came with a convertView " + convertView.toString());
 			}
-			// not always getting the right convertView .. here... twice! lol
-			// getting here with the wrong convert view after a sub item view get put in.
-			// this is because invalidate doesn't update the view type count.
 			TextView textView = (TextView) convertView.findViewById(R.id.itemText);
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.itemImageView);
 			
@@ -1011,17 +878,10 @@ public class VocabListActivity extends ActionBarActivity implements
 		}
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent){
-			Log.v(TAG, "getView for position = "	+ Integer.valueOf(position)
-					+ ",text = " + text
-					+" and is of type = " + Integer.valueOf(type));
 			if (convertView == null){
-				Log.v(TAG, "getView did not come with a convertView");
 				// create the new view
 				LayoutInflater inflater = getLayoutInflater();
 				convertView = inflater.inflate(R.layout.drawer_list_view_group_item_cell, null);
-				Log.v(TAG, "getView new convertView " + convertView.toString());
-			} else {
-				Log.v(TAG, "getView came with a convertView " + convertView.toString());
 			}
 			TextView textView = (TextView) convertView.findViewById(R.id.groupItemText);
 			// Set the text view
@@ -1036,21 +896,13 @@ public class VocabListActivity extends ActionBarActivity implements
 			type = 2;
 			itemTypeAction = ItemTypeAction.OPEN_PREVIOUS_VOCAB;
 		}
-		
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent){
-			Log.v(TAG, "getView for position = "	+ Integer.valueOf(position)
-						+ ",text = " + text
-						+" and is of type = " + Integer.valueOf(type));
-			
 			if (convertView == null){
-				Log.v(TAG, "getView did not come with a convertView");
 				// create the new view
 				LayoutInflater inflater = getLayoutInflater();
 				convertView = inflater.inflate(R.layout.drawer_list_view_sub_item_cell, null);
-				Log.v(TAG, "getView new convertView " + convertView.toString());
-			} else {
-				Log.v(TAG, "getView came with a convertView " + convertView.toString());
 			}
 			TextView textView = (TextView) convertView.findViewById(R.id.subItemText);
 
@@ -1058,5 +910,5 @@ public class VocabListActivity extends ActionBarActivity implements
 
 			return convertView;
 		}
-		}	
-	}
+	}	
+}
