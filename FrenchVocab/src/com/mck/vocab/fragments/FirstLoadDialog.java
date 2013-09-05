@@ -20,6 +20,7 @@ public class FirstLoadDialog extends DialogFragment implements OnClickListener {
 		// inflate the view
 		View view = inflater.inflate(R.layout.first_load_dialog_fragment_layout, container);
 		// set the on click listener
+		getDialog().setTitle("Thanks!");
 		Button button = (Button) view.findViewById(R.id.buttonOk);
 		button.setOnClickListener(this);
 		return view;

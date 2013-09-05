@@ -20,7 +20,7 @@ public static final String TAG = "FirstLoadDialogB";
 		// inflate the view
 		View view = inflater.inflate(R.layout.first_load_dialog_b_fragment_layout, container);
 		// set the on click listener
-		
+		getDialog().setTitle("Getting Started");
 		Button button = (Button) view.findViewById(R.id.buttonOk);
 		button.setOnClickListener(this);
 		return view;
