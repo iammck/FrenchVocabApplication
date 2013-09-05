@@ -29,8 +29,11 @@
     <string name="drawer_close">Close the drawer</string>
     <string name="this_is_an_emtpy_list">This is an empty list, Select More vocab from options.</string>
     <string name="help">Help</string>
-    
-
+    <string name="about">About</string>
+    <string name="ok">Ok!</string>
+	<string name="first_load_text">Thank you for using this application. To begin, Get some vocabulary from the menu.</string>
+	<string name="first_load_b_text">Now that you have some vocab, you may select words from the list. Press start from the menu to begin quizzing.</string>
+	
     <string-array name="drawer_row_titles">
         <item>@string/start</item>
         <item>@string/language</item>

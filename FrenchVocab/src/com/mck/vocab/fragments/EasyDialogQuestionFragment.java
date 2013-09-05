@@ -29,6 +29,7 @@ public class EasyDialogQuestionFragment extends DialogFragment implements OnClic
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		this.setStyle(STYLE_NORMAL, STYLE_NORMAL);
 		//this.setStyle(STYLE_NO_TITLE, 0);
 	}
 
