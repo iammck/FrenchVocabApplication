@@ -41,7 +41,9 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		this.setStyle(STYLE_NO_TITLE, getTheme());
 		//this.setStyle(STYLE_NO_TITLE, 0);
+	
 	}
 
 	@Override

@@ -15,7 +15,7 @@
     <string name="preferences_language_summary">Select the starting language.</string>
     <string name="loading_database">Loading the Database</string>
 	<string name="loading_screen_message">Fetching List. . .</string>
-    <string name="select_language_text">"Set the language of current list "</string>
+    <string name="select_language_text">"Set initial language."</string>
     <string name="english">English</string>
     <string name="french">French</string>
     <string name="cancel">Cancel</string>
@@ -32,7 +32,7 @@
     <string name="about">About</string>
     <string name="ok">Ok!</string>
 	<string name="first_load_text">Thank you for using this application. To begin, Get some vocabulary from the menu.</string>
-	<string name="first_load_b_text">Now that you have some vocab, you may select words from the list. Press start from the menu to begin quizzing.</string>
+	<string name="first_load_b_text">Once you have some vocab, you may select words from the list or press start from the menu to begin quizzing.</string>
 	
     <string-array name="drawer_row_titles">
         <item>@string/start</item>

@@ -1,5 +1,6 @@
 package com.mck.vocab.fragments;
 import android.app.Activity;
+import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -29,7 +30,8 @@ public class EasyDialogQuestionFragment extends DialogFragment implements OnClic
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		this.setStyle(STYLE_NORMAL, STYLE_NORMAL);
+		this.setStyle(STYLE_NO_TITLE, getTheme());
+		//this.setStyle(STYLE_NORMAL,STYLE_NO_TITLE );
 		//this.setStyle(STYLE_NO_TITLE, 0);
 	}
 

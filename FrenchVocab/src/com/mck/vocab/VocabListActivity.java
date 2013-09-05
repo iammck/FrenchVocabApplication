@@ -226,21 +226,20 @@ public class VocabListActivity extends ActionBarActivity implements
 			Log.v(TAG, "first load A dialog to be shown.");
 			FragmentManager fragMan = getSupportFragmentManager();
 			FirstLoadDialog frag = new FirstLoadDialog();
-			frag.show(fragMan, FirstLoadDialog.TAG);
 			prefs.edit().putBoolean(PREFERENCES_FIRST_LOAD_A, false).commit();	
+			frag.show(fragMan, FirstLoadDialog.TAG);
 			return;
 		}
-		
 		if (prefs.getBoolean(PREFERENCES_FIRST_LOAD_B, true)) {
 			Log.v(TAG, "first load B dialog to be shown.");
 			FragmentManager fragMan = getSupportFragmentManager();
-			
-			if( fragMan.findFragmentById(R.id.vocab_list_frag_container) != null){
-				FirstLoadDialogB frag = new FirstLoadDialogB();
-				frag.show(fragMan, FirstLoadDialogB.TAG);
-				prefs.edit().putBoolean(PREFERENCES_FIRST_LOAD_B, false).commit();				
-			}			
+
+			FirstLoadDialogB frag = new FirstLoadDialogB();
+			frag.show(fragMan, FirstLoadDialogB.TAG);
+			prefs.edit().putBoolean(PREFERENCES_FIRST_LOAD_B, false).commit();				
 		}
+		
+		
 	}
 
 	@Override
@@ -364,6 +363,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			getContentResolver().update(VocabProvider.CONTENT_URI, values,
 					null, null);
 		}
+		
 	}
 
 	// to the content resolver.

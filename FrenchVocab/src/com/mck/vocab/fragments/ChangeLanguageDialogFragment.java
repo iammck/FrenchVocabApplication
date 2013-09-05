@@ -52,6 +52,7 @@ public class ChangeLanguageDialogFragment extends DialogFragment implements OnCl
 		button.setOnClickListener(this);
 		button = (Button) view.findViewById(R.id.buttonCancel);
 		button.setOnClickListener(this);
+		getDialog().setTitle("Language");
 		return view;
 	}
 
