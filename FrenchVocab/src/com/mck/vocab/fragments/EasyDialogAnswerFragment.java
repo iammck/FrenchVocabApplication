@@ -32,14 +32,13 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 	private int wordNumber;
 	private EasyDialogFragmentCallback edfcb;
 	public interface EasyDialogFragmentCallback{
-		public void easyDialogNext(int current, boolean discardWord);
+		public void quizDialogNext(int current, boolean discardWord);
 	}
 
 	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setStyle(STYLE_NO_TITLE, getTheme());
 		//this.setStyle(STYLE_NO_TITLE, 0);
@@ -100,12 +99,12 @@ public class EasyDialogAnswerFragment extends DialogFragment implements OnClickL
 		case R.id.buttonRemove:
 			Log.v(TAG, "reacting to buttonRemove");
 			dismiss();
-			edfcb.easyDialogNext(this.wordNumber, true);
+			edfcb.quizDialogNext(this.wordNumber, true);
 			return;
 		case R.id.buttonNext:
 			Log.v(TAG, "reacting to buttonNext");
 			dismiss();
-			edfcb.easyDialogNext(this.wordNumber, false);
+			edfcb.quizDialogNext(this.wordNumber, false);
 		}
 	}
 }

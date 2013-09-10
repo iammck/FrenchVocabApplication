@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/easy_dialog_question_margin" >
+
+        <TextView
+            android:id="@+id/multi_dialog_question_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/easy_dialog_answer_textview"
+            android:gravity="left"
+            android:padding="@dimen/easy_dialog_text_padding"
+            android:text="@string/easy_dialog_question_text"
+            android:textSize="@dimen/multi_dialog_question_text_size" />
+
+        <TextView
+            android:id="@+id/easy_dialog_answer_textview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="false"
+            android:layout_centerHorizontal="false"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/ic_question_mark_blue_md"
+            android:textSize="@dimen/easy_dialog_question_text_size" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/multi_dialog_statement_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/multi_dialog_question_statement_textview"
+        android:visibility="gone" />
+
+
+    <ListView
+        android:id="@+id/multi_posssible_answer_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:background="@color/black"
+        android:dividerHeight="1dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
+
+    </ListView>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invisible"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/buttonRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/buttonRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:clickable="false"
+            android:text="Remove"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/buttonNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".60"
+            android:clickable="false"
+            android:text="Next"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:clickable="false"
+            android:text="@string/cancel"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttonRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+    </RelativeLayout>
+
+</LinearLayout>

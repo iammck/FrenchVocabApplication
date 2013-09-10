@@ -48,12 +48,14 @@ import com.mck.vocab.fragments.EasyDialogAnswerFragment;
 import com.mck.vocab.fragments.EasyDialogQuestionFragment;
 import com.mck.vocab.fragments.FirstLoadDialog;
 import com.mck.vocab.fragments.FirstLoadDialogB;
+import com.mck.vocab.fragments.MultiDialogQuestionFragment;
 import com.mck.vocab.fragments.VocabListFragment;
 
 public class VocabListActivity extends ActionBarActivity implements
 		ChangeLanguageCallback, OnSharedPreferenceChangeListener,
 		LoaderCallbacks<Cursor>,
-		EasyDialogAnswerFragment.EasyDialogFragmentCallback {
+		EasyDialogAnswerFragment.EasyDialogFragmentCallback ,
+		MultiDialogQuestionFragment.MultiDialogFragmentCallback{
 
 	private static final String TAG = "VocabListActivity";
 	public static final int vocabCursorLoaderId = 0;
@@ -66,6 +68,8 @@ public class VocabListActivity extends ActionBarActivity implements
 	private static final int PREFERENCES_ITEM_SET_DEFAULT = 4;
 	private static final String PREFERENCES_FIRST_LOAD_A = "first_load_a";
 	private static final String PREFERENCES_FIRST_LOAD_B = "first_load_b";
+	private static final String PREFERENCES_SHOW_EASY = "preferences_show_easy";
+	
 	public String[] AVAILABLE_VOCAB_FILE_NAMES;
 	SharedPreferences prefs;
 
@@ -113,7 +117,7 @@ public class VocabListActivity extends ActionBarActivity implements
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 		// set the list view adapter
-		DrawerListArrayAdapter adapter = cDrawerListAdapter(this);
+		DrawerListArrayAdapter adapter = createDrawerListAdapter(this);
 		drawerList.setAdapter(adapter);
 		// set the list's clickListener
 		drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
@@ -517,7 +521,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	int lastDiscarded = -1; // last discarded should never be -1
 
 	@Override
-	public void easyDialogNext(int current, boolean discardWord) {
+	public void quizDialogNext(int current, boolean discardWord) {
 		// if discardWord, then remove it
 		if (discardWord) {
 			// this can start a race condition if the prev word isn't removed
@@ -526,12 +530,18 @@ public class VocabListActivity extends ActionBarActivity implements
 			removeVocabWordWithWordNumber(current);
 		}
 		// start easyDialog
-		startEasyDialog();
+		startDialogSequence();
 	}
 
 	private void startDialogSequence() {
-		startEasyDialog();
+		boolean showEasy = prefs.getBoolean(PREFERENCES_SHOW_EASY, false);
+		if (showEasy){
+			startEasyDialog();
+		} else {
+			startMultiDialog();
+		}
 	}
+
 
 	public void startEasyDialog() {
 		Log.v(TAG, "startEasyDialog() begining");
@@ -551,11 +561,6 @@ public class VocabListActivity extends ActionBarActivity implements
 					Toast.LENGTH_SHORT);
 			t.setGravity(Gravity.CENTER, 0, 0);
 			t.show();
-			// not working possibly because the drawer isn't closed from start
-			// click seq.
-			// might try a runnable on a timer? could be not in ui thread?
-			// is there a way to printf the thread id?
-			// drawerLayout.openDrawer(Gravity.LEFT);
 			return;
 		}
 		do {
@@ -567,21 +572,17 @@ public class VocabListActivity extends ActionBarActivity implements
 			Log.v(TAG, "no list items so not starting easy dialog");
 			return;
 		}
-		// get the word number uri
-		String uriString = VocabProvider.VOCAB_TABLE_URI.toString() + "/"
-				+ String.valueOf(vocabWordNumber);
-		Uri uri = Uri.parse(uriString);
-
-		// Query for the english and french words then set as the
+		// get the cursor for the word
+		Cursor cursor = getCursorForVocabWordNumber(vocabWordNumber);
+		
 		// question/answer for the easy dialog sequence.
 		String question = "", answer = "";
-		Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG,
 				Context.MODE_PRIVATE);
 		// if english active
 		if (prefs
 				.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true)) {
-			// put english as question and french as anser
+			// put english as question and french as answer
 			cursor.moveToFirst();
 			int index = cursor.getColumnIndex(VocabProvider.C_EWORD);
 			question = cursor.getString(index);
@@ -605,8 +606,149 @@ public class VocabListActivity extends ActionBarActivity implements
 		// and show.
 		questionFrag.show(fragMan, TAG);
 	}
+	
+	public void startMultiDialog(){
+		Log.v(TAG, "startMultiDialog() begining");
+		// will need current list adapter
+		ListAdapter adapter = ((VocabListFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.vocab_list_frag_container))
+				.getListAdapter();
+		// how many items are in the vocabListFragment
+		int listCount = adapter.getCount();
+		if (listCount == 0) {
+			Log.v(TAG, "no list items so not starting easy dialog");
+			// display in short period of time
+			Toast t = Toast.makeText(getApplicationContext(),
+					"There is no active vocab, select some from options.",
+					Toast.LENGTH_SHORT);
+			t.setGravity(Gravity.CENTER, 0, 0);
+			t.show();
+			return;
+		}
+		// Get a random vocab word number from the list of vocab words
+		// as the question number
+		int questionWordNumber = -1;
+		int questionPosition = -1;
+		do {
+			questionPosition = (int) (Math.random() * 1000) % listCount;
+			// use the random number to get vocabWordNumber
+			questionWordNumber = (int) adapter.getItemId(questionPosition);
+		} while (questionWordNumber == lastDiscarded && listCount > 1);
+		if (listCount == 1 && questionWordNumber == lastDiscarded) {
+			Log.v(TAG, "no list items so not starting easy dialog");
+			return;
+		}
+		// get the cursor for the word
+		Cursor qCursor = getCursorForVocabWordNumber(questionWordNumber);
+		// get three more vocabNumber s from the list for wrong answer numbers.
+		int[] wrongAnsWordNumbers = {-1,-1,-1};
+		// if list count is less than or equal to 4, 
+		if (listCount <= 4){
+			int count = 0;
+			//then just grab up to all 3 wrong answers word numbers
+			for(int x = 0; x < listCount; x++){
+				int wrongPosition = (Integer) adapter.getItem(x);
+				if(wrongPosition != questionPosition){
+					wrongAnsWordNumbers[count++] = wrongPosition;
+				}
+			} 
+		}else{// else need to grab three wrongAnsWordNumbers
+			int count = 0;
+			// while count < 3
+			while (count < 3){
+				//  grab one at random
+				int random = (int) (Math.random() * 1000) % listCount;
+				int randomWordNumber = (int) adapter.getItemId(random);
+				//  if it is the question number  or if it is one of the others
+				if (randomWordNumber == questionWordNumber
+						|| randomWordNumber == wrongAnsWordNumbers[0] 
+								|| randomWordNumber == wrongAnsWordNumbers[1] 
+										|| randomWordNumber == wrongAnsWordNumbers[2]){
+					// continue
+					continue;
+				} // otherwise put it in wrongAns and raise count
+				wrongAnsWordNumbers[count++] = randomWordNumber;
+			}	
+		}
+		// for each wrong answer, going to need a cursor. It would be suggestible
+		// if this is running slow to either add an inactive column to active table
+		// or to wait to populate the dialogs with info. An inactive column would
+		// be useful else where but makes the active list and each fetch bigger.
+		Cursor[] waCursor = new Cursor[3];
+		for(int x = 0; x < 3 ; x++){
+			if(wrongAnsWordNumbers[x] != -1){
+				// get the cursor for the word
+				waCursor[x] = getCursorForVocabWordNumber(wrongAnsWordNumbers[x]);	
+			}
+		}
+		// having all the cursors, get the data for a bundle.
+		String question;
+		String answer;
+		String statement = "Select the translation";
+		int ansCount = 0;
+		// want the wrong answer (wAnswers) array to be the right size.
+		for(int x = 0; x < waCursor.length; x++){
+			if (waCursor[x] != null)
+				ansCount++;			
+		}
+		String[] wAnswers = new String[ansCount];
+		// got the data containers, now get the right data depending on language
+		SharedPreferences prefs = getSharedPreferences(VocabProvider.TAG,
+				Context.MODE_PRIVATE);
+		// if english active
+		if (prefs.getBoolean(VocabProvider.PREFERENCES_IS_ENGLISH_ACTIVIE, true)) {
+			// put english as question and french as answer
+			qCursor.moveToFirst();
+			int engIndex = qCursor.getColumnIndex(VocabProvider.C_EWORD);
+			question = qCursor.getString(engIndex);
+			int frIndex = qCursor.getColumnIndex(VocabProvider.C_FWORD);
+			answer = qCursor.getString(frIndex);
+			// for each wrong answer
+			for(int x = 0; x < wAnswers.length; x++){
+				if (waCursor[x] != null){
+					waCursor[x].moveToFirst();
+					wAnswers[x] = waCursor[x].getString(frIndex);
+				}
+			}			
+		} else { // else do the reverse.
+			qCursor.moveToFirst();
+			int frIndex = qCursor.getColumnIndex(VocabProvider.C_FWORD);
+			question = qCursor.getString(frIndex);
+			int engIndex = qCursor.getColumnIndex(VocabProvider.C_EWORD);
+			answer = qCursor.getString(engIndex);
+			// for each wrong answer
+			for(int x = 0; x < wAnswers.length; x++){
+				if (waCursor[x] != null){
+					waCursor[x].moveToFirst();
+					wAnswers[x] = waCursor[x].getString(engIndex);
+				}
+			}
+		}
+		Bundle bundle = new Bundle();
+		bundle.putString(MultiDialogQuestionFragment.QUESTION, question);
+		bundle.putString(MultiDialogQuestionFragment.ANSWER, answer);
+		bundle.putString(MultiDialogQuestionFragment.STATEMENT, statement);
+		bundle.putStringArray(MultiDialogQuestionFragment.WRONG_ANSWER, wAnswers);
+		bundle.putInt(MultiDialogQuestionFragment.WORDNUMBER, questionWordNumber);
+		// Load up the arguments into a new EasyDialogQeustionFramgent
+		MultiDialogQuestionFragment questionFrag = new MultiDialogQuestionFragment();
+		questionFrag.setArguments(bundle);
+		// and show.
+		FragmentManager fragMan = getSupportFragmentManager();
+		questionFrag.show(fragMan, TAG);
+	}
+	
 
-	public DrawerListArrayAdapter cDrawerListAdapter(Context context) {
+	public Cursor getCursorForVocabWordNumber(int vocabWordNumber){
+		// get the word number uri
+		String uriString = VocabProvider.VOCAB_TABLE_URI.toString() + "/"
+				+ String.valueOf(vocabWordNumber);
+		Uri uri = Uri.parse(uriString);
+		Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+		return cursor;
+	}
+	
+	public DrawerListArrayAdapter createDrawerListAdapter(Context context) {
 
 		int resource = 0;
 		int viewTypeCount = 3;
@@ -701,7 +843,7 @@ public class VocabListActivity extends ActionBarActivity implements
 		LinkedHashMap<Integer, Item> subItemsMap;
 		int[] activeArray;
 		int viewTypeCount = 0;
-		int MAX = 7;
+		int MAX = 5;
 
 		public DrawerListArrayAdapter(Context context, int resource,
 				Hashtable<Integer, Item> itemTable,
@@ -719,16 +861,7 @@ public class VocabListActivity extends ActionBarActivity implements
 					PREFERENCES_ITEM_SET_GET_VOCAB);
 			// Set the active look up table to item set
 			setActiveTableToItemSet(itemSet);
-			// if not item set get vocab
-			// if (itemSet != PREFERENCES_ITEM_SET_GET_VOCAB){
-			//
-			// // if there is a subItemTable
-			// if (subItemMap != null && subItemMap.size() != 0){
-			// for (Integer key: subItemMap.keySet()){
-			// addSubItem(subItemMap.get(key));
-			// }
-			// }
-			// }
+			
 			this.viewTypeCount = viewTypeCount;
 		}
 
@@ -787,7 +920,6 @@ public class VocabListActivity extends ActionBarActivity implements
 			}
 		}
 
-		// TODO
 		public void addSubItem(String title, String number) {
 			SubItem subItem = new SubItem();
 			subItem.text = title;
@@ -833,10 +965,10 @@ public class VocabListActivity extends ActionBarActivity implements
 				subItemsMap.put(-1, gItem);
 				subItemsMap.put(vocabNumber, item);
 			} else {
-				// attempt to remove old item, then put it in again so that last
-				// in.
-				subItemsMap.remove(vocabNumber);
-				subItemsMap.put(vocabNumber, item);
+				if (subItemsMap.containsKey(vocabNumber)){					
+					subItemsMap.remove(vocabNumber);
+					//subItemsMap.put(vocabNumber, item);				
+				}
 				// Now if it is more than the max, remove the first in sub item.
 				if (subItemsMap.size() > MAX) {
 					Iterator<Integer> i = subItemsMap.keySet().iterator();
@@ -844,6 +976,7 @@ public class VocabListActivity extends ActionBarActivity implements
 					int oldest = i.next(); // the oldest entry
 					subItemsMap.remove(oldest);
 				}
+				subItemsMap.put(vocabNumber, item);
 			}
 
 			// put itemsTable (via active array) stuff into result first
@@ -940,10 +1073,8 @@ public class VocabListActivity extends ActionBarActivity implements
 					.findViewById(R.id.itemText);
 			ImageView imageView = (ImageView) convertView
 					.findViewById(R.id.itemImageView);
-
 			textView.setText(text);
 			imageView.setImageResource(imageResource);
-
 			return convertView;
 		}
 
@@ -998,4 +1129,5 @@ public class VocabListActivity extends ActionBarActivity implements
 			return convertView;
 		}
 	}
+
 }
