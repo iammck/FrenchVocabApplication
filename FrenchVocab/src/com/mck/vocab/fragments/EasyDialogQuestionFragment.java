@@ -1,6 +1,5 @@
 package com.mck.vocab.fragments;
 import android.app.Activity;
-import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
