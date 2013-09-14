@@ -1,5 +1,6 @@
 package com.mck.vocab.fragments;
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -95,6 +97,16 @@ public class EasyDialogQuestionFragment extends DialogFragment implements OnClic
 		answerFrag.show(fragMan, TAG);
 		//ragMan.beginTransaction().remove(this).add(answerFrag, TAG).commit();
 	}
+
+
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		
+		Dialog dialog = super.onCreateDialog(savedInstanceState);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		return dialog;
+	}
+	
 	
 
 }

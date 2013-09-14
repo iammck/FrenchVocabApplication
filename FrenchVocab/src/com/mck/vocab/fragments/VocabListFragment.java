@@ -26,12 +26,8 @@ import com.mck.vocab.VocabProvider;
  *
  */
 public class VocabListFragment extends ListFragment implements OnItemLongClickListener {
-	private static final String TAG = "VocabListFragment";
-	
+	private static final String TAG = "VocabListFragment";	
 	private VocabListActivity vocabListActivity; // obtained in onAttach
-
-	
-
 	
 	/**
 	 * Responsible for getting the activity
@@ -42,9 +38,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		super.onAttach(activity);
 		Log.v(TAG,"onAttach() has begun");
 		this.vocabListActivity = (VocabListActivity) activity;
-		
 	}
-
 
 	/**
 	 * gets the current chapter vocab from the
@@ -54,10 +48,6 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Log.v(TAG,"onActivityCreated() has begun");
-
-		
-		// should i put this in an earlier lifecycle method?
-		// set the adapter to a simple cursor adapter
 		Context context = this.getActivity().getApplicationContext();
 		int cellview = R.layout.vocab_list_fragment_word_cell;
 		Cursor cursor = null;
@@ -65,8 +55,6 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 		int[] to = {R.id.vocab_word_text};
 		int flags = 0;
 		this.setListAdapter(new SimpleCursorAdapter(context,cellview,cursor,from,to, flags));
-		
-		
 		// add item long press call back
 		this.getListView().setLongClickable(true);
 		this.getListView().setOnItemLongClickListener(this);
@@ -80,19 +68,9 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> av, View v, int position,	long id) {
-		// TODO make updates in vocabListActivity.removeVocabWord() 
 		Log.v(TAG, "onItemLongClick() clicked");
 		vocabListActivity.removeVocabWord(position);
 		return true;
 	}
-
-//	@Override
-//	public void onStart() {
-//		super.onStart();
-//		BaseAdapter ba = (BaseAdapter) getListAdapter();
-//		if (ba!= null){
-//			ba.notifyDataSetChanged();
-//		}
-//	}
 	
 }

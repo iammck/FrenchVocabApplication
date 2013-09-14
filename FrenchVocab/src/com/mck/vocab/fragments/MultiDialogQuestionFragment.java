@@ -199,10 +199,10 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 			if(wordPicked[position] == true){
 				if(position == answerPosition){
 					imageView.setVisibility(View.VISIBLE);
-					imageView.setImageResource(R.drawable.ic_right_check);
+					imageView.setImageResource(R.drawable.ic_correct);
 				} else { 
 					imageView.setVisibility(View.VISIBLE);
-					imageView.setImageResource(R.drawable.ic_wrong_cross_2);
+					imageView.setImageResource(R.drawable.ic_incorrect);
 				}
 			}else{				
 				imageView.setVisibility(View.INVISIBLE);

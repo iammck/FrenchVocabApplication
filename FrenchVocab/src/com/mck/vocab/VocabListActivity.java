@@ -43,16 +43,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mck.vocab.fragments.ChangeLanguageDialogFragment;
-import com.mck.vocab.fragments.ChangeLanguageDialogFragment.ChangeLanguageCallback;
 import com.mck.vocab.fragments.EasyDialogAnswerFragment;
 import com.mck.vocab.fragments.EasyDialogQuestionFragment;
 import com.mck.vocab.fragments.FirstLoadDialog;
 import com.mck.vocab.fragments.FirstLoadDialogB;
 import com.mck.vocab.fragments.MultiDialogQuestionFragment;
+import com.mck.vocab.fragments.OptionsDialogFragment;
+import com.mck.vocab.fragments.OptionsDialogFragment.OptionType;
+import com.mck.vocab.fragments.OptionsDialogFragment.OptionsChangedCallback;
 import com.mck.vocab.fragments.VocabListFragment;
 
 public class VocabListActivity extends ActionBarActivity implements
-		ChangeLanguageCallback, OnSharedPreferenceChangeListener,
+		OptionsChangedCallback, OnSharedPreferenceChangeListener,
 		LoaderCallbacks<Cursor>,
 		EasyDialogAnswerFragment.EasyDialogFragmentCallback ,
 		MultiDialogQuestionFragment.MultiDialogFragmentCallback{
@@ -177,11 +179,11 @@ public class VocabListActivity extends ActionBarActivity implements
 				Log.v(TAG, "drawer item start selected");
 				startDialogSequence();
 				break;
-			case LANGUAGE:
-				Log.v(TAG, "drawer item language selected");
+			case OPTIONS:
+				Log.v(TAG, "drawer item options selected");
 				FragmentManager fragMan = getSupportFragmentManager();
-				ChangeLanguageDialogFragment frag = new ChangeLanguageDialogFragment();
-				frag.show(fragMan, ChangeLanguageDialogFragment.TAG);
+				OptionsDialogFragment frag = new OptionsDialogFragment();
+				frag.show(fragMan, OptionsDialogFragment.TAG);
 				break;
 			case RESET:
 				Log.v(TAG, "drawer item reset selected");
@@ -201,6 +203,8 @@ public class VocabListActivity extends ActionBarActivity implements
 						.putString("current_chapter",
 								String.valueOf(((SubItem) item).vocabNumber))
 						.commit();
+				break;
+			default:
 				break;
 			}
 
@@ -287,6 +291,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			restartVocabList();
 			return true;
 
+				// TODO needs send to options.
 		case R.id.options_item_language:
 			Log.v(TAG, "options item language selected");
 			FragmentManager fragMan = getSupportFragmentManager();
@@ -505,17 +510,24 @@ public class VocabListActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onChangeLanguageCallback(String language) {
-		Log.v(TAG, "onChangeLanguageCallback called with language " + language);
-		// Set up the active table in the other language using vocabProvider
-		ContentValues values = new ContentValues();
-		// file vocabName as name of file and current chapter
-		values.put(VocabProvider.VALUES_UPDATE_TYPE,
-				VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
-		values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
-		// get the content provider and update
-		getContentResolver().update(VocabProvider.CONTENT_URI, values, null,
-				null);
+	public void onOptionChangedCallback(OptionType type, String language, boolean isEasy) {
+		switch (type){
+		case LANGUAGE:
+			Log.v(TAG, "onOptionChangedCallback called with language " + language);
+			// Set up the active table in the other language using vocabProvider
+			ContentValues values = new ContentValues();
+			// file vocabName as name of file and current chapter
+			values.put(VocabProvider.VALUES_UPDATE_TYPE,
+					VocabProvider.UPDATE_TYPE_VOCAB_LANGUAGE);
+			values.put(VocabProvider.VALUES_VOCAB_LANGUAGE, language);
+			// get the content provider and update
+			getContentResolver().update(VocabProvider.CONTENT_URI, values, null,
+					null);
+			break;
+		case QUIZ:
+			prefs.edit().putBoolean(PREFERENCES_SHOW_EASY, isEasy).commit();
+			break;
+		}
 	}
 
 	int lastDiscarded = -1; // last discarded should never be -1
@@ -641,15 +653,16 @@ public class VocabListActivity extends ActionBarActivity implements
 		// get the cursor for the word
 		Cursor qCursor = getCursorForVocabWordNumber(questionWordNumber);
 		// get three more vocabNumber s from the list for wrong answer numbers.
-		int[] wrongAnsWordNumbers = {-1,-1,-1};
+		int[] wrongAnsWordPosition = {-1,-1,-1};
 		// if list count is less than or equal to 4, 
 		if (listCount <= 4){
 			int count = 0;
 			//then just grab up to all 3 wrong answers word numbers
 			for(int x = 0; x < listCount; x++){
-				int wrongPosition = (Integer) adapter.getItem(x);
+				//int wrongPosition = (Integer) adapter.getItem(x);
+				int wrongPosition = x;
 				if(wrongPosition != questionPosition){
-					wrongAnsWordNumbers[count++] = wrongPosition;
+					wrongAnsWordPosition[count++] = wrongPosition;
 				}
 			} 
 		}else{// else need to grab three wrongAnsWordNumbers
@@ -657,17 +670,18 @@ public class VocabListActivity extends ActionBarActivity implements
 			// while count < 3
 			while (count < 3){
 				//  grab one at random
-				int random = (int) (Math.random() * 1000) % listCount;
-				int randomWordNumber = (int) adapter.getItemId(random);
+				//int random = (int) (Math.random() * 1000) % listCount;
+				//int randomWordPosition = (int) adapter.getItemId(random);
+				int randomWordPosition = (int) (Math.random() * 1000) % listCount;
 				//  if it is the question number  or if it is one of the others
-				if (randomWordNumber == questionWordNumber
-						|| randomWordNumber == wrongAnsWordNumbers[0] 
-								|| randomWordNumber == wrongAnsWordNumbers[1] 
-										|| randomWordNumber == wrongAnsWordNumbers[2]){
+				if (randomWordPosition == questionPosition
+						|| randomWordPosition == wrongAnsWordPosition[0] 
+								|| randomWordPosition == wrongAnsWordPosition[1] 
+										|| randomWordPosition == wrongAnsWordPosition[2]){
 					// continue
 					continue;
 				} // otherwise put it in wrongAns and raise count
-				wrongAnsWordNumbers[count++] = randomWordNumber;
+				wrongAnsWordPosition[count++] = randomWordPosition;
 			}	
 		}
 		// for each wrong answer, going to need a cursor. It would be suggestible
@@ -676,9 +690,11 @@ public class VocabListActivity extends ActionBarActivity implements
 		// be useful else where but makes the active list and each fetch bigger.
 		Cursor[] waCursor = new Cursor[3];
 		for(int x = 0; x < 3 ; x++){
-			if(wrongAnsWordNumbers[x] != -1){
+			if(wrongAnsWordPosition[x] != -1){
 				// get the cursor for the word
-				waCursor[x] = getCursorForVocabWordNumber(wrongAnsWordNumbers[x]);	
+				int wordNumber = (int) adapter.getItemId(wrongAnsWordPosition[x]);
+				// TODO  wrongAnsWordNumbers is position in list need wordNumbers
+				waCursor[x] = getCursorForVocabWordNumber(wordNumber);	
 			}
 		}
 		// having all the cursors, get the data for a bundle.
@@ -759,23 +775,24 @@ public class VocabListActivity extends ActionBarActivity implements
 		// start item
 		Item item = new Item();
 		item.text = getString(R.string.start);
-		item.imageResource = R.drawable.ic_start_star;
+		item.imageResource = R.drawable.ic_star;
 		item.itemTypeAction = ItemTypeAction.START;
 		item.id = 0;
 		itemTable.put(0, item);
 		itemIdList.add(0);
+		// options item
 		// language item
 		item = new Item();
-		item.text = getString(R.string.language);
-		item.imageResource = R.drawable.ic_language_bubble;
-		item.itemTypeAction = ItemTypeAction.LANGUAGE;
+		item.text = getString(R.string.options);
+		item.imageResource = R.drawable.ic_settings;
+		item.itemTypeAction = ItemTypeAction.OPTIONS;
 		item.id = 1;
 		itemTable.put(1, item);
 		itemIdList.add(1);
 		// restart/reset item
 		item = new Item();
 		item.text = getString(R.string.restart);
-		item.imageResource = R.drawable.ic_restart;
+		item.imageResource = R.drawable.ic_refresh;
 		item.itemTypeAction = ItemTypeAction.RESET;
 		item.id = 2;
 		itemTable.put(2, item);
@@ -920,21 +937,19 @@ public class VocabListActivity extends ActionBarActivity implements
 			}
 		}
 
+		/**
+		 * adds a sub item (a history item) to the drawer List.
+		 * @param title
+		 * @param number
+		 */
 		public void addSubItem(String title, String number) {
+			// the subItem to add.
 			SubItem subItem = new SubItem();
-			subItem.text = title;
+			// Its text is the title and vocabNumber is c_id.
+			subItem.text = title; 
 			subItem.vocabNumber = Integer.valueOf(number).intValue();
+			// Actually add the item to adapter
 			addSubItem(subItem);
-			String subItemTitles = prefs.getString(PREFERENCES_SUB_ITEM_TITLES,
-					"");
-			String subItemVocabNumbers = prefs.getString(
-					PREFERENCES_SUB_ITEM_VOCAB_NUMBERS, "");
-			subItemTitles = subItemTitles + "\n" + title;
-			subItemVocabNumbers = subItemVocabNumbers + "\n" + number;
-			prefs.edit()
-					.putString(PREFERENCES_SUB_ITEM_TITLES, subItemTitles)
-					.putString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS,
-							subItemVocabNumbers).commit();
 		}
 
 		private void addSubItem(Item item) {
@@ -993,12 +1008,27 @@ public class VocabListActivity extends ActionBarActivity implements
 			while (i.hasNext()) {
 				result[activeIndex--] = i.next();
 			}
-
-			// for(Integer key: subItemsMap.keySet()){
-			// result[itemCount++] = key;
-			// }
-			// done so set activeArray to result
 			activeArray = result;
+			updatePreferences();
+		}
+		
+		private void updatePreferences(){		
+			String subItemTitles = "";
+			String subItemVocabNumbers = "";
+			
+			Iterator<Integer> iterator = subItemsMap.keySet().iterator();
+			iterator.next(); // skip the group item
+			
+			while (iterator.hasNext()){
+				Integer vocabNumber = iterator.next();
+				String vocabTitle = subItemsMap.get(vocabNumber).text;
+				subItemVocabNumbers = subItemVocabNumbers + "\n" + vocabNumber;
+				subItemTitles = subItemTitles + "\n" + vocabTitle;
+			}
+			prefs.edit()
+			.putString(PREFERENCES_SUB_ITEM_TITLES, subItemTitles)
+			.putString(PREFERENCES_SUB_ITEM_VOCAB_NUMBERS,
+					subItemVocabNumbers).commit();
 		}
 
 		@Override
@@ -1046,7 +1076,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	}
 
 	private enum ItemTypeAction {
-		START, LANGUAGE, RESET, MORE_VOCAB, NONE, OPEN_PREVIOUS_VOCAB
+		START, LANGUAGE, RESET, MORE_VOCAB, NONE, OPEN_PREVIOUS_VOCAB, OPTIONS
 	}
 
 	private class Item {
