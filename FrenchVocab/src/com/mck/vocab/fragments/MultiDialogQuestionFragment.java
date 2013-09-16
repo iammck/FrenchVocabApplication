@@ -46,7 +46,8 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setStyle(STYLE_NO_TITLE, getTheme());
+		this.setStyle(STYLE_NO_TITLE, R.style.MyDialogTheme);
+		//this.setStyle(STYLE_NO_TITLE, getTheme());
 		//this.setStyle(STYLE_NORMAL,STYLE_NO_TITLE );
 		//this.setStyle(STYLE_NO_TITLE, 0);
 	}

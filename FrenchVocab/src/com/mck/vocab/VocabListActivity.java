@@ -43,8 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mck.vocab.fragments.ChangeLanguageDialogFragment;
-import com.mck.vocab.fragments.EasyDialogAnswerFragment;
-import com.mck.vocab.fragments.EasyDialogQuestionFragment;
+import com.mck.vocab.fragments.EasyDialogFragment;
 import com.mck.vocab.fragments.FirstLoadDialog;
 import com.mck.vocab.fragments.FirstLoadDialogB;
 import com.mck.vocab.fragments.MultiDialogQuestionFragment;
@@ -56,7 +55,7 @@ import com.mck.vocab.fragments.VocabListFragment;
 public class VocabListActivity extends ActionBarActivity implements
 		OptionsChangedCallback, OnSharedPreferenceChangeListener,
 		LoaderCallbacks<Cursor>,
-		EasyDialogAnswerFragment.EasyDialogFragmentCallback ,
+		EasyDialogFragment.EasyDialogFragmentCallback ,
 		MultiDialogQuestionFragment.MultiDialogFragmentCallback{
 
 	private static final String TAG = "VocabListActivity";
@@ -609,11 +608,11 @@ public class VocabListActivity extends ActionBarActivity implements
 		}
 		// Load up the arguments into a new EasyDialogQeustionFramgent
 		FragmentManager fragMan = getSupportFragmentManager();
-		EasyDialogQuestionFragment questionFrag = new EasyDialogQuestionFragment();
+		EasyDialogFragment questionFrag = new EasyDialogFragment();
 		Bundle bundle = new Bundle();
-		bundle.putString(EasyDialogQuestionFragment.QUESTION, question);
-		bundle.putString(EasyDialogAnswerFragment.ANSWER, answer);
-		bundle.putInt(EasyDialogAnswerFragment.WORDNUMBER, vocabWordNumber);
+		bundle.putString(EasyDialogFragment.QUESTION, question);
+		bundle.putString(EasyDialogFragment.ANSWER, answer);
+		bundle.putInt(EasyDialogFragment.WORDNUMBER, vocabWordNumber);
 		questionFrag.setArguments(bundle);
 		// and show.
 		questionFrag.show(fragMan, TAG);

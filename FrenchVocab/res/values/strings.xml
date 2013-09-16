@@ -22,7 +22,7 @@
     <string name="translate">Translate</string>
     <string name="easy_dialog_question_text">The Question</string>
     <string name="remove">Remove</string>
-    <string name="next">Next</string>
+    <string name="next"> Next </string>
     <string name="start">Start</string>
     <string name="easy_dialog_answer_text">Answer</string>
     <string name="drawer_open">Open the drawer</string>

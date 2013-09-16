@@ -16,14 +16,25 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
-     <style name="MyDialogTitleStyle" parent="AppTheme">
+         
+     
+     <style name="MyDialogTheme" parent="android:Theme.Dialog">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@color/black</item>
-        
-        <item name="android:typeface">monospace</item>
+        <item name="android:windowBackground">@drawable/black_square</item>
+        <item name="android:windowNoTitle">true</item>
+    	
     </style>
+    
+     <style name="MyDialogTextViewStyle" parent="android:Theme">
+     	<item name="android:layout_width">fill_parent</item>
+     	<item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/easy_dialog_text_padding</item>
+        <item name="android:textSize">@dimen/easy_dialog_default_text_size</item>
+        <item name="android:background">@android:color/transparent</item>
+     	<item name="android:gravity">center_vertical|center_horizontal</item>
+     </style>
+     
+     
 
 </resources>

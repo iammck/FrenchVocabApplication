@@ -7,12 +7,13 @@
     <dimen name="vocab_word_text_size">18sp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="easy_dialog_question_text_size">22sp</dimen>
-    <dimen name="easy_dialog_text_padding">20dp</dimen>
+    <dimen name="easy_dialog_text_padding">8dp</dimen>
     <dimen name="easy_dialog_question_margin">16dp</dimen>
     <dimen name="easy_dialog_question_min_height">40dp</dimen>
     <dimen name="easy_dialog_answer_text_size">38sp</dimen>
     <dimen name="easy_dialog_question_extra_small">11dp</dimen>
 
+    <dimen name="easy_dialog_default_text_size">22sp</dimen>
     <dimen name="multi_dialog_question_text_size">28sp</dimen>
     <dimen name="multi_dialog_question_cell_text_size">18sp</dimen>
     
