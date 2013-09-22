@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mck.vocab.R;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 /**
  * @author Michael
@@ -115,7 +116,8 @@ public class EasyDialogFragment extends DialogFragment implements OnClickListene
 		// set up the buttons
 		Button button;
 		button= (Button) view.findViewById(R.id.buttonRemove);
-		button.setVisibility(View.VISIBLE);
+		ObjectAnimator.ofFloat(button, "alpha", 0, 1).setDuration(100).start();
+		button.setVisibility(View.VISIBLE);		
 		button = (Button) view.findViewById(R.id.buttonEasy);
 		button.setText(R.string.next);
 		button = (Button) view.findViewById(R.id.buttonCancel);
