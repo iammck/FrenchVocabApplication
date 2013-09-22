@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black"
+    android:background="@drawable/black_square"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -58,7 +58,7 @@
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
+        android:paddingRight="8dp">
 
     </ListView>
     
@@ -88,8 +88,8 @@
             android:layout_height="wrap_content"
             android:layout_weight=".60"
             android:clickable="false"
-            android:text="Next"
-            android:visibility="invisible" />
+            android:text="@string/cancel"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/buttonCancel"
@@ -98,15 +98,9 @@
             android:layout_weight=".5"
             android:clickable="false"
             android:text="@string/cancel"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/buttonRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-    </RelativeLayout>
 
 </LinearLayout>

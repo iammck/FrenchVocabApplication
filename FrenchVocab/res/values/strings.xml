@@ -32,6 +32,8 @@
     <string name="options">Options</string>
     <string name="about">About</string>
     <string name="ok">OK!</string>
+    <string name="multi_cell_description"></string>
+    
 	<string name="first_load_text">Thank you for using this application. To begin, Get some vocabulary from the menu.</string>
 	<string name="first_load_b_text">Once you have some vocab, you may select words from the list or press start from the menu to begin quizzing.</string>
 	<string name="multi_dialog_question_statement_textview">Choose the right definition.</string>

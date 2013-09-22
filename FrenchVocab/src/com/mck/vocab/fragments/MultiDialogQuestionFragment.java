@@ -18,6 +18,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mck.vocab.R;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.Animator.AnimatorListener;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 public class MultiDialogQuestionFragment extends DialogFragment implements
 		OnClickListener, OnItemClickListener {
@@ -36,6 +40,7 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 	String[] wAnswers;
 	int wordNumber;
 	int answerPosition;
+	boolean isAnswered;
 	AnswerArrayAdapter adapter;
 	
 	public interface MultiDialogFragmentCallback{
@@ -50,6 +55,7 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 		//this.setStyle(STYLE_NO_TITLE, getTheme());
 		//this.setStyle(STYLE_NORMAL,STYLE_NO_TITLE );
 		//this.setStyle(STYLE_NO_TITLE, 0);
+		isAnswered = false;
 	}
 
 
@@ -66,7 +72,7 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 		// inflate the view
 		View view = inflater.inflate(R.layout.multi_dialog_question_layout, container, false);
 		// request on clicks for the buttons
-		Button button = (Button) view.findViewById(R.id.buttonCancel);
+		Button button = (Button) view.findViewById(R.id.buttonNext);
 		button.setOnClickListener(this);
 		
 		// Get and set arguments for text view
@@ -135,6 +141,11 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 			mdfcb.quizDialogNext(this.wordNumber, true);
 			return;
 		case R.id.buttonNext:
+			// if there is no button cancel, then next is to cancel.
+			if (isAnswered == false){
+				dismiss();
+				return;
+			}
 			Log.v(TAG, "reacting to buttonNext");
 			dismiss();
 			mdfcb.quizDialogNext(this.wordNumber, false);
@@ -146,22 +157,42 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// if the position is correct, load up the multiDialogAnswerFragment
 		if (position == answerPosition){
-			// set answered
-			adapter.answer();
-			// get the buttons
-			Button next = (Button) getView().findViewById(R.id.buttonNext);
-			Button remove = (Button) getView().findViewById(R.id.buttonRemove);
-			next.setClickable(true);
-			remove.setClickable(true);
-			next.setVisibility(View.VISIBLE);
-			remove.setVisibility(View.VISIBLE);
-			next.setOnClickListener(this);
-			remove.setOnClickListener(this);
+			// having the dialog update itself while faded out may require an asynchTask
+			// and since it is messing with the ui it needs to be sure to run on UI thread.
+			// fade out TODO
+			// get the dialog view
+			View dialogView = getView();
+			// now create the fade effect and get it started.
+			ObjectAnimator fadeOut = ObjectAnimator.ofFloat(dialogView, "alpha", .0f);
+			fadeOut.setDuration(200);
+			ObjectAnimator fadeIn = ObjectAnimator.ofFloat(dialogView, "alpha", 0, 1);
+			fadeIn.addListener(new CorrectAnswerAnimationCallback(this));
+			fadeIn.setStartDelay(10);
+			fadeIn.setDuration(220);
+			AnimatorSet animation = new AnimatorSet();
+			animation.playSequentially(fadeOut, fadeIn);
+			animation.start();
+
+//			// set answered
+//			adapter.answer();
+//			// get the buttons
+//			Button next = (Button) getView().findViewById(R.id.buttonNext);
+//			Button remove = (Button) getView().findViewById(R.id.buttonRemove);
+//			next.setClickable(true);
+//			remove.setClickable(true);
+//			next.setVisibility(View.VISIBLE);
+//			remove.setVisibility(View.VISIBLE);
+//			next.setOnClickListener(this);
+//			remove.setOnClickListener(this);
+//			// notify the adapter of the update
+//			adapter.notifyDataSetChanged();	
+//			// fade in TODO 
 		} else { 
 			((AnswerArrayAdapter)adapter).wordPicked[position] = true;
+			// notify the adapter of the update
+			adapter.notifyDataSetChanged();	
 		}
-		// notify the adapter of the update
-		adapter.notifyDataSetChanged();			
+				
 	}
 
 	public class AnswerArrayAdapter extends ArrayAdapter<Integer>{
@@ -219,6 +250,51 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 	}
 
 
+private class CorrectAnswerAnimationCallback implements AnimatorListener{
+	private MultiDialogQuestionFragment parent;
+
+	public CorrectAnswerAnimationCallback(MultiDialogQuestionFragment parent){
+		this.parent = parent;
+	}
+	
+	@Override
+	public void onAnimationStart(Animator animation) {
+		// set answered
+		isAnswered = true;
+		
+		adapter.answer();
+		// get the buttons
+		Button next = (Button) getView().findViewById(R.id.buttonNext);
+		Button remove = (Button) getView().findViewById(R.id.buttonRemove);
+		Button cancel = (Button) getView().findViewById(R.id.buttonCancel);
+		next.setText(R.string.next);
+		
+		cancel.setClickable(true);
+		remove.setClickable(true);
+		cancel.setVisibility(View.VISIBLE);
+		remove.setVisibility(View.VISIBLE);
+		cancel.setOnClickListener(parent);
+		remove.setOnClickListener(parent);
+		// notify the adapter of the update
+		adapter.notifyDataSetChanged();			
+		
+			
+	}
+
+	@Override
+	public void onAnimationEnd(Animator animation) {
+	}
+
+	@Override
+	public void onAnimationCancel(Animator animation) {
+		
+	}
+
+	@Override
+	public void onAnimationRepeat(Animator animation) {
+	}
+	
+}
 
 
 	

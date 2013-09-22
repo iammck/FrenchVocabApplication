@@ -4,3 +4,6 @@ user to interact with it. The back end of the ListFragment should be a cursorAda
 SQLiteDatabase.
 
 The initial commit came with some code.
+
+You will need to include both android-support-v7-appcompat and library (from http://nineoldandroids.com/)
+as libraries.
