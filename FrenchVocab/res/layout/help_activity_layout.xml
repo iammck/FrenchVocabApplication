@@ -138,7 +138,7 @@
         android:text="Once a vocab list has had vocab removed, reseting the list will restore the list to its initial state. To restore, open the application drawer then select 'restart'. " />
 
     
- <TextView
+ 	<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Invisible"
@@ -153,8 +153,25 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="The initial language of a vocab list may be changed by opening the application drawer then selecting &apos;Language&apos;" />
+        android:text="The initial language of a vocab list may be changed by opening the application drawer then selecting &apos;Set Language&apos;" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invisible"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change quiz type"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The initial language of a vocab list may be changed by opening the application drawer then selecting &apos;Set Quiz type&apos;" />
     
 </LinearLayout>
 

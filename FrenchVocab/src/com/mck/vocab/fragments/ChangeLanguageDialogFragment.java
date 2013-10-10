@@ -27,7 +27,7 @@ public class ChangeLanguageDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Set inital language")
+		builder.setTitle("Set Inital Language")
 		.setItems(languages, new DialogInterface.OnClickListener(){
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

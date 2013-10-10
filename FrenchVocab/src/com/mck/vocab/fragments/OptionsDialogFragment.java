@@ -17,7 +17,7 @@ import android.support.v4.app.FragmentManager;
  */
 public class OptionsDialogFragment extends DialogFragment {
 	Activity activity;
-	String[] options = {"Quiz Type","Inital Language"};
+	String[] options = {"Set Quiz Type","Set Inital Language"};
 	public static final String TAG = "OptionsDialogFragment";
 	
 	public interface OptionsChangedCallback{

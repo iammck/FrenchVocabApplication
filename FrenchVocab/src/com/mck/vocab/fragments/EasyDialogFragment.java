@@ -116,7 +116,7 @@ public class EasyDialogFragment extends DialogFragment implements OnClickListene
 		// set up the buttons
 		Button button;
 		button= (Button) view.findViewById(R.id.buttonRemove);
-		ObjectAnimator.ofFloat(button, "alpha", 0, 1).setDuration(100).start();
+		ObjectAnimator.ofFloat(button, "alpha", 0, 1).setDuration(180).start();
 		button.setVisibility(View.VISIBLE);		
 		button = (Button) view.findViewById(R.id.buttonEasy);
 		button.setText(R.string.next);

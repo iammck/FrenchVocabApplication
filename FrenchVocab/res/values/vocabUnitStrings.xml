@@ -46,7 +46,7 @@
         <item>Unit 9 nouns 3</item>
         <item>Unit 9 adjectives</item>
         <item>Unit 9 verbs</item>
-        <item>Unit 9 etc.</item>
+        <item>Unit 9 expressions</item>
     </string-array>
     <string-array name="vocab_unit_9_names_values">
         <item>1</item>
@@ -61,7 +61,7 @@
         <item>Unit 10 nouns 2</item>
         <item>Unit 10 adjectives</item>
         <item>Unit 10 verbs</item>
-        <item>Unit 10 additional </item>
+        <item>Unit 10 expressions </item>
     </string-array>
     <string-array name="vocab_unit_10_names_values">
         <item>7</item>
@@ -75,7 +75,7 @@
         <item>Unit 11 nouns 2</item>
         <item>Unit 11 adjectives</item>
         <item>Unit 11 verbs</item>
-        <item>Unit 11 additional </item>
+        <item>Unit 11 expressions </item>
     </string-array>
     <string-array name="vocab_unit_11_names_values">
         <item>12</item>
@@ -89,7 +89,7 @@
         <item>Unit 12 nouns 2</item>
         <item>Unit 12 adjectives</item>
         <item>Unit 12 verbs</item>
-        <item>Unit 12 additional </item>
+        <item>Unit 12 expressions </item>
     </string-array>
     <string-array name="vocab_unit_12_names_values">
         <item>17</item>
@@ -105,7 +105,7 @@
         <item>Unit 13 nouns 3</item>
         <item>Unit 13 adjectives</item>
         <item>Unit 13 verbs</item>
-        <item>Unit 13 additional </item>
+        <item>Unit 13 expressions </item>
     </string-array>
     <string-array name="vocab_unit_13_names_values">
         <item>22</item>
@@ -121,7 +121,7 @@
         <item>Unit 14 nouns 2</item>
         <item>Unit 14 adjectives</item>
         <item>Unit 14 verbs</item>
-        <item>Unit 14 additional </item>
+        <item>Unit 14 expressions </item>
     </string-array>
     <string-array name="vocab_unit_14_names_values">
         <item>28</item>
@@ -138,7 +138,7 @@
         <item>Unit 15 nouns 2</item>
         <item>Unit 15 adjectives</item>
         <item>Unit 15 verbs</item>
-        <item>Unit 15 additional </item>
+        <item>Unit 15 expressions </item>
     </string-array>
     <string-array name="vocab_unit_15_names_values">
         <item>33</item>
@@ -152,7 +152,7 @@
         <item>Unit 16 nouns 1</item>
         <item>Unit 16 adjectives</item>
         <item>Unit 16 verbs</item>
-        <item>Unit 16 additional </item>
+        <item>Unit 16 expressions </item>
     </string-array>
     <string-array name="vocab_unit_16_names_values">
         <item>38</item>
@@ -166,7 +166,7 @@
         <item>Unit 17 nouns 2</item>
         <item>Unit 17 adjectives</item>
         <item>Unit 17 verbs</item>
-        <item>Unit 17 additional </item>
+        <item>Unit 17 expressions </item>
     </string-array>
     <string-array name="vocab_unit_17_names_values">
         <item>42</item>
@@ -181,7 +181,7 @@
         <item>Unit 1 Nouns</item>
         <item>Unit 1 countries</item>
         <item>Unit 1 verbs</item>
-        <item>Unit 1 additional</item>
+        <item>Unit 1 expressions</item>
     </string-array>
     <string-array name="vocab_unit_1_names_values">
         <item>47</item>
@@ -198,7 +198,7 @@
         <item>Unit 2 Nouns 2</item>
         <item>Unit 2 Adjectives</item>
         <item>Unit 2 verbs</item>
-        <item>Unit 2 additional </item>
+        <item>Unit 2 expressions </item>
     </string-array>
     <string-array name="vocab_unit_2_names_values">
         <item>52</item>
@@ -216,7 +216,7 @@
         <item>Unit 3 Nouns 2</item>
         <item>Unit 3 Adjectives</item>
         <item>Unit 3 verbs</item>
-        <item>Unit 3 additional </item>
+        <item>Unit 3 expressions </item>
     </string-array>
     <string-array name="vocab_unit_3_names_values">
         <item>59</item>
@@ -233,7 +233,7 @@
         <item>Unit 4 Nouns 2</item>
         <item>Unit 4 Adjectives</item>
         <item>Unit 4 verbs</item>
-        <item>Unit 4 additional </item>
+        <item>Unit 4 expressions </item>
     </string-array>
     <string-array name="vocab_unit_4_names_values">
         <item>65</item>
@@ -249,7 +249,7 @@
         <item>Unit 5 Nouns</item>
         <item>Unit 5 Adjectives</item>
         <item>Unit 5 verbs</item>
-        <item>Unit 5 additional </item>
+        <item>Unit 5 expressions </item>
     </string-array>
     <string-array name="vocab_unit_5_names_values">
         <item>71</item>
@@ -266,7 +266,7 @@
         <item>Unit 6 Nouns Part 2</item>
         <item>Unit 6 Adjectives</item>
         <item>Unit 6 verbs</item>
-        <item>Unit 6 additional </item>
+        <item>Unit 6 expressions </item>
     </string-array>
     <string-array name="vocab_unit_6_names_values">	
         <item>76</item>
@@ -283,7 +283,7 @@
         <item>Unit 7 nouns 2</item>
         <item>Unit 7 adjectives</item>
         <item>Unit 7 verbs</item>
-        <item>Unit 7 additional </item>
+        <item>Unit 7 expressions </item>
     </string-array>
     <string-array name="vocab_unit_7_names_values">
         <item>83</item>
@@ -298,7 +298,7 @@
         <item>Unit 8 nouns 2</item>
         <item>Unit 8 adjectives</item>
         <item>Unit 8 verbs</item>
-        <item>Unit 8 additional </item>
+        <item>Unit 8 expressions </item>
     </string-array>
     <string-array name="vocab_unit_8_names_values">
         <item>88</item>

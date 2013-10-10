@@ -43,6 +43,35 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="About French Vocab"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="French Vocab was developed by the author while attending the University of Washington's summer French Intensive, French 134. The course Included courses French 101, 102, and 103. It covered units 1- 17 of the course book titled &apos; Rond-Point: Édition nord-américaine&apos;." />
+	<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invisible"
+        android:visibility="invisible" />
+	
+	<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The application was designed to help the author practice vocabulary for each unit of the book." />
+	
+    
+
+<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invisible"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Author"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -50,7 +79,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Michael King" />
-
 
     
 </LinearLayout>
