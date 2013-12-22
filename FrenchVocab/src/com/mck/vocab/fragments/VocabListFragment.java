@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -26,7 +25,7 @@ import com.mck.vocab.VocabProvider;
  *
  */
 public class VocabListFragment extends ListFragment implements OnItemLongClickListener {
-	private static final String TAG = "VocabListFragment";	
+	public static final String TAG = "VocabListFragment";	
 	private VocabListActivity vocabListActivity; // obtained in onAttach
 	
 	/**
@@ -36,7 +35,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		Log.v(TAG,"onAttach() has begun");
+		//Log.v(TAG,"onAttach() has begun");
 		this.vocabListActivity = (VocabListActivity) activity;
 	}
 
@@ -47,7 +46,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Log.v(TAG,"onActivityCreated() has begun");
+		//Log.v(TAG,"onActivityCreated() has begun");
 		Context context = this.getActivity().getApplicationContext();
 		int cellview = R.layout.vocab_list_fragment_word_cell;
 		Cursor cursor = null;
@@ -68,7 +67,7 @@ public class VocabListFragment extends ListFragment implements OnItemLongClickLi
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> av, View v, int position,	long id) {
-		Log.v(TAG, "onItemLongClick() clicked");
+		//Log.v(TAG, "onItemLongClick() clicked");
 		vocabListActivity.removeVocabWord(position);
 		return true;
 	}

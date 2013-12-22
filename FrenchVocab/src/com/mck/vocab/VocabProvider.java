@@ -20,7 +20,6 @@ import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * @author Michael
@@ -98,14 +97,14 @@ public class VocabProvider extends ContentProvider {
 	 */
 	@Override
 	public boolean onCreate() {
-		Log.v(TAG, "onCreate has begun ");
+		//Log.v(TAG, "onCreate has begun ");
 		// this may be a horribly wrong way to load up the preference.
 		//  If a preferences file by this name does not exist, it will be created when you retrieve an editor
 		SharedPreferences prefs = this.getContext().getSharedPreferences(TAG , Context.MODE_PRIVATE);
 		// Is there a word count variable handy? There should never be an index of -1.
 		int wordCnt = prefs.getInt(VocabProvider.PREFERENCES_VOCAB_WORD_COUNT, -1);
 		if (wordCnt == -1){// There is not so set one up.
-			Log.v(TAG, "putting vocabWordCount in prefs and commiting.");
+			//Log.v(TAG, "putting vocabWordCount in prefs and commiting.");
 			prefs.edit().putInt(VocabProvider.PREFERENCES_VOCAB_WORD_COUNT, 0).commit();
 		}
 		// set initial language
@@ -113,12 +112,12 @@ public class VocabProvider extends ContentProvider {
 		
 		// now set up the datebase via a new db helper. It needs the context.
 		dbHelper = new DBHelper(getContext());
-		Log.v(TAG, "onCreate has finished ");
+		//Log.v(TAG, "onCreate has finished ");
 		return true;
 	}
 	@Override
 	public String getType(Uri uri) {
-		Log.v(TAG, "getType() has begun.");
+		//Log.v(TAG, "getType() has begun.");
 		return null;
 	}
 	
@@ -140,7 +139,7 @@ public class VocabProvider extends ContentProvider {
 		String segment = uri.getLastPathSegment();
 		// If the segment is to query the active table
 		if (segment.equals(ACTIVE_TABLE)){
-			Log.v(TAG, "A query has been made to the active table!");
+			//Log.v(TAG, "A query has been made to the active table!");
 			db = dbHelper.getReadableDatabase();
 			cursor = db.query(ACTIVE_TABLE, projection, selection, selectionArgs, null, null, sortOrder);
 			// let any listeners know that an update happened.
@@ -155,14 +154,14 @@ public class VocabProvider extends ContentProvider {
 		}
 		List<String> segments = uri.getPathSegments();
 		if(segments.contains(TITLES_TABLE)){ // trying to get active table title?
-			Log.v(TAG, "A query has been made for vocab title " + segment);
+			//Log.v(TAG, "A query has been made for vocab title " + segment);
 
 			// if just the active table
 			if (segment.equals(TITLES_TABLE)){
 				SharedPreferences prefs = getContext().getSharedPreferences(TAG , Context.MODE_PRIVATE);
 				int vocabNumber = prefs.getInt(VocabProvider.PREFERENCES_ACTIVE_VOCAB_NUMBER, -1);
 				if (vocabNumber == -1){
-					Log.v(TAG,"attempting to query for active title, but none in preferences.");
+					//Log.v(TAG,"attempting to query for active title, but none in preferences.");
 					return null;
 				}
 				return dbHelper.queryTitleTableForVocabNumber(vocabNumber);
@@ -170,7 +169,7 @@ public class VocabProvider extends ContentProvider {
 				return dbHelper.queryTitleTableForVocabNumber(Integer.valueOf(segment).intValue());
 			}
 		}
-		Log.v(TAG, "A query has been made for VocabWordNumber " + segment);
+		//Log.v(TAG, "A query has been made for VocabWordNumber " + segment);
 		//should be a vocab word number, query the db for number
 		int vocabWordNumber = Integer.valueOf(segment).intValue();
 		cursor = dbHelper.queryVocabTableForVocabWord(vocabWordNumber);
@@ -202,7 +201,7 @@ public class VocabProvider extends ContentProvider {
 			String[] selectionArgs) {
 		String reqType = (String) values.get(VALUES_UPDATE_TYPE);
 		
-		Log.v(TAG,"Begining an " + reqType + " update in update()");		
+		//Log.v(TAG,"Begining an " + reqType + " update in update()");		
 		if(reqType != null && reqType.equals(UPDATE_TYPE_OPEN_VOCAB)){
 			return this.openVocabAsActive(values);	
 		}
@@ -213,7 +212,7 @@ public class VocabProvider extends ContentProvider {
 			// get preferences active table
 			int vocabNumber = prefs.getInt(PREFERENCES_ACTIVE_VOCAB_NUMBER, -1);
 			if (vocabNumber == -1){
-				Log.v(TAG, "update request reset failed to get he active vocab number from prefs");
+				//Log.v(TAG, "update request reset failed to get he active vocab number from prefs");
 			}
 			// set the active table to the vocab table and notify
 			setActiveTableToVocabTable(vocabNumber);
@@ -269,13 +268,13 @@ public class VocabProvider extends ContentProvider {
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
 			return 0;	
 		}
-		Log.v(TAG, "update() complete");
+		//Log.v(TAG, "update() complete");
 		return 0;	
 	}
 	@SuppressLint("UseSparseArrays")
 	private void setActiveTableToCurrentLanguage() {
 
-		Log.v(TAG, "setActiveTableToCurrentLanguage has begun.");
+		//Log.v(TAG, "setActiveTableToCurrentLanguage has begun.");
 		// Get the language from the prefs.
 		SharedPreferences prefs = getContext().getSharedPreferences(TAG , Context.MODE_PRIVATE);
 		boolean isEnglish = prefs.getBoolean(PREFERENCES_IS_ENGLISH_ACTIVIE, true);
@@ -398,7 +397,7 @@ public class VocabProvider extends ContentProvider {
 	}
 	
 	private void setActiveTableToVocabTable(int vocabId){
-		Log.v(TAG, "setActiveTableToVocabTable " + vocabId + " is beggining.");
+		//Log.v(TAG, "setActiveTableToVocabTable " + vocabId + " is beggining.");
 		// Get cursor for vocab table
 		Cursor vCursor; //must do later? = dbHelper.queryVocabTable(vocabId);
 		
@@ -498,7 +497,7 @@ public class VocabProvider extends ContentProvider {
 			}
 		}			
 		*/
-		Log.v(TAG, "setActiveTableToVocabTable has completed.");
+		//Log.v(TAG, "setActiveTableToVocabTable has completed.");
 		
 		
 	}
@@ -508,7 +507,7 @@ public class VocabProvider extends ContentProvider {
 	
 	
 	private void setActiveTableToPreviousVocabTable(int vocabId){
-		Log.v(TAG, "setActiveTableToPreviousVocabTable " + vocabId + " is beggining.");
+		//Log.v(TAG, "setActiveTableToPreviousVocabTable " + vocabId + " is beggining.");
 		// Get cursor for prvious vocab table
 		Cursor pCursor;
 		dbHelper.deleteActiveTableContent();
@@ -550,7 +549,7 @@ public class VocabProvider extends ContentProvider {
 		// apply the batch transaction
 		db.setTransactionSuccessful();
 		db.endTransaction();
-		Log.v(TAG, "setActiveTableToPreviousVocabTable has completed.");
+		//Log.v(TAG, "setActiveTableToPreviousVocabTable has completed.");
 	}
 	
 	
@@ -568,7 +567,7 @@ public class VocabProvider extends ContentProvider {
 	
 	
 	class DBHelper extends SQLiteOpenHelper{
-		private static final String TAG = "SQLiteOpenHelper";
+		public static final String TAG = "SQLiteOpenHelper";
 		//private Context context;		
 		
 		
@@ -582,7 +581,7 @@ public class VocabProvider extends ContentProvider {
 		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.v(TAG, "dbHelper onCreate!!!!");
+			//Log.v(TAG, "dbHelper onCreate!!!!");
 			db.execSQL(CREATE_VOCAB_TABLE_SQL_STATEMENT);
 			db.execSQL(CREATE_ACTIVE_TABLE_SQL_STATEMENT);
 			db.execSQL(CREATE_PREVIOUSLY_ACTIVE_TABLE_SQL_STATEMENT);
@@ -724,19 +723,20 @@ public class VocabProvider extends ContentProvider {
 			values.put(C_TITLE, title);
 			values.put(C_ID, Integer.valueOf(vocabNumber));
 			int conflictAlgorithm = SQLiteDatabase.CONFLICT_REPLACE;
-			Long result = db.insertWithOnConflict(table, null, values, conflictAlgorithm);
-			if (result == -1){
-				Log.e(TAG, "putTitleWithVocabNumberInTitleTable() db.insert returned an error code -1");
-			}
+			//Long result = 
+			db.insertWithOnConflict(table, null, values, conflictAlgorithm);
+			//if (result == -1){
+			//	Log.e(TAG, "putTitleWithVocabNumberInTitleTable() db.insert returned an error code -1");
+			//}
 		}
 
 		private void putActiveTableIntoPreviouslyActiveTable(){
-			Log.v(TAG, "putActiveTableIntoPreviouslyActiveTable is beggining.");
+			//Log.v(TAG, "putActiveTableIntoPreviouslyActiveTable is beggining.");
 			// get a cursor to the active table
 			Cursor aCursor = queryActiveTable();
 			// if empty then don't do it!
 			if (aCursor.getCount() < 1){
-				Log.v(TAG, "empty active table, putActiveTableIntoReviouslyActiveTable has completed early.");
+				//Log.v(TAG, "empty active table, putActiveTableIntoReviouslyActiveTable has completed early.");
 				return;
 			}
 			aCursor.moveToFirst();
@@ -804,7 +804,7 @@ public class VocabProvider extends ContentProvider {
 				vocab += " " + String.valueOf(vocabNumber); // this is where the emty first cell is from
 				prefs.edit().putString(PREFERENCES_VOCAB_IN_PREVIOUSLY_ACTIVE_TABLE, vocab).commit();
 			}
-			Log.v(TAG, "putActiveTableIntoReviouslyActiveTable has completed.");
+			//Log.v(TAG, "putActiveTableIntoReviouslyActiveTable has completed.");
 		}
 		
 		
@@ -876,7 +876,7 @@ public class VocabProvider extends ContentProvider {
 			Cursor aCursor = queryActiveTable();
 			// if no active cursor, return
 			if (aCursor.getCount() <= 1){
-				Log.v(TAG, "updateActiveTableToLanguage, but cursor says empty active table");
+				//Log.v(TAG, "updateActiveTableToLanguage, but cursor says empty active table");
 				return;
 			}
 			// array for ids from active table
@@ -923,8 +923,8 @@ public class VocabProvider extends ContentProvider {
 			db.endTransaction();
 			// notify of a change to the active table
 			getContext().getContentResolver().notifyChange(CONTENT_URI, null);
-			Log.v(TAG, "updateActiveTableToLanguage has updated the active language to "
-											+ vocabWordColumn);
+			//Log.v(TAG, "updateActiveTableToLanguage has updated the active language to "
+			//								+ vocabWordColumn);
 		}
 		
 		/**
@@ -967,7 +967,7 @@ public class VocabProvider extends ContentProvider {
 		 * @return the cursor for the vocabWord
 		 */
 		public Cursor queryVocabTableForVocabWord(int vocabWordNumber){
-			Log.v(TAG, "query vocab table for vocabWordNumber "+ vocabWordNumber);
+			//Log.v(TAG, "query vocab table for vocabWordNumber "+ vocabWordNumber);
 			db = getWritableDatabase();
 			
 			String[] columns = null; // want all columns for the row
@@ -990,7 +990,7 @@ public class VocabProvider extends ContentProvider {
 		 * @return the cursor for the vocabWord
 		 */
 		public Cursor queryActiveTableForVocabWord(int vocabWordNumber){
-			Log.v(TAG, "query active table for vocabWordNumber "+ vocabWordNumber);
+			//Log.v(TAG, "query active table for vocabWordNumber "+ vocabWordNumber);
 			db = getWritableDatabase();
 			String[] columns = null; // want all columns for the row
 			String selection = " " + VocabProvider.C_ID + " = " + String.valueOf(vocabWordNumber);
@@ -1008,7 +1008,7 @@ public class VocabProvider extends ContentProvider {
 		 * @return the cursor for the vocabWord
 		 */
 		public Cursor queryTitleTableForVocabNumber(int vocabNumber){
-			Log.v(TAG, "queryTitleTableForVocabNumber for vocabNumber "+ vocabNumber);
+			//Log.v(TAG, "queryTitleTableForVocabNumber for vocabNumber "+ vocabNumber);
 			db = getWritableDatabase();
 			String[] columns = null; // want all columns for the row
 			String selection = " " + VocabProvider.C_ID + " = " + String.valueOf(vocabNumber);
@@ -1017,7 +1017,7 @@ public class VocabProvider extends ContentProvider {
 			String having = null;
 			//String sortBy =  C_ID + " ASC";
 			Cursor cursor = db.query(VocabProvider.TITLES_TABLE, columns, selection, selectionArgs, groupBy, having, SORT_BY_DESCENDING);
-			Log.v(TAG, "queryTitleTableForVocabNumber found " + cursor.getCount() + " titles.");
+			//Log.v(TAG, "queryTitleTableForVocabNumber found " + cursor.getCount() + " titles.");
 			return cursor;
 		}
 
@@ -1029,7 +1029,7 @@ public class VocabProvider extends ContentProvider {
 		 * @return the cursor for the vocabWord
 		 */
 		public Cursor queryVocabTableForVocabWords(String[] vocabWordNumbers){
-			Log.v(TAG, "query active table for vocabWordNumbers "+ vocabWordNumbers);
+			//Log.v(TAG, "query active table for vocabWordNumbers "+ vocabWordNumbers);
 			String orStatement = "";
 			for(int x= 0; x < vocabWordNumbers.length - 1;x++){
 				orStatement += vocabWordNumbers[x] + " OR ";
@@ -1083,8 +1083,9 @@ public class VocabProvider extends ContentProvider {
 		private void deleteVocabTableContent(Integer vocabNumber){
 			String[] removeIds = {vocabNumber.toString()};
 			db = getWritableDatabase();// it might be the number of databases.
-			int d = db.delete(VOCAB_TABLE, VocabProvider.C_VOCAB_NUMBER + "=?",  removeIds);
-			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
+			//int d = 
+			db.delete(VOCAB_TABLE, VocabProvider.C_VOCAB_NUMBER + "=?",  removeIds);
+			//Log.v(TAG, String.valueOf(d) + " items removed from the active table");
 		}
 
 		/**
@@ -1094,8 +1095,9 @@ public class VocabProvider extends ContentProvider {
 		private void deletePreviouslyActiveTableContent(int vocabNumber) {
 			String[] removeIds = {String.valueOf(vocabNumber)};
 			db = getWritableDatabase();// it might be the number of databases.
-			int d = db.delete(PREVIOUSLY_ACTIVE_TABLE, VocabProvider.C_VOCAB_NUMBER + "=?",  removeIds);
-			Log.v(TAG, String.valueOf(d) + " items removed from the previously active table");
+			//int d = 
+			db.delete(PREVIOUSLY_ACTIVE_TABLE, VocabProvider.C_VOCAB_NUMBER + "=?",  removeIds);
+			//Log.v(TAG, String.valueOf(d) + " items removed from the previously active table");
 		}
 
 				/**
@@ -1103,11 +1105,12 @@ public class VocabProvider extends ContentProvider {
 		 * @param vocabWordNumber the number associated with the vocabWord to delete from table
 		 */
 		private void deleteVocabWordFromActiveTable(Integer vocabWordNumber) {
-			Log.v(TAG, "attempting to remove word id number "+ vocabWordNumber +"from active table");
+			//Log.v(TAG, "attempting to remove word id number "+ vocabWordNumber +"from active table");
 			String[] removeIds = {String.valueOf(vocabWordNumber)};
 			db = getWritableDatabase();// it might be the number of databases.
-			int d = db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
-			Log.v(TAG, String.valueOf(d) + " items removed from the active table");
+			// int d = 
+			db.delete(ACTIVE_TABLE, VocabProvider.C_ID + "=?",  removeIds);
+			//Log.v(TAG, String.valueOf(d) + " items removed from the active table");
 		}
 	}
 }

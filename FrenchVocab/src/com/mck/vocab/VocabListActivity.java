@@ -26,7 +26,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -81,7 +80,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.v(TAG, "onCreate() has begun");
+		//Log.v(TAG, "onCreate() has begun");
 		// Log.v(TAG,"debug is on");
 		// Debug.startMethodTracing();
 
@@ -105,8 +104,8 @@ public class VocabListActivity extends ActionBarActivity implements
 					.beginTransaction()
 					.add(R.id.vocab_list_frag_container, vocabListFragment,
 							vocabListFragment.getTag()).commit();
-			Log.v(TAG,
-					"created and added a new VocabListFragment to FragmentManager");
+			//Log.v(TAG,
+			//		"created and added a new VocabListFragment to FragmentManager");
 		}
 		// register to get changes to the prefs.
 		prefs = PreferenceManager.getDefaultSharedPreferences(this
@@ -168,32 +167,32 @@ public class VocabListActivity extends ActionBarActivity implements
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Log.v(TAG, "drawerItemClickListener onItemClick is starting");
+			//Log.v(TAG, "drawerItemClickListener onItemClick is starting");
 
 			Item item = ((DrawerListArrayAdapter) drawerList.getAdapter())
 					.getItemFromPosition(position);
 
 			switch (item.itemTypeAction) {
 			case START:
-				Log.v(TAG, "drawer item start selected");
+				//Log.v(TAG, "drawer item start selected");
 				startDialogSequence();
 				break;
 			case OPTIONS:
-				Log.v(TAG, "drawer item options selected");
+				//Log.v(TAG, "drawer item options selected");
 				FragmentManager fragMan = getSupportFragmentManager();
 				OptionsDialogFragment frag = new OptionsDialogFragment();
 				frag.show(fragMan, OptionsDialogFragment.TAG);
 				break;
 			case RESET:
-				Log.v(TAG, "drawer item reset selected");
+				//Log.v(TAG, "drawer item reset selected");
 				restartVocabList();
 				break;
 			case MORE_VOCAB:
-				Log.v(TAG, "drawer item more vocab selected");
+				//Log.v(TAG, "drawer item more vocab selected");
 				startActivity(new Intent(activity, PrefsActivity.class));
 				break;
 			case NONE:
-				Log.v(TAG, "drawer item history selected");
+				//Log.v(TAG, "drawer item history selected");
 				return; // don't close the drawer, just return.
 			case OPEN_PREVIOUS_VOCAB:
 				// onSharedPreferenceChanged(SharedPreferences sharedPreferences
@@ -230,7 +229,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			drawerLayout.openDrawer(Gravity.LEFT);
 		}
 		if (prefs.getBoolean(PREFERENCES_FIRST_LOAD_A, true)) {
-			Log.v(TAG, "first load A dialog to be shown.");
+			//Log.v(TAG, "first load A dialog to be shown.");
 			FragmentManager fragMan = getSupportFragmentManager();
 			FirstLoadDialog frag = new FirstLoadDialog();
 			prefs.edit().putBoolean(PREFERENCES_FIRST_LOAD_A, false).commit();	
@@ -238,7 +237,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			return;
 		}
 		if (prefs.getBoolean(PREFERENCES_FIRST_LOAD_B, true)) {
-			Log.v(TAG, "first load B dialog to be shown.");
+			//Log.v(TAG, "first load B dialog to be shown.");
 			FragmentManager fragMan = getSupportFragmentManager();
 
 			FirstLoadDialogB frag = new FirstLoadDialogB();
@@ -252,7 +251,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.v(TAG, "debug is off");
+		//Log.v(TAG, "debug is off");
 		// Debug.stopMethodTracing();
 	}
 
@@ -281,34 +280,34 @@ public class VocabListActivity extends ActionBarActivity implements
 		}
 		switch (item.getItemId()) {
 		case R.id.options_item_more_vocab:
-			Log.v(TAG, "options item preferences selected");
+			//Log.v(TAG, "options item preferences selected");
 			startActivity(new Intent(this, PrefsActivity.class));
 			// do stuff then return true
 			return true;
 		case R.id.options_item_restart:
-			Log.v(TAG, "options item restart selected");
+			//Log.v(TAG, "options item restart selected");
 			restartVocabList();
 			return true;
 
 				// TODO needs send to options.
 		case R.id.options_item_language:
-			Log.v(TAG, "options item language selected");
+			//Log.v(TAG, "options item language selected");
 			FragmentManager fragMan = getSupportFragmentManager();
 			ChangeLanguageDialogFragment frag = new ChangeLanguageDialogFragment();
 			frag.show(fragMan, ChangeLanguageDialogFragment.TAG);
 			return true;
 		case R.id.options_item_start:
-			Log.v(TAG, "options item start selected");
+			//Log.v(TAG, "options item start selected");
 			startDialogSequence();
 			return true;
 		case R.id.options_item_about:
-			Log.v(TAG, "options item help selected");
+			//Log.v(TAG, "options item help selected");
 			startActivity(new Intent(this, AboutActivity.class));
 			// do stuff then return true
 			return true;
 
 		case R.id.options_item_help:
-			Log.v(TAG, "options item help selected");
+			//Log.v(TAG, "options item help selected");
 			startActivity(new Intent(this, HelpActivity.class));
 			// do stuff then return true
 			return true;
@@ -319,7 +318,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	}
 
 	public void restartVocabList() {
-		Log.v(TAG, "restartVocabList has begun");
+		//Log.v(TAG, "restartVocabList has begun");
 		// get the right values for content values
 		ContentValues values = new ContentValues();
 		values.put(VocabProvider.VALUES_UPDATE_TYPE,
@@ -332,7 +331,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		Log.v(TAG, "onSharedPreferenceChanged method has begun with key " + key);
+		//Log.v(TAG, "onSharedPreferenceChanged method has begun with key " + key);
 		if (key.equals("current_chapter")) {
 			// get info for drawerList history.
 			Cursor titleCursor = getContentResolver().query(
@@ -396,7 +395,7 @@ public class VocabListActivity extends ActionBarActivity implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		Log.v(TAG, "onCreateLoader has begun.");
+		//Log.v(TAG, "onCreateLoader has begun.");
 		String[] projection = { VocabProvider.C_ID, VocabProvider.C_AWORD };
 		return new CursorLoader(this, VocabProvider.ACTIVE_TABLE_URI,
 				projection, null, null, null);
@@ -405,8 +404,8 @@ public class VocabListActivity extends ActionBarActivity implements
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		int count = cursor.getCount();
-		Log.v(TAG, "onLoadFinished has started with " + String.valueOf(count)
-				+ " items");
+		//Log.v(TAG, "onLoadFinished has started with " + String.valueOf(count)
+		//		+ " items");
 		if (count == 0) { // if the list is empty
 			// set the drawer list without start, invalidating the adapter below
 			((DrawerListArrayAdapter) drawerList.getAdapter())
@@ -512,7 +511,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	public void onOptionChangedCallback(OptionType type, String language, boolean isEasy) {
 		switch (type){
 		case LANGUAGE:
-			Log.v(TAG, "onOptionChangedCallback called with language " + language);
+			//Log.v(TAG, "onOptionChangedCallback called with language " + language);
 			// Set up the active table in the other language using vocabProvider
 			ContentValues values = new ContentValues();
 			// file vocabName as name of file and current chapter
@@ -555,7 +554,7 @@ public class VocabListActivity extends ActionBarActivity implements
 
 
 	public void startEasyDialog() {
-		Log.v(TAG, "startEasyDialog() begining");
+		//Log.v(TAG, "startEasyDialog() begining");
 		// Get a random vocab word number uri from the list of vocab words.
 		int vocabWordNumber = -1;
 		// will need current list adapter
@@ -565,7 +564,7 @@ public class VocabListActivity extends ActionBarActivity implements
 		// how many items are in the vocabListFragment
 		int listCount = adapter.getCount();
 		if (listCount == 0) {
-			Log.v(TAG, "no list items so not starting easy dialog");
+			//Log.v(TAG, "no list items so not starting easy dialog");
 			// display in short period of time
 			Toast t = Toast.makeText(getApplicationContext(),
 					"There is no active vocab, select some from options.",
@@ -580,7 +579,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			vocabWordNumber = (int) adapter.getItemId(random);
 		} while (vocabWordNumber == lastDiscarded && listCount > 1);
 		if (listCount == 1 && vocabWordNumber == lastDiscarded) {
-			Log.v(TAG, "no list items so not starting easy dialog");
+			//Log.v(TAG, "no list items so not starting easy dialog");
 			return;
 		}
 		// get the cursor for the word
@@ -619,7 +618,7 @@ public class VocabListActivity extends ActionBarActivity implements
 	}
 	
 	public void startMultiDialog(){
-		Log.v(TAG, "startMultiDialog() begining");
+		//Log.v(TAG, "startMultiDialog() begining");
 		// will need current list adapter
 		ListAdapter adapter = ((VocabListFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.vocab_list_frag_container))
@@ -627,7 +626,7 @@ public class VocabListActivity extends ActionBarActivity implements
 		// how many items are in the vocabListFragment
 		int listCount = adapter.getCount();
 		if (listCount == 0) {
-			Log.v(TAG, "no list items so not starting easy dialog");
+			//Log.v(TAG, "no list items so not starting easy dialog");
 			// display in short period of time
 			Toast t = Toast.makeText(getApplicationContext(),
 					"There is no active vocab, select some from options.",
@@ -646,7 +645,7 @@ public class VocabListActivity extends ActionBarActivity implements
 			questionWordNumber = (int) adapter.getItemId(questionPosition);
 		} while (questionWordNumber == lastDiscarded && listCount > 1);
 		if (listCount == 1 && questionWordNumber == lastDiscarded) {
-			Log.v(TAG, "no list items so not starting easy dialog");
+			//Log.v(TAG, "no list items so not starting easy dialog");
 			return;
 		}
 		// get the cursor for the word

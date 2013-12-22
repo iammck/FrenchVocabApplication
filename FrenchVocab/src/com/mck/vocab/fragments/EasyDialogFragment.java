@@ -3,7 +3,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -93,7 +92,7 @@ public class EasyDialogFragment extends DialogFragment implements OnClickListene
 			break;
 		case R.id.buttonEasy:
  			if (isFlipped == true){
-				Log.v(TAG, "reacting to buttonNext");
+				//Log.v(TAG, "reacting to buttonNext");
 				dismiss();
 				edfcb.quizDialogNext(this.wordNumber, false);
 			} else {
@@ -101,7 +100,7 @@ public class EasyDialogFragment extends DialogFragment implements OnClickListene
 			}
 			break;
 		case R.id.buttonRemove:
-			Log.v(TAG, "reacting to buttonRemove");
+			//Log.v(TAG, "reacting to buttonRemove");
 			dismiss();
 			edfcb.quizDialogNext(this.wordNumber, true);
 			return;	

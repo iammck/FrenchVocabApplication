@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -136,7 +135,7 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 			dismiss();
 			return;
 		case R.id.buttonRemove:
-			Log.v(TAG, "reacting to buttonRemove");
+			//Log.v(TAG, "reacting to buttonRemove");
 			dismiss();
 			mdfcb.quizDialogNext(this.wordNumber, true);
 			return;
@@ -146,11 +145,11 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 				dismiss();
 				return;
 			}
-			Log.v(TAG, "reacting to buttonNext");
+			//Log.v(TAG, "reacting to buttonNext");
 			dismiss();
 			mdfcb.quizDialogNext(this.wordNumber, false);
 		}
-		Log.v(TAG, "onclick and not button cancel.");
+		//Log.v(TAG, "onclick and not button cancel.");
 	}
 
 	@Override
@@ -186,7 +185,7 @@ public class MultiDialogQuestionFragment extends DialogFragment implements
 //			remove.setOnClickListener(this);
 //			// notify the adapter of the update
 //			adapter.notifyDataSetChanged();	
-//			// fade in TODO 
+//			// fade  
 		} else { 
 			((AnswerArrayAdapter)adapter).wordPicked[position] = true;
 			// notify the adapter of the update
